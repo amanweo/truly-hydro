@@ -1,19 +1,40 @@
-import {Await, NavLink, useMatches} from '@remix-run/react';
-import {Suspense} from 'react';
+import { Await, NavLink, useMatches } from '@remix-run/react';
+import { Suspense } from 'react';
 
 /**
  * @param {HeaderProps}
  */
-export function Header({header, isLoggedIn, cart}) {
-  const {shop, menu} = header;
+export function Header({ header, isLoggedIn, cart }) {
+  const { shop, menu } = header;
   return (
-    <header className="header">
-      <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
-        <strong>{shop.name}</strong>
-      </NavLink>
-      <HeaderMenu menu={menu} viewport="desktop" />
-      <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
-    </header>
+    <section className='shopify-section shopify-section-group-header-group headerSticky'>
+      <div className='headerFixed__wrap'>
+        <header id="header" className='trulyHeader headerSection slideDown'>
+          <nav className="freshNav">
+            <div className="wrapper">
+              <div className="freshNav__wrap">
+                <div className="freshNav__left">
+                </div>
+                <div className='freshNav__logo'>
+                  <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
+                    <strong>
+                      <img src="//www.trulybeauty.com/cdn/shop/files/truly_logo_55901ef4-4456-41dc-b255-6944b936afc5.svg?v=1678797461" width="120" alt={shop.name} /></strong>
+                  </NavLink>
+                </div>
+                <div className='freshNav__holder'>
+                  <div className='desktop__nav'>
+                    <HeaderMenu menu={menu} viewport="desktop" />
+                  </div>
+                </div>
+                <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
+
+              </div>
+            </div>
+          </nav>
+
+        </header>
+      </div>
+    </section>
   );
 }
 
@@ -23,7 +44,7 @@ export function Header({header, isLoggedIn, cart}) {
  *   viewport: Viewport;
  * }}
  */
-export function HeaderMenu({menu, viewport}) {
+export function HeaderMenu({ menu, viewport }) {
   const [root] = useMatches();
   const publicStoreDomain = root?.data?.publicStoreDomain;
   const className = `header-menu-${viewport}`;
@@ -36,7 +57,7 @@ export function HeaderMenu({menu, viewport}) {
   }
 
   return (
-    <nav className={className} role="navigation">
+    <ul>
       {viewport === 'mobile' && (
         <NavLink
           end
@@ -54,40 +75,51 @@ export function HeaderMenu({menu, viewport}) {
         // if the url is internal, we strip the domain
         const url =
           item.url.includes('myshopify.com') ||
-          item.url.includes(publicStoreDomain)
+            item.url.includes(publicStoreDomain)
             ? new URL(item.url).pathname
             : item.url;
         return (
-          <NavLink
-            className="header-menu-item"
-            end
-            key={item.id}
-            onClick={closeAside}
-            prefetch="intent"
-            style={activeLinkStyle}
-            to={url}
-          >
-            {item.title}
-          </NavLink>
+          <li key={item.id}>
+            <NavLink
+              className="header-menu-item"
+              end
+              onClick={closeAside}
+              prefetch="intent"
+              style={activeLinkStyle}
+              to={url}
+            >
+              {item.title}
+            </NavLink>
+          </li>
         );
       })}
-    </nav>
+    </ul>
   );
 }
 
 /**
  * @param {Pick<HeaderProps, 'isLoggedIn' | 'cart'>}
  */
-function HeaderCtas({isLoggedIn, cart}) {
+function HeaderCtas({ isLoggedIn, cart }) {
   return (
-    <nav className="header-ctas" role="navigation">
-      <HeaderMenuMobileToggle />
+    <div className="freshNav__account">
+      <div className="navAccount search--icon">
+        <SearchToggle />
+      </div>
+      <div className="navAccount user--icon">
+
+        <NavLink prefetch="intent" to="/account">
+          <img src="https://cdn.shopify.com/s/files/1/0053/4462/4675/files/user--icon.svg?v=1687410589" alt="user" />
+        </NavLink>
+      </div>
+      <div className="navAccount cart--icon">
+        <CartToggle cart={cart} />
+      </div>
+      {/* <HeaderMenuMobileToggle />
       <NavLink prefetch="intent" to="/account" style={activeLinkStyle}>
         {isLoggedIn ? 'Account' : 'Sign in'}
-      </NavLink>
-      <SearchToggle />
-      <CartToggle cart={cart} />
-    </nav>
+      </NavLink> */}
+    </div>
   );
 }
 
@@ -100,20 +132,22 @@ function HeaderMenuMobileToggle() {
 }
 
 function SearchToggle() {
-  return <a href="#search-aside">Search</a>;
+  return <a href="#search-aside"><img src="https://cdn.shopify.com/s/files/1/0053/4462/4675/files/search-icon.svg?v=1676476120" alt="search" /></a>;
 }
 
 /**
  * @param {{count: number}}
  */
-function CartBadge({count}) {
-  return <a href="#cart-aside">Cart {count}</a>;
+function CartBadge({ count }) {
+  return <a href="#cart-aside">
+    <img src="https://cdn.shopify.com/s/files/1/0053/4462/4675/files/cart--bag.svg?v=1687410652" alt="cart" /> <strong className='cartItemCounter headerCartItems'>{count}</strong>
+  </a>;
 }
 
 /**
  * @param {Pick<HeaderProps, 'cart'>}
  */
-function CartToggle({cart}) {
+function CartToggle({ cart }) {
   return (
     <Suspense fallback={<CartBadge count={0} />}>
       <Await resolve={cart}>
@@ -174,7 +208,7 @@ const FALLBACK_HEADER_MENU = {
  *   isPending: boolean;
  * }}
  */
-function activeLinkStyle({isActive, isPending}) {
+function activeLinkStyle({ isActive, isPending }) {
   return {
     fontWeight: isActive ? 'bold' : undefined,
     color: isPending ? 'grey' : 'black',

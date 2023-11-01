@@ -15,6 +15,8 @@ import {
 } from '@remix-run/react';
 import favicon from '../public/favicon.svg';
 import resetStyles from './styles/reset.css';
+import gridStyles from './styles/grid.css';
+import allStyles from './styles/style.css';
 import appStyles from './styles/app.css';
 import {Layout} from '~/components/Layout';
 
@@ -39,6 +41,8 @@ export const shouldRevalidate = ({formMethod, currentUrl, nextUrl}) => {
 export function links() {
   return [
     {rel: 'stylesheet', href: resetStyles},
+    {rel: 'stylesheet', href: allStyles},
+    {rel: 'stylesheet', href: gridStyles},
     {rel: 'stylesheet', href: appStyles},
     {
       rel: 'preconnect',
@@ -109,6 +113,7 @@ export default function App() {
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <Meta />
         <Links />
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
       </head>
       <body>
         <Layout {...data}>
