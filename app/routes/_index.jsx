@@ -43,6 +43,7 @@ export default function Homepage() {
       <BestSellers products={data.collection.products} />
       {/* <FeaturedCollection collection={data.featuredCollection} /> */}
       <RecommendedProducts products={data.recommendedProducts} />
+      {/* <QuickView /> */}
     </div>
   );
 }
@@ -195,6 +196,17 @@ function BestSellers({ products }) {
       </div>
     </div>
   );
+}
+
+function QuickView({ product }) {
+  return (
+    <div className='quickview_modal'>
+      <div className='quickview_modal_backdrop'></div>
+      <div className='quickview_modal_body'>
+
+      </div>
+    </div>
+  )
 }
 
 const FEATURED_COLLECTION_QUERY = `#graphql
