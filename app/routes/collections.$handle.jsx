@@ -161,10 +161,7 @@ const COLLECTION_QUERY = `#graphql
     $handle: String!
     $country: CountryCode
     $language: LanguageCode
-    $first: Int
-    $last: Int
-    $startCursor: String
-    $endCursor: String
+    $first: 10
   ) @inContext(country: $country, language: $language) {
     collection(handle: $handle) {
       id
@@ -172,10 +169,7 @@ const COLLECTION_QUERY = `#graphql
       title
       description
       products(
-        first: $first,
-        last: $last,
-        before: $startCursor,
-        after: $endCursor
+        first: 4
       ) {
         nodes {
           ...ProductItem

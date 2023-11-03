@@ -1,11 +1,12 @@
 :root {
-  --aside-width: 400px;
-  --cart-aside-summary-height-with-discount: 300px;
-  --cart-aside-summary-height: 250px;
-  --grid-item-width: 355px;
-  --header-height: 64px;
+  --primary: #ffdde7;
   --color-dark: #000;
   --color-light: #fff;
+  --mdExI: 'AwesomeSerifItalic-MdExraTall';
+  --fontReg: 'AwesomeSerif-Regular';
+  --fontRegI: 'AwesomeSerifItalic-Regular';
+  --mdEx: 'AwesomeSerif-MediumExtraTall';
+  --lightI: 'AwesomeSerifItalicVAR-Light';
 }
 
 img {

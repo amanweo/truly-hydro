@@ -14,6 +14,7 @@ import {
   isRouteErrorResponse,
 } from '@remix-run/react';
 import favicon from '../public/favicon.svg';
+import bootstrapStyle from 'bootstrap/dist/css/bootstrap.min.css';
 import resetStyles from './styles/reset.css';
 import gridStyles from './styles/grid.css';
 import allStyles from './styles/style.css';
@@ -40,6 +41,7 @@ export const shouldRevalidate = ({formMethod, currentUrl, nextUrl}) => {
 
 export function links() {
   return [
+    {rel: 'stylesheet', href: bootstrapStyle},
     {rel: 'stylesheet', href: resetStyles},
     {rel: 'stylesheet', href: allStyles},
     {rel: 'stylesheet', href: gridStyles},
@@ -113,7 +115,8 @@ export default function App() {
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <Meta />
         <Links />
-        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
       </head>
       <body>
         <Layout {...data}>

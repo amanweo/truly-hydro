@@ -7,34 +7,22 @@ import { Suspense } from 'react';
 export function Header({ header, isLoggedIn, cart }) {
   const { shop, menu } = header;
   return (
-    <section className='shopify-section shopify-section-group-header-group headerSticky'>
-      <div className='headerFixed__wrap'>
-        <header id="header" className='trulyHeader headerSection slideDown'>
-          <nav className="freshNav">
-            <div className="wrapper">
-              <div className="freshNav__wrap">
-                <div className="freshNav__left">
-                </div>
-                <div className='freshNav__logo'>
-                  <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
-                    <strong>
-                      <img src="//www.trulybeauty.com/cdn/shop/files/truly_logo_55901ef4-4456-41dc-b255-6944b936afc5.svg?v=1678797461" width="120" alt={shop.name} /></strong>
-                  </NavLink>
-                </div>
-                <div className='freshNav__holder'>
-                  <div className='desktop__nav'>
-                    <HeaderMenu menu={menu} viewport="desktop" />
-                  </div>
-                </div>
-                <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
-
-              </div>
-            </div>
-          </nav>
-
-        </header>
+    <header className='truly_header'>
+      <div className='container-fluid'>
+        <div className='main_header'>
+          <div className='truly_logo'>
+            <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
+              <strong>
+                <img src="//www.trulybeauty.com/cdn/shop/files/truly_logo_55901ef4-4456-41dc-b255-6944b936afc5.svg?v=1678797461" width="150" alt={shop.name} /></strong>
+            </NavLink>
+          </div>
+          <div className='truly_navbar'>
+            <HeaderMenu menu={menu} viewport="desktop" />
+          </div>
+          <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
+        </div>
       </div>
-    </section>
+    </header>
   );
 }
 
@@ -102,12 +90,11 @@ export function HeaderMenu({ menu, viewport }) {
  */
 function HeaderCtas({ isLoggedIn, cart }) {
   return (
-    <div className="freshNav__account">
+    <div className="truly_header_links">
       <div className="navAccount search--icon">
         <SearchToggle />
       </div>
       <div className="navAccount user--icon">
-
         <NavLink prefetch="intent" to="/account">
           <img src="https://cdn.shopify.com/s/files/1/0053/4462/4675/files/user--icon.svg?v=1687410589" alt="user" />
         </NavLink>
@@ -132,7 +119,7 @@ function HeaderMenuMobileToggle() {
 }
 
 function SearchToggle() {
-  return <a href="#search-aside"><img src="https://cdn.shopify.com/s/files/1/0053/4462/4675/files/search-icon.svg?v=1676476120" alt="search" /></a>;
+  return <a href="#search-aside"><img src="https://cdn.shopify.com/s/files/1/0053/4462/4675/files/search-icon.svg?v=1676476120" alt="search" width={15} /></a>;
 }
 
 /**
@@ -140,7 +127,7 @@ function SearchToggle() {
  */
 function CartBadge({ count }) {
   return <a href="#cart-aside">
-    <img src="https://cdn.shopify.com/s/files/1/0053/4462/4675/files/cart--bag.svg?v=1687410652" alt="cart" /> <strong className='cartItemCounter headerCartItems'>{count}</strong>
+    <img src="https://cdn.shopify.com/s/files/1/0053/4462/4675/files/cart--bag.svg?v=1687410652" alt="cart" width={15} /> <strong className='cartItemCounter'>{count}</strong>
   </a>;
 }
 
