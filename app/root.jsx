@@ -14,6 +14,9 @@ import {
   isRouteErrorResponse,
 } from '@remix-run/react';
 import favicon from '../public/favicon.svg';
+import slickStyle from "slick-carousel/slick/slick.css"; 
+import slickStyle2 from "slick-carousel/slick/slick-theme.css";
+import swiperStyle from 'swiper/css';
 import bootstrapStyle from 'bootstrap/dist/css/bootstrap.min.css';
 import resetStyles from './styles/reset.css';
 import gridStyles from './styles/grid.css';
@@ -41,6 +44,9 @@ export const shouldRevalidate = ({formMethod, currentUrl, nextUrl}) => {
 
 export function links() {
   return [
+    {rel: 'stylesheet', href: slickStyle},
+    {rel: 'stylesheet', href: slickStyle2},
+    {rel: 'stylesheet', href: swiperStyle},
     {rel: 'stylesheet', href: bootstrapStyle},
     {rel: 'stylesheet', href: resetStyles},
     {rel: 'stylesheet', href: allStyles},

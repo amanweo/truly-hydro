@@ -150,11 +150,18 @@ h6{
 p:last-of-type{
   margin-bottom: 0;
 }
-a:not(.link){
-  text-decoration: none;
+a{
   color: inherit;
 }
-
+a:not(.link){
+  text-decoration: none;
+}
+button.noStyle{
+  background-color: transparent;
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
 .container-fluid{
   max-width: 1900px;
   padding: 0 30px;

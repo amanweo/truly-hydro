@@ -1,7 +1,10 @@
 import { defer } from '@shopify/remix-oxygen';
 import { Await, useLoaderData, Link } from '@remix-run/react';
-import { Suspense } from 'react';
+import { Suspense, useState } from 'react';
 import { Image, Money } from '@shopify/hydrogen';
+import Slider from "react-slick";
+import ReactDOM from 'react-dom';
+import { Swiper, SwiperSlide } from 'swiper/react';
 
 /**
  * @type {V2_MetaFunction}
@@ -36,14 +39,43 @@ export default function Homepage() {
   /** @type {LoaderReturnData} */
   const data = useLoaderData();
   console.log("data: ", data)
+  const [showView, setshowView] = useState(false)
+  const [quickViewData, setQuickViewData] = useState({})
+  const [swiper, setSwiper] = useState(null);
+
+  function showQuickView(data) {
+    document.body.classList.add("modal_open");
+    setQuickViewData(data)
+    setshowView(true)
+
+    const customComponentRoot = document.createElement('div');
+    customComponentRoot.classList.add("quickview_modal_outer")
+    document.body.appendChild(customComponentRoot);
+    return () => {
+      document.body.removeChild(customComponentRoot);
+    };
+  }
+  function closeModal() {
+    document.body.classList.remove("modal_open");
+    const childElement = document.querySelector('.quickview_modal_outer');
+    if (childElement) {
+      document.body.removeChild(childElement);
+    }
+    setQuickViewData({})
+    setshowView(false)
+  }
+
   return (
     <div className="home">
       <Banner />
       <RotationalBar data={data.rotational} />
-      <BestSellers products={data.collection.products} />
+      <BestSellers products={data.collection.products} showQuickView={showQuickView} />
       {/* <FeaturedCollection collection={data.featuredCollection} /> */}
-      <RecommendedProducts products={data.recommendedProducts} />
-      {/* <QuickView /> */}
+      <RecommendedProducts products={data.recommendedProducts} showQuickView={showQuickView} />
+      {showView && ReactDOM.createPortal(
+        <QuickView product={quickViewData} closeModal={closeModal} setSwiper={setSwiper} />,
+        document.querySelector('.quickview_modal_outer')
+      )}
     </div>
   );
 }
@@ -105,38 +137,39 @@ function FeaturedCollection({ collection }) {
   );
 }
 
-function ProductRender({ products }) {
+function ProductRender({ products, showQuickView }) {
   return (
     <div className="row">
       {console.log("products: ", products)}
       {products.nodes && products.nodes.map((product) => (
         <>
-          <Link
+          <div
             key={product.id}
             className="col-6 col-sm-6 col-md-4 col-xl-3 "
-            to={`/products/${product.handle}`}
           >
             <div className="productBox__outer">
               <div className="productBox__img">
-                <div className="productBox__img_front">
-                  <Image
-                    data={product.images.nodes[0]}
-                    aspectRatio="0"
-                    size={"100vw"}
-                  />
-                </div>
-                <div className="productBox__img_back">
-                  <Image
-                    data={product.images.nodes[1]}
-                    aspectRatio="0"
-                    size={"100vw"}
-                  />
-                </div>
+                <Link to={`/products/${product.handle}`}>
+                  <div className="productBox__img_front">
+                    <Image
+                      data={product.images.nodes[0]}
+                      aspectRatio="0"
+                      size={"100vw"}
+                    />
+                  </div>
+                  <div className="productBox__img_back">
+                    <Image
+                      data={product.images.nodes[1]}
+                      aspectRatio="0"
+                      size={"100vw"}
+                    />
+                  </div>
+                </Link>
                 <div className='quick_view_product'>
-                  <button className='btn btn-primary w-100 btn-sm'>Quick View</button>
+                  <button className='btn btn-primary w-100 btn-sm' onClick={() => showQuickView(product)}>Quick View</button>
                 </div>
               </div>
-              <div className='productBox__content'>
+              <Link to={`/products/${product.handle}`} className='productBox__content'>
                 <h4 className='productBox__title'>{product.title}</h4>
                 <div className='productBox__price'>
                   <Money data={product.priceRange.minVariantPrice} />
@@ -147,9 +180,9 @@ function ProductRender({ products }) {
                     : null
                   }
                 </div>
-              </div>
+              </Link>
             </div>
-          </Link>
+          </div>
         </>
       ))}
     </div>
@@ -161,7 +194,7 @@ function ProductRender({ products }) {
         *   products: Promise<RecommendedProductsQuery>;
  * }}
       */
-function RecommendedProducts({ products }) {
+function RecommendedProducts({ products, showQuickView }) {
   return (
     <div className="commonSection firstSectionSlider pb-0 slickAbsoluteArrow">
       <div className='container-fluid'>
@@ -173,7 +206,7 @@ function RecommendedProducts({ products }) {
         <Suspense fallback={<div>Loading...</div>}>
           <Await resolve={products}>
             {({ products }) => (
-              <ProductRender products={products} />
+              <ProductRender products={products} showQuickView={showQuickView} />
             )}
           </Await>
         </Suspense>
@@ -182,7 +215,7 @@ function RecommendedProducts({ products }) {
     </div>
   );
 }
-function BestSellers({ products }) {
+function BestSellers({ products, showQuickView }) {
   console.log("products best: ", products)
   return (
     <div className="commonSection firstSectionSlider pb-0 slickAbsoluteArrow">
@@ -191,19 +224,89 @@ function BestSellers({ products }) {
           <p>Check our</p>
           <h2>Bestsellers</h2>
         </div>
-        <ProductRender products={products} />
+        <ProductRender products={products} showQuickView={showQuickView} />
         <br />
       </div>
     </div>
   );
 }
 
-function QuickView({ product }) {
+function QuickView({ product, closeModal, setSwiper }) {
+  console.log("product quick:", product)
   return (
     <div className='quickview_modal'>
-      <div className='quickview_modal_backdrop'></div>
+      <div className='quickview_modal_backdrop' onClick={closeModal}></div>
       <div className='quickview_modal_body'>
-
+        <div className='row gx-5'>
+          <div className='col-md-6'>
+            <div className='product_detail_images'>
+              <div className='product_detail_single_image'>
+                <Image
+                  alt={product?.images?.nodes[0].altText || 'Product Image'}
+                  aspectRatio="0"
+                  data={product?.images?.nodes[0]}
+                  sizes="100vw"
+                  style={{ borderRadius: 20 }}
+                />
+              </div>
+              <div className='product_image_thumb'>
+                {/* <Await resolve={product?.images?.nodes}> */}
+                <Swiper
+                  spaceBetween={0}
+                  slidesPerView={3}
+                  direction={'vertical'}
+                  onSlideChange={() => console.log('slide change')}
+                  onSwiper={(swiper) => setTimeout(() => {
+                    alert()
+                    swiper.update()
+                  }, 3000)}
+                  autoHeight={true}
+                >
+                  {product?.images?.nodes.map((img, i) => {
+                    return (
+                      <SwiperSlide key={i}>
+                        <button className='noStyle d-block'>
+                          <Image
+                            alt={img.altText || 'Product Image'}
+                            aspectRatio="0"
+                            data={img}
+                            sizes="100vw"
+                            style={{ borderRadius: 10 }}
+                          />
+                        </button>
+                      </SwiperSlide>
+                    )
+                  })}
+                </Swiper>
+                {/* </Await> */}
+              </div>
+            </div>
+          </div>
+          <div className='col-md-6'>
+            <div className='product_details'>
+              <h3 className='mdEx'>{product?.title}</h3>
+              <div className='d-flex'>
+                <Money data={product.priceRange.minVariantPrice} as="h4" />
+                {product.priceRange.minVariantPrice?.amount !== product.priceRange.maxVariantPrice?.amount ?
+                  <del className="del_price ms-3">
+                    <Money data={product.priceRange.maxVariantPrice} as="h4" />
+                  </del>
+                  : null
+                }
+              </div>
+              {product?.description ?
+                <div className='mb-2'>
+                  {product?.description.substring(0, 200)}...
+                </div>
+                : null
+              }
+              <Link to={`/products/${product.handle}`} className='link'>Read more</Link>
+              <div className='add_to_cart_block mt-3'>
+                <button className='btn btn-primary'>Add to Bag</button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   )
@@ -218,8 +321,6 @@ const FEATURED_COLLECTION_QUERY = `#graphql
           id
           url
           altText
-          width
-          height
         }
           handle
       }
@@ -251,6 +352,7 @@ const COLLECTION_QUERY = `#graphql
           id
           title
           handle
+          description
           priceRange {
               minVariantPrice {
               amount
@@ -261,13 +363,11 @@ const COLLECTION_QUERY = `#graphql
               currencyCode
             }
           }
-          images(first: 2) {
+          images(first: 100) {
             nodes {
             id
             url
             altText
-            width
-            height
             }
           }
         }
@@ -291,13 +391,11 @@ const RECOMMENDED_PRODUCTS_QUERY = `#graphql
             currencyCode
           }
         }
-        images(first: 2) {
+        images(first: 100) {
           nodes {
           id
           url
-        altText
-        width
-        height
+          altText
         }
       }
     }
