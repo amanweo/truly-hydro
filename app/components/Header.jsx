@@ -1,5 +1,6 @@
 import { Await, NavLink, useMatches } from '@remix-run/react';
 import { Suspense } from 'react';
+import Images from "./images";
 
 /**
  * @param {HeaderProps}
@@ -13,7 +14,7 @@ export function Header({ header, isLoggedIn, cart }) {
           <div className='truly_logo'>
             <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
               <strong>
-                <img src="//www.trulybeauty.com/cdn/shop/files/truly_logo_55901ef4-4456-41dc-b255-6944b936afc5.svg?v=1678797461" width="150" alt={shop.name} /></strong>
+                <img src={Images?.logo} width="150" alt={shop.name} /></strong>
             </NavLink>
           </div>
           <div className='truly_navbar'>
@@ -96,7 +97,7 @@ function HeaderCtas({ isLoggedIn, cart }) {
       </div>
       <div className="navAccount user--icon">
         <NavLink prefetch="intent" to="/account">
-          <img src="https://cdn.shopify.com/s/files/1/0053/4462/4675/files/user--icon.svg?v=1687410589" alt="user" />
+          <img src={Images?.user} alt="user" />
         </NavLink>
       </div>
       <div className="navAccount cart--icon">
@@ -119,7 +120,7 @@ function HeaderMenuMobileToggle() {
 }
 
 function SearchToggle() {
-  return <a href="#search-aside"><img src="https://cdn.shopify.com/s/files/1/0053/4462/4675/files/search-icon.svg?v=1676476120" alt="search" width={15} /></a>;
+  return <a href="#search-aside"><img src={Images.search} alt="search" width={15} /></a>;
 }
 
 /**
@@ -127,7 +128,7 @@ function SearchToggle() {
  */
 function CartBadge({ count }) {
   return <a href="#cart-aside">
-    <img src="https://cdn.shopify.com/s/files/1/0053/4462/4675/files/cart--bag.svg?v=1687410652" alt="cart" width={15} /> <strong className='cartItemCounter'>{count}</strong>
+    <img src={Images.cart} alt="cart" width={15} /> <strong className='cartItemCounter'>{count}</strong>
   </a>;
 }
 

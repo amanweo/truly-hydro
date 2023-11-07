@@ -48,10 +48,10 @@ export function links() {
     {rel: 'stylesheet', href: slickStyle2},
     {rel: 'stylesheet', href: swiperStyle},
     {rel: 'stylesheet', href: bootstrapStyle},
-    {rel: 'stylesheet', href: resetStyles},
-    {rel: 'stylesheet', href: allStyles},
     {rel: 'stylesheet', href: gridStyles},
     {rel: 'stylesheet', href: appStyles},
+    {rel: 'stylesheet', href: resetStyles},
+    {rel: 'stylesheet', href: allStyles},
     {
       rel: 'preconnect',
       href: 'https://cdn.shopify.com',
@@ -85,7 +85,13 @@ export async function loader({context}) {
   const footerPromise = storefront.query(FOOTER_QUERY, {
     cache: storefront.CacheLong(),
     variables: {
-      footerMenuHandle: 'footer', // Adjust to your footer menu handle
+      footerMenuHandle: 'account', // Adjust to your footer menu handle
+    },
+  });
+  const footerPromise2 = storefront.query(FOOTER_QUERY, {
+    cache: storefront.CacheLong(),
+    variables: {
+      footerMenuHandle: 'discover', // Adjust to your footer menu handle
     },
   });
 
@@ -100,7 +106,8 @@ export async function loader({context}) {
   return defer(
     {
       cart: cartPromise,
-      footer: footerPromise,
+      footer: await footerPromise,
+      footer2: await footerPromise2,
       header: await headerPromise,
       isLoggedIn,
       publicStoreDomain,
@@ -113,7 +120,7 @@ export default function App() {
   const nonce = useNonce();
   /** @type {LoaderReturnData} */
   const data = useLoaderData();
-
+  console.log("App data: ", data)
   return (
     <html lang="en">
       <head>
