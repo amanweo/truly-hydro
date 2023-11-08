@@ -9,16 +9,26 @@ export function Footer({ menu, menu2 }) {
   return (
     <footer className="footer">
       <div className="container-fluid">
-        <div className='row'>
-          <div className='col-md-3'>
+        <div className='row justify-content-between'>
+          <div className='col-xl-3 col-lg-4'>
             <FooterInformation />
             <SocialLinks />
           </div>
-          <div className='col-md-3'>
-            <FooterMenu menu={menu} />
+          <div className='col-xl-4 col-lg-4'>
+            <div className='row'>
+              <div className='col-md-6'>
+                <h4>Brand</h4>
+                <FooterMenu menu={menu} />
+              </div>
+              <div className='col-md-6'>
+                <h4>Help</h4>
+                <FooterMenu menu={menu2} />
+              </div>
+            </div>
           </div>
-          <div className='col-md-3'>
-            <FooterMenu menu={menu2} />
+          <div className='col-xl-4 col-lg-4'>
+            <h4>Subscribe to Updates</h4>
+            <NewsLetter />
           </div>
         </div>
       </div>
@@ -43,19 +53,39 @@ function FooterInformation() {
   )
 }
 
+function NewsLetter() {
+  return (
+    <div className='newsletter_block'>
+      <p>Be the first to get the latest news, updates and amazing offers delivered directly in your inbox.</p>
+      <div className='newsletter_form'>
+        <div className='form-group w-100 me-3 mb-3'>
+          <input type='email' className='form-control sm' placeholder='Your email' />
+        </div>
+        <div className='form-group w-100 me-3 mb-3'>
+          <input type='text' className='form-control sm' placeholder='Phone number' />
+        </div>
+        <div className='form-group'>
+          <button className='btn btn-secondary btn-sm'>Subscribe</button>
+        </div>
+      </div>
+      <p><small>By subscribing, you accept the <NavLink to="/" className={"link"}>Privacy Policy</NavLink></small></p>
+    </div>
+  )
+}
+
 function SocialLinks() {
   return (
     <div className="mainFooter_information">
       <div className="mainFooter-socialIcon">
         <a target="_blank" href="https://www.facebook.com/trulybeautyofficial">
-          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns: xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="328px" height="616px" viewBox="232 -20 328 616" enable-background="new 232 -20 328 616" xml: space="preserve">
-            <path fill="#000" stroke-width="40" stroke-linejoin="round" stroke-miterlimit="10" d="M432,198v-72
+          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="328px" height="616px" viewBox="232 -20 328 616" enableBackground="new 232 -20 328 616" xmlSpace="preserve">
+            <path fill="#000" strokeWidth="40" strokeLinejoin="round" strokeMiterlimit="10" d="M432,198v-72
                                                                c0-19.913,16.088-36,36-36h36V0h-72c-59.625,0-108,48.375-108,108v90h-72v90h72v288h108V288h72l36-90H432z">
             </path>
           </svg>
         </a>
         <a target="_blank" href="https://twitter.com/truly_beauty_" className="icon_fill">
-          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns: xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="666.018px" height="558px" viewBox="62.972 9 666.018 558" enable-background="new 62.972 9 666.018 558" xml: space="preserve">
+          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="666.018px" height="558px" viewBox="62.972 9 666.018 558" enableBackground="new 62.972 9 666.018 558" xmlSpace="preserve">
             <path d="M506.813,54c33.75,0,64.575,14.288,86.287,37.35c26.888-5.4,52.088-14.962,74.926-28.575
                                     c-8.775,27.675-27.45,50.625-51.976,65.25c23.851-3.038,46.575-9.225,68.063-18.675c-16.087,23.85-35.774,44.663-59.175,61.313
                                     c0.225,4.95,0.45,10.012,0.45,15.3C625.275,342,506.475,522,289.125,522C222.3,522,160.313,502.763,108,469.013
@@ -101,8 +131,8 @@ function SocialLinks() {
           </svg>
         </a>
         <a target="_blank" href="https://www.youtube.com/channel/UCKEW0ZRDVYfSHnD5UlwMrvA" className='icon_stroke'>
-          <svg version="1.1" id="Слой_1" xmlns="http://www.w3.org/2000/svg" xmlns: xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="582.19px" height="420.201px" viewBox="104.736 72.832 582.19 420.201" enable-background="new 104.736 72.832 582.19 420.201" xml: space="preserve">
-            <path fill="none" stroke="#ff779f" stroke-width="42" stroke-linejoin="round" stroke-miterlimit="10" d="M654.608,153.037
+          <svg version="1.1" id="Слой_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="582.19px" height="420.201px" viewBox="104.736 72.832 582.19 420.201" enableBackground="new 104.736 72.832 582.19 420.201" xmlSpace="preserve">
+            <path fill="none" stroke="#ff779f" strokeWidth="42" strokeLinejoin="round" strokeMiterlimit="10" d="M654.608,153.037
                         c-6.249-23.142-24.492-41.384-47.634-47.634c-42.229-11.571-211.313-11.571-211.313-11.571s-169,0-211.313,11.148
                         c-22.719,6.25-41.384,24.915-47.634,48.057c-10.979,42.229-10.979,129.896-10.979,129.896s0,88.089,11.148,129.896
                         c6.25,23.142,24.493,41.384,47.634,47.634c42.735,11.571,211.313,11.571,211.313,11.571s168.999,0,211.313-11.148
@@ -111,9 +141,9 @@ function SocialLinks() {
           </svg>
         </a>
         <a target="_blank" href="https://www.tiktok.com/@trulybeauty" className='icon_stroke'>
-          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns: xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="545.374px" height="615.212px" viewBox="123.211 -19.55 545.374 615.212" enable-background="new 123.211 -19.55 545.374 615.212" xml: space="preserve">
+          <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="545.374px" height="615.212px" viewBox="123.211 -19.55 545.374 615.212" enableBackground="new 123.211 -19.55 545.374 615.212" xmlSpace="preserve">
             <g>
-              <path fill="none" stroke="#ff779f" stroke-width="40" stroke-linejoin="round" stroke-miterlimit="10" d="M648.338,144.45
+              <path fill="none" stroke="#ff779f" strokeWidth="40" strokeLinejoin="round" strokeMiterlimit="10" d="M648.338,144.45
                             c-32.851,0-63.226-10.913-87.525-29.25c-27.9-21.038-48.037-51.975-55.125-87.525c-1.8-8.775-2.7-17.887-2.813-27.225h-93.938
                             v256.612l-0.112,140.513c0,37.575-24.525,69.412-58.388,80.662c-9.9,3.263-20.475,4.838-31.5,4.163
                             c-14.175-0.788-27.337-5.063-38.925-11.926C255.487,455.85,238.95,429.3,238.5,398.813c-0.675-47.475,37.688-86.287,85.163-86.287
@@ -156,7 +186,7 @@ function FooterMenu({ menu }) {
             end
             key={item.id}
             prefetch="intent"
-           
+
             to={url}
           >
             {item.title}

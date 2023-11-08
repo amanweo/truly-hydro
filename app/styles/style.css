@@ -234,7 +234,7 @@ body.modal_open main div:not(.quickview_modal, .quickview_modal *) {
     filter: blur(1px);
 }
 
-.swiper-wrapper{
+.quickview_modal .swiper-wrapper{
     height: 505px !important;
 }
 .custom_arrows *{
@@ -258,6 +258,16 @@ body.modal_open main div:not(.quickview_modal, .quickview_modal *) {
     top: auto;
     bottom: 0;
 }
+
+.custom_arrows.horizontal{
+    top: 50%;
+    transform: translate(0, -50%) rotate(-90deg);
+    inset: 50% -15px;
+}
+.custom_arrows.horizontal.custom-next-arrow {
+    left: auto;
+    right: -15px;
+}
 .product_image_thumb .swiper-slide {
     opacity: 0.5;
 }
@@ -266,12 +276,15 @@ body.modal_open main div:not(.quickview_modal, .quickview_modal *) {
 }
 
 footer.footer{
-    background-color: #f7f5f5;
+    background-color: #f7f7f7;
     padding: 40px 0;
+}
+footer.footer {
+    font-size: 14px;
 }
 footer.footer p,
 footer.footer a{
-    font-size: 14px;
+    font-size: inherit;
 }
 .mainFooter-socialIcon {
     margin: 20px 0;
@@ -280,15 +293,24 @@ footer.footer a{
     margin-right: 15px;
 }
 .mainFooter-socialIcon a svg {
-    fill: var(--color-dark);
     max-width: 1.3rem;
     max-height: 1.3rem;
+}
+.mainFooter-socialIcon a svg * {
+    transition: ease 0.2s;
 }
 .mainFooter-socialIcon a:not(.icon_stroke) svg * {
     fill: var(--color-dark);
 }
 .mainFooter-socialIcon a.icon_stroke svg * {
     stroke: var(--color-dark);
+}
+.mainFooter-socialIcon a:hover:not(.icon_stroke) svg * {
+    fill: var(--primary2);
+}
+.mainFooter-socialIcon a.icon_stroke:hover svg * {
+    fill: var(--primary2);
+    stroke: var(--primary2);
 }
 .footer-menu{
     display: block;
@@ -304,4 +326,35 @@ footer.footer a{
 }
 .mainFooter_information{
     padding-right: 30px;
+}
+.newsletter_form{
+    margin-top: 20px;
+    display: flex;
+}
+.footer-menu a:hover{
+    text-decoration: underline;
+}
+
+.text_over_image{
+    position: relative;
+}
+.bg_image_content{
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+.img-zoom {
+    overflow: hidden;
+}
+.img-zoom img{
+    transition: ease 0.5s;
+}
+.img-zoom:hover img{
+    transform: scale(1.05);
+}
+.collection_product_slider {
+    position: relative;
 }

@@ -221,3 +221,23 @@ button, a{
 .btn.btn-shadow:hover{
   box-shadow: rgba(0,0,0,0.1) 0px 0px 0px;
 }
+input.form-control {
+  border: 1px #ddd solid;
+  background: #fff;
+  padding: 15px;
+  border-radius: 15px;
+}
+input.form-control.sm {
+  padding: 10px 15px;
+  font-size: 14px;
+  border-radius: 10px;
+}
+
+input.form-control:focus {
+  box-shadow: none;
+  outline: none;
+  border-color: #ddd;
+}
+.radius-20{
+  border-radius: 20px;
+}
