@@ -1,12 +1,14 @@
 import { Await, NavLink, useMatches } from '@remix-run/react';
-import { Suspense } from 'react';
+import { Suspense, useState } from 'react';
 import Images from "./images";
+import { PredictiveSearchForm, PredictiveSearchResults } from './Search';
 
 /**
  * @param {HeaderProps}
  */
 export function Header({ header, isLoggedIn, cart }) {
   const { shop, menu } = header;
+  const [showSearch, setShowSearch] = useState(false)
   return (
     <header className='truly_header'>
       <div className='container-fluid'>
@@ -23,6 +25,10 @@ export function Header({ header, isLoggedIn, cart }) {
           <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
         </div>
       </div>
+      {showSearch ?
+        <HeaderSearch />
+        : null
+      }
     </header>
   );
 }
@@ -84,6 +90,37 @@ export function HeaderMenu({ menu, viewport }) {
       })}
     </ul>
   );
+}
+
+function HeaderSearch() {
+  return (
+    <div className="predictive-search">
+      <div className="container-fluid">
+        <PredictiveSearchForm>
+          {({ fetchResults, inputRef }) => (
+            <div className='d-flex'>
+              <input
+                name="q"
+                onChange={fetchResults}
+                onFocus={fetchResults}
+                placeholder="Search"
+                ref={inputRef}
+                type="search"
+                className='form-control'
+              />
+              &nbsp;
+              {/* <button className='noStyle ps-3' onClick={clearSearch}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 10.667 10.667">
+                  <path fill="currentColor" d="M4.723,4.723a.762.762,0,0,1,1.079,0L9.833,8.756l4.031-4.033A.763.763,0,1,1,14.942,5.8L10.91,9.833l4.033,4.031a.763.763,0,1,1-1.079,1.079L9.833,10.91,5.8,14.942a.763.763,0,1,1-1.079-1.079L8.756,9.833,4.723,5.8a.762.762,0,0,1,0-1.079Z" transform="translate(-4.499 -4.499)"></path>
+                </svg>
+              </button> */}
+            </div>
+          )}
+        </PredictiveSearchForm>
+        <PredictiveSearchResults />
+      </div>
+    </div>
+  )
 }
 
 /**

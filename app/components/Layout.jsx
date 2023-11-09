@@ -16,7 +16,7 @@ export function Layout({cart, children = null, footer, footer2, header, isLogged
   return (
     <>
       <CartAside cart={cart} />
-      <SearchAside />
+      {/* <SearchAside /> */}
       <MobileMenuAside menu={header.menu} />
       <Header header={header} cart={cart} isLoggedIn={isLoggedIn} />
       <main>{children}</main>
@@ -50,10 +50,9 @@ function SearchAside() {
   return (
     <Aside id="search-aside" heading="SEARCH">
       <div className="predictive-search">
-        <br />
         <PredictiveSearchForm>
           {({fetchResults, inputRef}) => (
-            <div>
+            <div className='d-flex'>
               <input
                 name="q"
                 onChange={fetchResults}
@@ -61,6 +60,7 @@ function SearchAside() {
                 placeholder="Search"
                 ref={inputRef}
                 type="search"
+                className='form-control'
               />
               &nbsp;
               <button type="submit">Search</button>

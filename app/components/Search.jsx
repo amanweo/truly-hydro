@@ -1,19 +1,19 @@
-import {Link, Form, useParams, useFetcher, useFetchers} from '@remix-run/react';
-import {Image, Money, Pagination} from '@shopify/hydrogen';
-import React, {useRef, useEffect} from 'react';
+import { Link, Form, useParams, useFetcher, useFetchers } from '@remix-run/react';
+import { Image, Money, Pagination } from '@shopify/hydrogen';
+import React, { useRef, useEffect } from 'react';
 
 export const NO_PREDICTIVE_SEARCH_RESULTS = [
-  {type: 'queries', items: []},
-  {type: 'products', items: []},
-  {type: 'collections', items: []},
-  {type: 'pages', items: []},
-  {type: 'articles', items: []},
+  { type: 'queries', items: [] },
+  { type: 'products', items: [] },
+  { type: 'collections', items: [] },
+  { type: 'pages', items: [] },
+  { type: 'articles', items: [] },
 ];
 
 /**
  * @param {{searchTerm: string}}
  */
-export function SearchForm({searchTerm}) {
+export function SearchForm({ searchTerm }) {
   const inputRef = useRef(null);
 
   // focus the input when cmd+k is pressed
@@ -54,7 +54,7 @@ export function SearchForm({searchTerm}) {
 /**
  * @param {Pick<FetchSearchResultsReturn['searchResults'], 'results'>}
  */
-export function SearchResults({results}) {
+export function SearchResults({ results }) {
   if (!results) {
     return null;
   }
@@ -101,12 +101,12 @@ export function SearchResults({results}) {
 /**
  * @param {Pick<SearchQuery, 'products'>}
  */
-function SearchResultsProductsGrid({products}) {
+function SearchResultsProductsGrid({ products }) {
   return (
     <div className="search-result">
       <h2>Products</h2>
       <Pagination connection={products}>
-        {({nodes, isLoading, NextLink, PreviousLink}) => {
+        {({ nodes, isLoading, NextLink, PreviousLink }) => {
           const itemsMarkup = nodes.map((product) => (
             <div className="search-results-item" key={product.id}>
               <Link prefetch="intent" to={`/products/${product.handle}`}>
@@ -142,7 +142,7 @@ function SearchResultsProductsGrid({products}) {
 /**
  * @param {Pick<SearchQuery, 'pages'>}
  */
-function SearchResultPageGrid({pages}) {
+function SearchResultPageGrid({ pages }) {
   return (
     <div className="search-result">
       <h2>Pages</h2>
@@ -163,7 +163,7 @@ function SearchResultPageGrid({pages}) {
 /**
  * @param {Pick<SearchQuery, 'articles'>}
  */
-function SearchResultArticleGrid({articles}) {
+function SearchResultArticleGrid({ articles }) {
   return (
     <div className="search-result">
       <h2>Articles</h2>
@@ -207,8 +207,8 @@ export function PredictiveSearchForm({
       : searchAction;
     const newSearchTerm = event.target.value || '';
     fetcher.submit(
-      {q: newSearchTerm, limit: '6'},
-      {method, action: localizedAction},
+      { q: newSearchTerm, limit: '6' },
+      { method, action: localizedAction },
     );
   }
 
@@ -231,13 +231,13 @@ export function PredictiveSearchForm({
         inputRef.current.blur();
       }}
     >
-      {children({fetchResults, inputRef, fetcher})}
+      {children({ fetchResults, inputRef, fetcher })}
     </fetcher.Form>
   );
 }
 
 export function PredictiveSearchResults() {
-  const {results, totalResults, searchInputRef, searchTerm} =
+  const { results, totalResults, searchInputRef, searchTerm } =
     usePredictiveSearch();
 
   function goToSearchResult(event) {
@@ -254,7 +254,7 @@ export function PredictiveSearchResults() {
   return (
     <div className="predictive-search-results">
       <div>
-        {results.map(({type, items}) => (
+        {results.map(({ type, items }) => (
           <PredictiveSearchResult
             goToSearchResult={goToSearchResult}
             items={items}
@@ -282,7 +282,7 @@ export function PredictiveSearchResults() {
  *   searchTerm: React.MutableRefObject<string>;
  * }}
  */
-function NoPredictiveSearchResults({searchTerm}) {
+function NoPredictiveSearchResults({ searchTerm }) {
   if (!searchTerm.current) {
     return null;
   }
@@ -296,18 +296,17 @@ function NoPredictiveSearchResults({searchTerm}) {
 /**
  * @param {SearchResultTypeProps}
  */
-function PredictiveSearchResult({goToSearchResult, items, searchTerm, type}) {
+function PredictiveSearchResult({ goToSearchResult, items, searchTerm, type }) {
   const isSuggestions = type === 'queries';
-  const categoryUrl = `/search?q=${
-    searchTerm.current
-  }&type=${pluralToSingularSearchType(type)}`;
-
+  const categoryUrl = `/search?q=${searchTerm.current
+    }&type=${pluralToSingularSearchType(type)}`;
+    console.log("type: ", type)
   return (
     <div className="predictive-search-result" key={type}>
       <Link prefetch="intent" to={categoryUrl} onClick={goToSearchResult}>
         <h5>{isSuggestions ? 'Suggestions' : type}</h5>
       </Link>
-      <ul>
+      <ul className={isSuggestions || type == "pages" ? 'suggestions_list' : 'product_search_list'}>
         {items.map((item) => (
           <SearchResultItem
             goToSearchResult={goToSearchResult}
@@ -323,7 +322,7 @@ function PredictiveSearchResult({goToSearchResult, items, searchTerm, type}) {
 /**
  * @param {SearchResultItemProps}
  */
-function SearchResultItem({goToSearchResult, item}) {
+function SearchResultItem({ goToSearchResult, item }) {
   return (
     <li className="predictive-search-result-item" key={item.id}>
       <Link onClick={goToSearchResult} to={item.url}>
@@ -332,7 +331,6 @@ function SearchResultItem({goToSearchResult, item}) {
             alt={item.image.altText ?? ''}
             src={item.image.url}
             width={50}
-            height={50}
           />
         )}
         <div>
@@ -377,7 +375,7 @@ function usePredictiveSearch() {
     searchInputRef.current = document.querySelector('input[type="search"]');
   }, []);
 
-  return {...search, searchInputRef, searchTerm};
+  return { ...search, searchInputRef, searchTerm };
 }
 
 /**
