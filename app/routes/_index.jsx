@@ -392,7 +392,7 @@ function CollectionProducts(props) {
               <Image
                 alt={""}
                 aspectRatio="0"
-                data={{ url: Images?.banner1 }}
+                data={{ url: Images?.banner_bath2 }}
                 sizes="100vw"
                 style={{ borderRadius: 20 }}
               />
@@ -419,6 +419,7 @@ function CollectionProducts(props) {
               <Swiper
                 spaceBetween={10}
                 slidesPerView={2}
+                loop={true}
                 navigation={true, {
                   nextEl: '.custom-next-arrow',
                   prevEl: '.custom-prev-arrow',

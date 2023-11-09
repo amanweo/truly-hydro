@@ -6,5 +6,6 @@ export default {
     banner1: "https://www.trulybeauty.com/cdn/shop/files/3IMG_4841_done_V1_1500X1875_crop_center.jpg?v=1689098167",
     banner2: "https://www.trulybeauty.com/cdn/shop/files/5IMG_4850_done_B_V1_1500X1875_crop_center.jpg?v=1689098167",
     banner_bath: "https://www.trulybeauty.com/cdn/shop/files/Body_copy.jpg?v=1690355083",
+    banner_bath2: "https://www.trulybeauty.com/cdn/shop/products/2_e012433c-1016-440b-93bc-a76b5c31e88f_1500X1875_crop_center.jpg?v=1687160801",
     banner_face: "https://www.trulybeauty.com/cdn/shop/files/Face_copy.jpg?v=1690355109",
 }
