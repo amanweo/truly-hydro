@@ -9,6 +9,9 @@ import { PredictiveSearchForm, PredictiveSearchResults } from './Search';
 export function Header({ header, isLoggedIn, cart }) {
   const { shop, menu } = header;
   const [showSearch, setShowSearch] = useState(false)
+  const toggleSearch = () => {
+    setShowSearch(!showSearch)
+  }
   return (
     <header className='truly_header'>
       <div className='container-fluid'>
@@ -22,11 +25,11 @@ export function Header({ header, isLoggedIn, cart }) {
           <div className='truly_navbar'>
             <HeaderMenu menu={menu} viewport="desktop" />
           </div>
-          <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
+          <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} toggleSearch={toggleSearch} />
         </div>
       </div>
       {showSearch ?
-        <HeaderSearch />
+        <HeaderSearch toggleSearch={toggleSearch} />
         : null
       }
     </header>
@@ -92,7 +95,7 @@ export function HeaderMenu({ menu, viewport }) {
   );
 }
 
-function HeaderSearch() {
+function HeaderSearch(props) {
   return (
     <div className="predictive-search">
       <div className="container-fluid">
@@ -109,11 +112,11 @@ function HeaderSearch() {
                 className='form-control'
               />
               &nbsp;
-              {/* <button className='noStyle ps-3' onClick={clearSearch}>
+              <button className='noStyle ps-3' onClick={props.toggleSearch}>
                 <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 10.667 10.667">
                   <path fill="currentColor" d="M4.723,4.723a.762.762,0,0,1,1.079,0L9.833,8.756l4.031-4.033A.763.763,0,1,1,14.942,5.8L10.91,9.833l4.033,4.031a.763.763,0,1,1-1.079,1.079L9.833,10.91,5.8,14.942a.763.763,0,1,1-1.079-1.079L8.756,9.833,4.723,5.8a.762.762,0,0,1,0-1.079Z" transform="translate(-4.499 -4.499)"></path>
                 </svg>
-              </button> */}
+              </button>
             </div>
           )}
         </PredictiveSearchForm>
@@ -126,11 +129,11 @@ function HeaderSearch() {
 /**
  * @param {Pick<HeaderProps, 'isLoggedIn' | 'cart'>}
  */
-function HeaderCtas({ isLoggedIn, cart }) {
+function HeaderCtas({ isLoggedIn, cart, toggleSearch }) {
   return (
     <div className="truly_header_links">
       <div className="navAccount search--icon">
-        <SearchToggle />
+        <SearchToggle toggleSearch={toggleSearch} />
       </div>
       <div className="navAccount user--icon">
         <NavLink prefetch="intent" to="/account">
@@ -156,8 +159,8 @@ function HeaderMenuMobileToggle() {
   );
 }
 
-function SearchToggle() {
-  return <a href="#search-aside"><img src={Images.search} alt="search" width={15} /></a>;
+function SearchToggle(props) {
+  return <button className='noStyle' onClick={props.toggleSearch}><img src={Images.search} alt="search" width={15} /></button>;
 }
 
 /**

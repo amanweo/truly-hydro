@@ -287,7 +287,7 @@ function NoPredictiveSearchResults({ searchTerm }) {
     return null;
   }
   return (
-    <p>
+    <p className='p-2'>
       No results found for <q>{searchTerm.current}</q>
     </p>
   );
