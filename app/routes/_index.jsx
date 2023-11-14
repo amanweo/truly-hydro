@@ -2,14 +2,11 @@ import { defer } from '@shopify/remix-oxygen';
 import { Await, useLoaderData, Link, useLocation } from '@remix-run/react';
 import { Suspense, useState } from 'react';
 import { CartForm, Image, Money } from '@shopify/hydrogen';
-import Slider from "react-slick";
 import ReactDOM from 'react-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
 import { useRef } from 'react';
 import Images from '~/components/images';
-import { NavLink } from 'react-bootstrap';
-import { useEffect } from 'react';
 
 /**
  * @type {V2_MetaFunction}
@@ -674,9 +671,9 @@ ${PRODUCT_VARIANTS_FRAGMENT}
           }
       images(first: 100) {
         nodes {
-        id
+            id
             url
-      altText
+            altText
             }
           }
         }

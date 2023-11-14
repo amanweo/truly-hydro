@@ -556,3 +556,12 @@ div#cart-aside aside header {display: none;}
 div#cart-aside aside main {
     margin: 0;
 }
+.product-page .swiper-wrapper {
+    height: 95vh !important;
+}
+.product-page .product_image_thumb {
+    max-width: 150px;
+}
+.product-page .product_detail_single_image {
+    max-width: calc(100% - 180px);
+}
