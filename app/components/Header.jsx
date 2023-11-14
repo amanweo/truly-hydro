@@ -2,6 +2,7 @@ import { Await, NavLink, useMatches } from '@remix-run/react';
 import { Suspense, useState } from 'react';
 import Images from "./images";
 import { PredictiveSearchForm, PredictiveSearchResults } from './Search';
+import { CartMain } from './Cart';
 
 /**
  * @param {HeaderProps}
@@ -126,10 +127,22 @@ function HeaderSearch(props) {
   )
 }
 
+function HeaderCart(props) {
+  return (
+    <Suspense fallback={<p>Loading cart ...</p>}>
+      <Await resolve={props.cart}>
+        {(cart) => {
+          return <CartMain cart={cart} toggleCart={props.toggleCart} />;
+        }}
+      </Await>
+    </Suspense>
+  )
+}
+
 /**
  * @param {Pick<HeaderProps, 'isLoggedIn' | 'cart'>}
  */
-function HeaderCtas({ isLoggedIn, cart, toggleSearch }) {
+function HeaderCtas({ isLoggedIn, cart, toggleSearch, toggleCart }) {
   return (
     <div className="truly_header_links">
       <div className="navAccount search--icon">
@@ -165,23 +178,24 @@ function SearchToggle(props) {
 
 /**
  * @param {{count: number}}
- */
-function CartBadge({ count }) {
+*/
+function CartBadge(props) {
+  // return <button className='noStyle header_cart_icon' onClick={props.toggleCart}><img src={Images.cart} alt="search" width={15} /><strong className='cartItemCounter'>{props.count}</strong></button>;
   return <a href="#cart-aside">
-    <img src={Images.cart} alt="cart" width={15} /> <strong className='cartItemCounter'>{count}</strong>
+    <img src={Images.cart} alt="cart" width={15} /> <strong className='cartItemCounter'>{props.count}</strong>
   </a>;
 }
 
 /**
  * @param {Pick<HeaderProps, 'cart'>}
  */
-function CartToggle({ cart }) {
+function CartToggle(props) {
   return (
-    <Suspense fallback={<CartBadge count={0} />}>
-      <Await resolve={cart}>
+    <Suspense fallback={<CartBadge count={0} toggleCart={props.toggleCart} />}>
+      <Await resolve={props.cart}>
         {(cart) => {
-          if (!cart) return <CartBadge count={0} />;
-          return <CartBadge count={cart.totalQuantity || 0} />;
+          if (!cart) return <CartBadge count={0} toggleCart={props.toggleCart} />;
+          return <CartBadge count={cart.totalQuantity || 0} toggleCart={props.toggleCart} />;
         }}
       </Await>
     </Suspense>

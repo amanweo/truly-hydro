@@ -228,6 +228,7 @@ function ProductPrice({ selectedVariant }) {
  * }}
  */
 function ProductForm({ product, selectedVariant, variants }) {
+  console.log("selectedVariant: ", selectedVariant)
   return (
     <div className="product-form">
       <VariantSelector
@@ -240,9 +241,9 @@ function ProductForm({ product, selectedVariant, variants }) {
       <br />
       <AddToCartButton
         disabled={!selectedVariant || !selectedVariant.availableForSale}
-        onClick={() => {
-          window.location.href = window.location.href + '#cart-aside';
-        }}
+        // onClick={() => {
+        //   window.location.href = window.location.href + '#cart-aside';
+        // }}
         lines={
           selectedVariant
             ? [

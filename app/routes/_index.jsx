@@ -1,7 +1,7 @@
 import { defer } from '@shopify/remix-oxygen';
-import { Await, useLoaderData, Link } from '@remix-run/react';
+import { Await, useLoaderData, Link, useLocation } from '@remix-run/react';
 import { Suspense, useState } from 'react';
-import { Image, Money } from '@shopify/hydrogen';
+import { CartForm, Image, Money } from '@shopify/hydrogen';
 import Slider from "react-slick";
 import ReactDOM from 'react-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -9,6 +9,7 @@ import { Navigation } from 'swiper/modules';
 import { useRef } from 'react';
 import Images from '~/components/images';
 import { NavLink } from 'react-bootstrap';
+import { useEffect } from 'react';
 
 /**
  * @type {V2_MetaFunction}
@@ -52,6 +53,7 @@ export async function loader({ context }) {
 export default function Homepage() {
   /** @type {LoaderReturnData} */
   const data = useLoaderData();
+  const location = useLocation()
   console.log("data: ", data)
   const swiperRef = useRef(null);
   const [showView, setshowView] = useState(false)
@@ -64,6 +66,7 @@ export default function Homepage() {
       collectionList.push(data[key]?.collection)
     }
   }
+
   function showQuickView(data) {
     document.body.classList.add("modal_open");
     setQuickViewData(data)
@@ -116,6 +119,12 @@ export default function Homepage() {
   const handleDetail = () => {
     closeModal()
   }
+
+  // useEffect(()=>{
+  //   if(location.hash == '#cart-aside'){
+  //     closeModal()
+  //   }
+  // },[location.hash])
   console.log("activeslide", activeSlide)
 
   return (
@@ -142,6 +151,31 @@ export default function Homepage() {
         document.querySelector('.quickview_modal_outer')
       )}
     </div>
+  );
+}
+
+
+function AddToCartButton({ analytics, children, disabled, lines, onClick }) {
+  return (
+    <CartForm route="/cart" inputs={{ lines }} action={CartForm.ACTIONS.LinesAdd}>
+      {(fetcher) => (
+        <>
+          <input
+            name="analytics"
+            type="hidden"
+            value={JSON.stringify(analytics)}
+          />
+          <button
+            type="submit"
+            onClick={onClick}
+            disabled={disabled ?? fetcher.state !== 'idle'}
+            className='btn btn-primary mt-3'
+          >
+            {children}
+          </button>
+        </>
+      )}
+    </CartForm>
   );
 }
 
@@ -527,7 +561,21 @@ function QuickView(props) {
                 : null
               }
               <div className='add_to_cart_block mb-3'>
-                <button className='btn btn-primary'>Add to Bag</button>
+                {/* <button className='btn btn-primary'>Add to Bag</button> */}
+                <AddToCartButton
+                  lines={[
+                    {
+                      merchandiseId: props.product?.variants.nodes[0].id,
+                      quantity: 1,
+                    },
+                  ]
+                  }
+                  onClick={() => {
+                    window.location.href = window.location.href + '#cart-aside';
+                  }}
+                >
+                  Add to cart
+                </AddToCartButton>
               </div>
               <Link to={`/products/${props.product.handle}`} onClick={props.handleDetail} className='link'>View Full Details</Link>
             </div>
@@ -560,7 +608,41 @@ const FEATURED_COLLECTION_QUERY = `#graphql
   }
 `;
 
+
+const PRODUCT_VARIANT_FRAGMENT = `#graphql
+  fragment ProductVariant on ProductVariant {
+    compareAtPrice {
+      amount
+      currencyCode
+    }
+    id
+    price {
+      amount
+      currencyCode
+    }
+    product {
+      title
+      handle
+    }
+    sku
+    title
+  }
+`;
+
+
+const PRODUCT_VARIANTS_FRAGMENT = `#graphql
+  fragment ProductVariants on Product {
+    variants(first: 250) {
+      nodes {
+        ...ProductVariant
+      }
+    }
+  }
+  ${PRODUCT_VARIANT_FRAGMENT}
+`;
+
 const COLLECTION_QUERY = `#graphql
+${PRODUCT_VARIANTS_FRAGMENT}
       query Collection(
       $handle: String!
       $country: CountryCode
@@ -579,6 +661,7 @@ const COLLECTION_QUERY = `#graphql
           title
       handle
       description
+      ...ProductVariants
       priceRange {
         minVariantPrice {
         amount
@@ -603,10 +686,12 @@ const COLLECTION_QUERY = `#graphql
 `;
 
 const RECOMMENDED_PRODUCTS_QUERY = `#graphql
+${PRODUCT_VARIANTS_FRAGMENT}
       fragment RecommendedProduct on Product {
         id
           title
       handle
+      ...ProductVariants
       priceRange {
         minVariantPrice {
         amount
