@@ -1,4 +1,4 @@
-import { Suspense } from 'react';
+import { Suspense, useEffect } from 'react';
 import { defer, redirect } from '@shopify/remix-oxygen';
 import { Await, Link, useLoaderData } from '@remix-run/react';
 
@@ -113,10 +113,31 @@ export default function Product() {
   const { selectedVariant } = product;
   const swiperRef = useRef(null);
   const [activeSlide, setActiveSlide] = useState(product?.images?.nodes[0] || {})
-  
-  const handleThumbnailClick = (index) => {
 
+
+  const handleSlideChange = () => {
+    if (swiperRef.current) {
+      let index = swiperRef.current.swiper.realIndex
+      if (index > -1) {
+        setActiveSlide(product?.images?.nodes[index])
+      }
+    }
+  };
+
+  const handleThumbnailClick = (index) => {
+    if (swiperRef.current) {
+      if (index > -1) {
+        if (swiperRef.current.swiper.slides.length > 0) {
+          swiperRef.current.swiper.slides.forEach(element => {
+            element.classList.remove("swiper-slide-active")
+          });
+        }
+        swiperRef.current.swiper.slides[index].classList.add("swiper-slide-active")
+        setActiveSlide(product?.images?.nodes[index])
+      }
+    }
   }
+
   return (
     <div className="commonSection product-page">
       <div className="container-fluid">
@@ -138,7 +159,7 @@ export default function Product() {
                   spaceBetween={0}
                   slidesPerView={4}
                   direction={'vertical'}
-                  // onSlideChange={props.handleSlideChange}
+                  onSlideChange={handleSlideChange}
                   autoHeight={true}
                   navigation={true, {
                     nextEl: '.custom-next-arrow',
@@ -179,7 +200,7 @@ export default function Product() {
               </div>
             </div>
           </div>
-          <div className='col-lg-5 col-md-6'>
+          <div className='col-lg-6 col-md-6'>
             <ProductMain
               selectedVariant={selectedVariant}
               product={product}
@@ -221,6 +242,7 @@ function ProductImage({ image }) {
  */
 function ProductMain({ selectedVariant, product, variants }) {
   const { title, descriptionHtml } = product;
+  const [read, setRead] = useState(false)
   return (
     <div className="product-main">
       <h1>{title}</h1>
@@ -254,8 +276,9 @@ function ProductMain({ selectedVariant, product, variants }) {
         <strong>Description</strong>
       </p>
       <br />
-      <div dangerouslySetInnerHTML={{ __html: descriptionHtml }} />
+      <div className={`product_description ${read ? "full" : ""}`} dangerouslySetInnerHTML={{ __html: descriptionHtml }} />
       <br />
+      <p><a className='noStyle link' onClick={() => setRead(!read)}>Read {read ? "less" : "more"}</a></p>
     </div>
   );
 }
@@ -270,12 +293,10 @@ function ProductPrice({ selectedVariant }) {
     <div className="product-price">
       {selectedVariant?.compareAtPrice ? (
         <>
-          <p>Sale</p>
-          <br />
           <div className="product-price-on-sale">
-            {selectedVariant ? <Money data={selectedVariant.price} /> : null}
+            {selectedVariant ? <Money data={selectedVariant.price} as="h4" /> : null}
             <s>
-              <Money data={selectedVariant.compareAtPrice} />
+              <Money data={selectedVariant.compareAtPrice} as="h4" />
             </s>
           </div>
         </>
@@ -307,9 +328,11 @@ function ProductForm({ product, selectedVariant, variants }) {
       <br />
       <AddToCartButton
         disabled={!selectedVariant || !selectedVariant.availableForSale}
-        // onClick={() => {
-        //   window.location.href = window.location.href + '#cart-aside';
-        // }}
+        onClick={() => {
+          setTimeout(() => {
+            window.location.href = window.location.href + '#cart-aside';
+          }, 500);
+        }}
         lines={
           selectedVariant
             ? [
@@ -333,19 +356,18 @@ function ProductForm({ product, selectedVariant, variants }) {
 function ProductOptions({ option }) {
   return (
     <div className="product-options" key={option.name}>
-      <h5>{option.name}</h5>
+      {/* <h5>{option.name}</h5> */}
       <div className="product-options-grid">
         {option.values.map(({ value, isAvailable, isActive, to }) => {
           return (
             <Link
-              className="product-options-item"
+              className={`product-options-item ${isActive ? "active" : ""}`}
               key={option.name + value}
               prefetch="intent"
               preventScrollReset
               replace
               to={to}
               style={{
-                border: isActive ? '1px solid black' : '1px solid transparent',
                 opacity: isAvailable ? 1 : 0.3,
               }}
             >
@@ -382,7 +404,7 @@ function AddToCartButton({ analytics, children, disabled, lines, onClick }) {
             type="submit"
             onClick={onClick}
             disabled={disabled ?? fetcher.state !== 'idle'}
-            className='btn btn-primary w-100'
+            className='btn btn-primary'
           >
             {children}
           </button>

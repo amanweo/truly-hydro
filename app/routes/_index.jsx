@@ -233,9 +233,9 @@ function FeaturedCollection({ collection }) {
   );
 }
 
-function ProductBlock({ product, showQuickView }) {
+export function ProductBlock({ product, showQuickView }) {
   return (
-    <div className="productBox__outer">
+    <div className="productBox__outer mb-5">
       <div className="productBox__img">
         <Link to={`/products/${product.handle}`}>
           <div className="productBox__img_front">
@@ -272,7 +272,7 @@ function ProductBlock({ product, showQuickView }) {
     </div>
   )
 }
-function ProductRender({ products, showQuickView }) {
+export function ProductRender({ products, showQuickView }) {
   return (
     <div className="row">
       {console.log("products: ", products)}
@@ -368,7 +368,7 @@ function ContentBlock() {
               <h2>The smoothest shave of all time</h2>
               <p>Tik tok famous shave routines proven to smooth, brighten & hydrate your skin.</p>
               <div className='mt-4'>
-                <Link to="/collections/shave" className='btn btn-primary w-auto'>Shop Shave</Link>
+                <Link to="/collections/shaving" className='btn btn-primary w-auto'>Shop Shave</Link>
               </div>
             </div>
           </div>
@@ -472,7 +472,7 @@ function CollectionProducts(props) {
   )
 }
 
-function QuickView(props) {
+export function QuickView(props) {
   console.log("product quick:", props.product)
   return (
     <div className='quickview_modal'>
@@ -571,7 +571,7 @@ function QuickView(props) {
                     window.location.href = window.location.href + '#cart-aside';
                   }}
                 >
-                  Add to cart
+                  Add to Bag
                 </AddToCartButton>
               </div>
               <Link to={`/products/${props.product.handle}`} onClick={props.handleDetail} className='link'>View Full Details</Link>

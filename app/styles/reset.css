@@ -169,6 +169,9 @@ a{
 a:not(.link){
   text-decoration: none;
 }
+a.link{
+  cursor: pointer;
+}
 button.noStyle{
   background-color: transparent;
   border: 0;
