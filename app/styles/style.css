@@ -584,7 +584,7 @@ div#cart-aside aside main {
 
 .product-page .swiper-wrapper {
     height: auto !important;
-    max-height: 900px;
+    max-height: 100vh;
 }
 
 .product-page .product_image_thumb {
