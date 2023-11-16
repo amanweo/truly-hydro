@@ -1,5 +1,5 @@
 .truly_header {
-    background-color: var(--primary);
+    background-color: var(--color-light);
     position: sticky;
     top: 0;
     left: 0;
@@ -29,6 +29,7 @@
     padding: 20px 0;
     display: block;
     position: relative;
+    font-weight: 700;
 }
 
 .truly_navbar ul li a:after {
@@ -140,8 +141,11 @@
     display: block;
 }
 
-.productBox__content h4 {
-    font-family: var(--mdEx);
+.productBox__content h5 {
+    margin-bottom: 10px;
+    font-family: var(--primary-font);
+    letter-spacing: 0;
+    font-weight: 700;
 }
 
 .productBox__price {
@@ -276,8 +280,12 @@ body.modal_open main div:not(.quickview_modal, .quickview_modal *, aside *) {
     z-index: 9;
     transform: translateX(-50%);
     cursor: pointer;
+    transition: ease 0.3s;
 }
 
+.custom_arrows:hover {
+    background-color: var(--primary2);
+}
 .custom_arrows.custom-next-arrow {
     top: auto;
     bottom: 0;
@@ -583,7 +591,7 @@ div#cart-aside aside main {
 }
 
 .product-page .swiper-wrapper {
-    height: auto !important;
+    height: 900px !important;
     max-height: 100vh;
 }
 

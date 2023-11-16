@@ -69,7 +69,7 @@ body {
   padding: 0;
   background-color: var(--color-light);
   color: var(--color-dark);
-  font-family: 'Nunito Sans', sans-serif;
+  font-family: var(--primary-font);
   font-weight: 400;
   font-size: 16px;
   line-height: 1.4;
@@ -140,6 +140,7 @@ input[type=number] {
 h1, h2, h3, h4, h5, h6{
   font-family: var(--fontReg);
   margin-bottom: 20px;
+  letter-spacing: 0.8px;
 }
 h1{
   font-size: 50px;
@@ -216,17 +217,17 @@ button, a{
   padding: 10px 20px;
   border-radius: 10px;
 }
-.btn.btn-primary {
+.btn.btn-secondary {
   background: var(--primary);
   border-color: var(--primary);
   color: var(--color-dark);
 }
-.btn.btn-primary:hover, .btn.btn-secondary {
+.btn.btn-secondary:hover, .btn.btn-primary {
   background: var(--color-dark);
   border-color: var(--color-dark);
   color: var(--color-light);
 }
-.btn.btn-secondary:hover {
+.btn.btn-primary:hover {
   background: var(--primary);
   border-color: var(--primary);
   color: var(--color-dark);
@@ -263,4 +264,11 @@ hr{
 button.btn[disabled] {
   pointer-events: none;
   opacity: 0.4;
+}
+.primary-font, .primary-font *{  
+  font-family: var(--primary-font) !important;
+  letter-spacing: 0;
+}
+.strong, .strong *{
+  font-weight: 700 !important;
 }

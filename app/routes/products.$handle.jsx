@@ -1,6 +1,6 @@
 import { Suspense, useEffect } from 'react';
 import { defer, redirect } from '@shopify/remix-oxygen';
-import { Await, Link, useLoaderData } from '@remix-run/react';
+import { Await, Link, useLoaderData, useLocation } from '@remix-run/react';
 
 import {
   Image,
@@ -112,6 +112,7 @@ export default function Product() {
   console.log("selected product: ", product);
   const { selectedVariant } = product;
   const swiperRef = useRef(null);
+  const location = useLocation()
   const [activeSlide, setActiveSlide] = useState(product?.images?.nodes[0] || {})
 
 
@@ -138,6 +139,10 @@ export default function Product() {
     }
   }
 
+  useEffect(()=>{
+    document.body.classList.remove("modal_open");
+  },[location.pathname])
+
   return (
     <div className="commonSection product-page">
       <div className="container-fluid">
@@ -150,7 +155,7 @@ export default function Product() {
                   alt={activeSlide.altText || 'Product Image'}
                   aspectRatio="0"
                   data={activeSlide}
-                  sizes="100vw"
+                  sizes="200vw"
                   style={{ borderRadius: 20 }}
                 />
               </div>
@@ -189,7 +194,7 @@ export default function Product() {
                             alt={img.altText || 'Product Image'}
                             aspectRatio="0"
                             data={img}
-                            sizes="100vw"
+                            sizes="200vw"
                             style={{ borderRadius: 10 }}
                           />
                         </button>
@@ -227,7 +232,7 @@ function ProductImage({ image }) {
         aspectRatio="0"
         data={image}
         key={image.id}
-        sizes="(min-width: 45em) 50vw, 100vw"
+        sizes="(min-width: 45em) 50vw, 200vw"
       />
     </div>
   );

@@ -102,30 +102,40 @@ export default function Collection() {
     }
   }
 
+  console.log("collection: ", collection)
   return (
-    <div className="commonSection collection">
-      <div className="container-fluid">
-        <div className="headingholder">
-          {/* <p>Check Our</p> */}
-          <h1>{collection.title}</h1>
-        </div>
-        {/* <p className="collection-description">{collection.description}</p> */}
-        <Pagination connection={collection.products}>
-          {({ nodes, isLoading, PreviousLink, NextLink }) => (
-            <>
-              {/* <PreviousLink>
+    <div className="collection">
+      <div className='collection_banner'>
+        <Image
+          alt={collection?.image?.altText}
+          aspectRatio="0"
+          data={collection?.image}
+          sizes="200vw"
+        />
+      </div>
+      <div className="commonSection">
+        <div className="container-fluid">
+          <div className="headingholder">
+            {/* <h1>{collection.title}</h1> */}
+          </div>
+          {/* <p className="collection-description">{collection.description}</p> */}
+          <Pagination connection={collection.products}>
+            {({ nodes, isLoading, PreviousLink, NextLink }) => (
+              <>
+                {/* <PreviousLink>
                 {isLoading ? 'Loading...' : <span>↑ Load previous</span>}
               </PreviousLink> */}
-              <ProductRender products={collection.products} showQuickView={showQuickView} />
-              <br />
-              <div className='text-center'>
-                <NextLink className='btn btn-primary'>
-                  {isLoading ? 'Loading...' : <span>Load more</span>}
-                </NextLink>
-              </div>
-            </>
-          )}
-        </Pagination>
+                <ProductRender products={collection.products} showQuickView={showQuickView} />
+                <br />
+                <div className='text-center'>
+                  <NextLink className='btn btn-primary'>
+                    {isLoading ? 'Loading...' : <span>Load more</span>}
+                  </NextLink>
+                </div>
+              </>
+            )}
+          </Pagination>
+        </div>
       </div>
 
       {showView && ReactDOM.createPortal(
@@ -176,6 +186,7 @@ const PRODUCT_ITEM_FRAGMENT = `#graphql
     }
     variants(first: 1) {
       nodes {
+        id
         selectedOptions {
           name
           value
@@ -198,6 +209,11 @@ const COLLECTION_QUERY = `#graphql
       handle
       title
       description
+      image {
+        id
+        url
+        altText
+      }
       products(
         first: 12
       ) {

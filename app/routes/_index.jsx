@@ -182,7 +182,7 @@ function Banner() {
     <div className="home_slideshow_section">
       <Link to="/products/signature-body-mist-trio" className="d-block">
         {image && (
-          <Image src={image} sizes="100vw" />
+          <Image src={image} alt="" sizes="200vw" />
         )}
       </Link>
     </div>
@@ -199,7 +199,9 @@ function RotationalBar({ data }) {
               <div className='col-md-4' key={i}>
                 <div className="InStyle__Box">
                   <h3><span><span>{opt?.text}</span></span></h3>
-                  <div className='InStyle__Box_logo'><img src={opt?.logo} alt="logo" height={34} /></div>
+                  <div className='InStyle__Box_logo'>
+                    <img src={opt?.logo} alt="logo" height={34} />
+                  </div>
                 </div>
               </div>
             )
@@ -225,7 +227,7 @@ function FeaturedCollection({ collection }) {
     >
       {image && (
         <div className="featured-collection-image">
-          <Image data={image} sizes="100vw" />
+          <Image data={image} sizes="200vw" />
         </div>
       )}
       <h1>{collection.title}</h1>
@@ -242,14 +244,14 @@ export function ProductBlock({ product, showQuickView }) {
             <Image
               data={product.images.nodes[0]}
               aspectRatio="0"
-              size={"100vw"}
+              size={"200vw"}
             />
           </div>
           <div className="productBox__img_back">
             <Image
               data={product.images.nodes[1]}
               aspectRatio="0"
-              size={"100vw"}
+              size={"200vw"}
             />
           </div>
         </Link>
@@ -258,7 +260,7 @@ export function ProductBlock({ product, showQuickView }) {
         </div>
       </div>
       <Link to={`/products/${product.handle}`} className='productBox__content'>
-        <h4 className='productBox__title'>{product.title}</h4>
+        <h5 className='productBox__title'>{product.title}</h5>
         <div className='productBox__price'>
           <Money data={product.priceRange.minVariantPrice} />
           {product.priceRange.minVariantPrice?.amount !== product.priceRange.maxVariantPrice?.amount ?
@@ -345,7 +347,7 @@ function ContentBlock() {
                     alt={""}
                     aspectRatio="0"
                     data={{ url: Images?.banner1 }}
-                    sizes="100vw"
+                    sizes="200vw"
                     style={{ borderRadius: 20 }}
                   />
                 </div>
@@ -356,7 +358,7 @@ function ContentBlock() {
                     alt={""}
                     aspectRatio="0"
                     data={{ url: Images?.banner2 }}
-                    sizes="100vw"
+                    sizes="200vw"
                     style={{ borderRadius: 20 }}
                   />
                 </div>
@@ -380,7 +382,7 @@ function ContentBlock() {
 
 function CollectionBlock(props) {
   return (
-    <div className='commonSection'>
+    <div className='commonSection pt-0'>
       <div className='container'>
         <div className="headingholder">
           <p>Explore Our</p>
@@ -396,7 +398,7 @@ function CollectionBlock(props) {
                       alt={opt?.title}
                       aspectRatio="0"
                       data={{ url: Images?.[`banner_${opt?.handle}`] }}
-                      sizes="100vw"
+                      sizes="200vw"
                     />
                   </div>
                 </div>
@@ -424,7 +426,7 @@ function CollectionProducts(props) {
                 alt={""}
                 aspectRatio="0"
                 data={{ url: Images?.banner_bath2 }}
-                sizes="100vw"
+                sizes="200vw"
                 style={{ borderRadius: 20 }}
               />
             </div>
@@ -486,7 +488,7 @@ export function QuickView(props) {
                   alt={props.activeSlide.altText || 'Product Image'}
                   aspectRatio="0"
                   data={props.activeSlide}
-                  sizes="100vw"
+                  sizes="200vw"
                   style={{ borderRadius: 20 }}
                 />
               </div>
@@ -527,7 +529,7 @@ export function QuickView(props) {
                             alt={img.altText || 'Product Image'}
                             aspectRatio="0"
                             data={img}
-                            sizes="100vw"
+                            sizes="200vw"
                             style={{ borderRadius: 10 }}
                           />
                         </button>
@@ -542,11 +544,11 @@ export function QuickView(props) {
           <div className='col-md-6'>
             <div className='product_details'>
               <h3 className='mdEx'>{props.product?.title}</h3>
-              <div className='d-flex'>
-                <Money data={props.product.priceRange.minVariantPrice} as="h4" />
+              <div className='d-flex primary-font strong'>
+                <Money data={props.product.priceRange.minVariantPrice} as="h5" />
                 {props.product.priceRange.minVariantPrice?.amount !== props.product.priceRange.maxVariantPrice?.amount ?
                   <del className="del_price ms-3">
-                    <Money data={props.product.priceRange.maxVariantPrice} as="h4" />
+                    <Money data={props.product.priceRange.maxVariantPrice} as="h5" />
                   </del>
                   : null
                 }

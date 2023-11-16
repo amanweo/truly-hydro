@@ -3,13 +3,21 @@
   --primary2: #d6315c;
   --color-dark: #000;
   --color-light: #fff;
+  --primary-font: 'Nunito Sans', sans-serif;
   --mdExI: 'AwesomeSerifItalic-MdExraTall';
   --fontReg: 'AwesomeSerif-Regular';
   --fontRegI: 'AwesomeSerifItalic-Regular';
   --mdEx: 'AwesomeSerif-MediumExtraTall';
   --lightI: 'AwesomeSerifItalicVAR-Light';
 }
+html, body {
+    min-height: 100vh;
+}
 
+body {
+    display: flex;
+    flex-direction: column;
+}
 img {
   border-radius: 4px;
 }
