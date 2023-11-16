@@ -157,7 +157,6 @@
 .productBox__img {
     position: relative;
     overflow: hidden;
-    border-radius: 15px;
 }
 
 .productBox__img_back {

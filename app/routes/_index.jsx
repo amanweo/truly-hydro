@@ -256,7 +256,7 @@ export function ProductBlock({ product, showQuickView }) {
           </div>
         </Link>
         <div className='quick_view_product'>
-          <button className='btn btn-primary w-100 btn-sm' onClick={() => showQuickView(product)}>Quick View</button>
+          <button className='btn btn-primary w-100 btn-sm noHover' onClick={() => showQuickView(product)}>Quick View</button>
         </div>
       </div>
       <Link to={`/products/${product.handle}`} className='productBox__content'>
@@ -282,7 +282,7 @@ export function ProductRender({ products, showQuickView }) {
         <>
           <div
             key={product.id}
-            className="col-6 col-sm-6 col-md-4 col-xl-3 "
+            className="col-6 col-sm-6 col-md-4 col-xl-20"
           >
             <ProductBlock product={product} showQuickView={showQuickView} />
           </div>
@@ -348,7 +348,6 @@ function ContentBlock() {
                     aspectRatio="0"
                     data={{ url: Images?.banner1 }}
                     sizes="200vw"
-                    style={{ borderRadius: 20 }}
                   />
                 </div>
               </div>
@@ -359,7 +358,6 @@ function ContentBlock() {
                     aspectRatio="0"
                     data={{ url: Images?.banner2 }}
                     sizes="200vw"
-                    style={{ borderRadius: 20 }}
                   />
                 </div>
               </div>
@@ -427,7 +425,6 @@ function CollectionProducts(props) {
                 aspectRatio="0"
                 data={{ url: Images?.banner_bath2 }}
                 sizes="200vw"
-                style={{ borderRadius: 20 }}
               />
             </div>
           </div>
@@ -489,7 +486,6 @@ export function QuickView(props) {
                   aspectRatio="0"
                   data={props.activeSlide}
                   sizes="200vw"
-                  style={{ borderRadius: 20 }}
                 />
               </div>
               <div className='product_image_thumb'>
@@ -530,7 +526,6 @@ export function QuickView(props) {
                             aspectRatio="0"
                             data={img}
                             sizes="200vw"
-                            style={{ borderRadius: 10 }}
                           />
                         </button>
                       </SwiperSlide>
@@ -653,7 +648,7 @@ ${PRODUCT_VARIANTS_FRAGMENT}
       title
       description
       products(
-      first: 4
+      first: 5
       ) {
         nodes {
         id
@@ -711,7 +706,7 @@ ${PRODUCT_VARIANTS_FRAGMENT}
     }
       query RecommendedProducts ($country: CountryCode, $language: LanguageCode)
       @inContext(country: $country, language: $language) {
-        products(first: 4, sortKey: UPDATED_AT, reverse: true) {
+        products(first: 5, sortKey: UPDATED_AT, reverse: true) {
         nodes {
         ...RecommendedProduct
       }

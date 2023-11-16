@@ -215,7 +215,7 @@ const COLLECTION_QUERY = `#graphql
         altText
       }
       products(
-        first: 12
+        first: 15
       ) {
         nodes {
           ...ProductItem
