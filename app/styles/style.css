@@ -678,3 +678,11 @@ div#cart-aside aside main {
     object-fit: cover;
     object-position: center;
 }
+
+
+/* Account */
+.login-page-inner{
+    width: 100%;
+    max-width: 500px;
+    margin: auto;
+}
