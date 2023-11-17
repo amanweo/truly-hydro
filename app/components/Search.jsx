@@ -37,16 +37,17 @@ export function SearchForm({ searchTerm }) {
   }, []);
 
   return (
-    <Form method="get">
-      <input
-        defaultValue={searchTerm}
-        name="q"
-        placeholder="Search…"
-        ref={inputRef}
-        type="search"
-      />
-      &nbsp;
-      <button type="submit">Search</button>
+    <Form method="get" className='mb-3'>
+      <div className='d-flex'>
+        <input
+          defaultValue={searchTerm}
+          name="q"
+          placeholder="Search…"
+          ref={inputRef}
+          type="search"
+          className='form-control'
+        />
+      </div>
     </Form>
   );
 }
@@ -84,6 +85,7 @@ export function SearchResults({ results }) {
 
           if (resourceResults.nodes[0]?.__typename === 'Article') {
             const articleResults = resourceResults;
+            console.log("articleResults: ", articleResults);
             return resourceResults.nodes.length ? (
               <SearchResultArticleGrid
                 key="articles"
@@ -104,30 +106,39 @@ export function SearchResults({ results }) {
 function SearchResultsProductsGrid({ products }) {
   return (
     <div className="search-result">
-      <h2>Products</h2>
+      <h3>Products</h3>
       <Pagination connection={products}>
         {({ nodes, isLoading, NextLink, PreviousLink }) => {
           const itemsMarkup = nodes.map((product) => (
-            <div className="search-results-item" key={product.id}>
-              <Link prefetch="intent" to={`/products/${product.handle}`}>
-                <span>{product.title}</span>
-              </Link>
-            </div>
+            <li className="search-results-item" key={product.id}>
+              <div className="predictive-search-result-item">
+                <Link prefetch="intent" to={`/products/${product.handle}`}>
+                  {product?.featuredImage?.url && (
+                    <Image
+                      alt={product?.featuredImage.altText ?? ''}
+                      data={product?.featuredImage}
+                      width={50}
+                    />
+                  )}
+                  <div>{product.title}</div>
+                </Link>
+              </div>
+            </li>
           ));
           return (
             <div>
-              <div>
+              {/* <div>
                 <PreviousLink>
                   {isLoading ? 'Loading...' : <span>↑ Load previous</span>}
                 </PreviousLink>
-              </div>
-              <div>
+              </div> */}
+              <ul className='product_search_list'>
                 {itemsMarkup}
                 <br />
-              </div>
-              <div>
-                <NextLink>
-                  {isLoading ? 'Loading...' : <span>Load more ↓</span>}
+              </ul>
+              <div className='text-center'>
+                <NextLink className='btn btn-primary'>
+                  {isLoading ? 'Loading...' : <span>Load more</span>}
                 </NextLink>
               </div>
             </div>
@@ -145,16 +156,16 @@ function SearchResultsProductsGrid({ products }) {
 function SearchResultPageGrid({ pages }) {
   return (
     <div className="search-result">
-      <h2>Pages</h2>
-      <div>
+      <h3>Pages</h3>
+      <ul className='suggestions_list'>
         {pages?.nodes?.map((page) => (
-          <div className="search-results-item" key={page.id}>
+          <li className="search-results-item" key={page.id}>
             <Link prefetch="intent" to={`/pages/${page.handle}`}>
               {page.title}
             </Link>
-          </div>
+          </li>
         ))}
-      </div>
+      </ul>
       <br />
     </div>
   );
@@ -166,16 +177,25 @@ function SearchResultPageGrid({ pages }) {
 function SearchResultArticleGrid({ articles }) {
   return (
     <div className="search-result">
-      <h2>Articles</h2>
-      <div>
+      <h3>Articles</h3>
+      <ul className='product_search_list'>
         {articles?.nodes?.map((article) => (
-          <div className="search-results-item" key={article.id}>
-            <Link prefetch="intent" to={`/blog/${article.handle}`}>
-              {article.title}
-            </Link>
-          </div>
+          <li className="search-results-item" key={article.id}>
+            <div className="predictive-search-result-item">
+              <Link prefetch="intent" to={`/blogs/${article.handle}`}>
+                {article?.image?.url && (
+                  <Image
+                    alt={article?.image.altText ?? ''}
+                    data={article?.image}
+                    width={50}
+                  />
+                )}
+                <div>{article.title}</div>
+              </Link>
+            </div>
+          </li>
         ))}
-      </div>
+      </ul>
       <br />
     </div>
   );
@@ -300,7 +320,7 @@ function PredictiveSearchResult({ goToSearchResult, items, searchTerm, type }) {
   const isSuggestions = type === 'queries';
   const categoryUrl = `/search?q=${searchTerm.current
     }&type=${pluralToSingularSearchType(type)}`;
-    console.log("type: ", type)
+  console.log("type: ", type)
   return (
     <div className="predictive-search-result" key={type}>
       <Link prefetch="intent" to={categoryUrl} onClick={goToSearchResult}>

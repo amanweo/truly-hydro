@@ -21,9 +21,10 @@
     display: flex;
 }
 
-.truly_navbar ul li{
+.truly_navbar ul li {
     padding: 0 15px;
 }
+
 .truly_navbar ul li a {
     white-space: nowrap;
     padding: 20px 0;
@@ -123,10 +124,12 @@
 .headingholder h2 {
     font-family: var(--mdExI);
 }
-.headingholder h1{
+
+.headingholder h1 {
     font-size: 60px;
 }
-.headingholder h2{
+
+.headingholder h2 {
     font-size: 50px;
 }
 
@@ -141,7 +144,7 @@
     display: block;
 }
 
-.productBox__content h5 {
+.productBox__content h6 {
     margin-bottom: 10px;
     font-family: var(--primary-font);
     letter-spacing: 0;
@@ -172,6 +175,14 @@
     position: absolute;
     z-index: 2;
     inset: 0;
+}
+
+.product_detail_single_image .product_slides {
+    display: none;
+}
+
+.product_detail_single_image .product_slides.activeSlide {
+    display: block;
 }
 
 .quick_view_product {
@@ -285,6 +296,7 @@ body.modal_open main div:not(.quickview_modal, .quickview_modal *, aside *) {
 .custom_arrows:hover {
     background-color: var(--primary2);
 }
+
 .custom_arrows.custom-next-arrow {
     top: auto;
     bottom: 0;
@@ -603,7 +615,7 @@ div#cart-aside aside main {
 }
 
 .product-options-item {
-    border-radius: 8px;
+    border-radius: 0;
     padding: 8px 15px;
     font-size: 14px;
 }
@@ -612,6 +624,7 @@ div#cart-aside aside main {
     background-color: var(--color-dark);
     color: var(--color-light);
 }
+
 .product_description .hide {
     opacity: 0;
     height: 0;
@@ -619,9 +632,49 @@ div#cart-aside aside main {
     visibility: hidden;
     transition: ease 0.5s;
 }
-.product_description.full .hide{
+
+.product_description.full .hide {
     opacity: 1;
     height: auto;
     overflow: auto;
     visibility: visible;
+}
+
+.lg-backdrop {
+    background-color: #fff;
+}
+
+.lg-backdrop.in {
+    opacity: .8;
+}
+
+.lg-components {
+    display: none;
+}
+
+.lg-toolbar .lg-icon,
+.lg-icon {
+    background: var(--color-dark);
+    border-radius: 50%;
+    margin: 5px;
+    color: var(--color-light);
+    font-size: 18px;
+    width: 40px;
+    height: 40px;
+    line-height: 20px;
+}
+
+.lg-counter {
+    color: var(--color-dark);
+    font-weight: 600;
+}
+
+.lg-outer .lg-item:not(.lg-start-end-progress) {
+    background: url("../images/loading-spinner.svg") no-repeat scroll center center transparent;
+    background-size: 40px;
+}
+
+.collection-item img {
+    object-fit: cover;
+    object-position: center;
 }

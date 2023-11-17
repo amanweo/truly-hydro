@@ -260,7 +260,7 @@ export function ProductBlock({ product, showQuickView }) {
         </div>
       </div>
       <Link to={`/products/${product.handle}`} className='productBox__content'>
-        <h5 className='productBox__title'>{product.title}</h5>
+        <h6 className='productBox__title'>{product.title}</h6>
         <div className='productBox__price'>
           <Money data={product.priceRange.minVariantPrice} />
           {product.priceRange.minVariantPrice?.amount !== product.priceRange.maxVariantPrice?.amount ?
@@ -336,22 +336,18 @@ function BestSellers({ products, showQuickView }) {
 
 function ContentBlock() {
   return (
-    <div className='text_over_image'>
-      <div className='container-fluid'>
-        <div className='row justify-content-between align-items-center'>
-          <div className='col-sm-6'>
-            <div className='row'>
-              <div className='col-sm-6'>
-                <div className='bg_image_block'>
-                  <Image
-                    alt={""}
-                    aspectRatio="0"
-                    data={{ url: Images?.banner1 }}
-                    sizes="200vw"
-                  />
-                </div>
-              </div>
-              <div className='col-sm-6'>
+    <div className='text_over_image primary-bg'>
+      {/* <div className='container-fluid'> */}
+        <div className='row g-0 justify-content-between align-items-center'>
+          <div className='col-sm-7'>
+            <div className='bg_image_block'>
+              <Image
+                alt={""}
+                aspectRatio="0"
+                data={{ url: Images?.banner_shave }}
+                sizes="200vw"
+              />
+              {/* <div className='col-sm-6'>
                 <div className='bg_image_block'>
                   <Image
                     alt={""}
@@ -360,10 +356,10 @@ function ContentBlock() {
                     sizes="200vw"
                   />
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
-          <div className='col-sm-6'>
+          <div className='col-sm-5'>
             <div className='bg_image_text text-center'>
               <h2>The smoothest shave of all time</h2>
               <p>Tik tok famous shave routines proven to smooth, brighten & hydrate your skin.</p>
@@ -373,7 +369,7 @@ function ContentBlock() {
             </div>
           </div>
         </div>
-      </div>
+      {/* </div> */}
     </div>
   )
 }
@@ -381,7 +377,7 @@ function ContentBlock() {
 function CollectionBlock(props) {
   return (
     <div className='commonSection pt-0'>
-      <div className='container'>
+      <div className='container-fluid'>
         <div className="headingholder">
           <p>Explore Our</p>
           <h2>Featured Collections</h2>
@@ -391,7 +387,7 @@ function CollectionBlock(props) {
             return (
               <Link to={`/collections/${opt?.handle}`} className='col-sm-6' key={i}>
                 <div className='collection_block'>
-                  <div className='collection_block_image mb-2 img-zoom radius-20'>
+                  <div className='collection_block_image mb-2 img-zoom'>
                     <Image
                       alt={opt?.title}
                       aspectRatio="0"
@@ -401,7 +397,7 @@ function CollectionBlock(props) {
                   </div>
                 </div>
                 <div className='collection_block_content'>
-                  <h3>{opt?.title}</h3>
+                  <h2>{opt?.title}</h2>
                 </div>
               </Link>
             )
@@ -437,13 +433,13 @@ function CollectionProducts(props) {
               <div className="custom_arrows horizontal custom-prev-arrow">
                 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M5.29289 9.29289C4.90237 9.68342 4.90237 10.3166 5.29289 10.7071C5.68342 11.0976 6.31658 11.0976 6.70711 10.7071L5.29289 9.29289ZM12 4L12.7071 3.29289C12.3166 2.90237 11.6834 2.90237 11.2929 3.29289L12 4ZM17.2929 10.7071C17.6834 11.0976 18.3166 11.0976 18.7071 10.7071C19.0976 10.3166 19.0976 9.68342 18.7071 9.29289L17.2929 10.7071ZM6.70711 10.7071L12.7071 4.70711L11.2929 3.29289L5.29289 9.29289L6.70711 10.7071ZM11.2929 4.70711L17.2929 10.7071L18.7071 9.29289L12.7071 3.29289L11.2929 4.70711Z" fill="#fff"></path>
-                  <path d="M12 4L12 20" stroke="#fff" strokewidth="2" strokelinecap="round" strokelinejoin="round"></path>
+                  <path d="M12 4L12 20" stroke="#fff" strokewidth="2" strokeLinecap="round" strokelinejoin="round"></path>
                 </svg>
               </div>
               <div className="custom_arrows horizontal custom-next-arrow">
                 <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M18.7071 14.7071C19.0976 14.3166 19.0976 13.6834 18.7071 13.2929C18.3166 12.9024 17.6834 12.9024 17.2929 13.2929L18.7071 14.7071ZM12 20L11.2929 20.7071C11.6834 21.0976 12.3166 21.0976 12.7071 20.7071L12 20ZM6.70711 13.2929C6.31658 12.9024 5.68342 12.9024 5.29289 13.2929C4.90237 13.6834 4.90237 14.3166 5.29289 14.7071L6.70711 13.2929ZM17.2929 13.2929L11.2929 19.2929L12.7071 20.7071L18.7071 14.7071L17.2929 13.2929ZM12.7071 19.2929L6.70711 13.2929L5.29289 14.7071L11.2929 20.7071L12.7071 19.2929Z" fill="#fff"></path>
-                  <path d="M12 20L12 4" stroke="#fff" strokewidth="2" strokelinecap="round" strokelinejoin="round"></path>
+                  <path d="M12 20L12 4" stroke="#fff" strokewidth="2" strokeLinecap="round" strokelinejoin="round"></path>
                 </svg>
               </div>
               <Swiper
@@ -508,13 +504,13 @@ export function QuickView(props) {
                   <div className="custom_arrows custom-prev-arrow">
                     <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M5.29289 9.29289C4.90237 9.68342 4.90237 10.3166 5.29289 10.7071C5.68342 11.0976 6.31658 11.0976 6.70711 10.7071L5.29289 9.29289ZM12 4L12.7071 3.29289C12.3166 2.90237 11.6834 2.90237 11.2929 3.29289L12 4ZM17.2929 10.7071C17.6834 11.0976 18.3166 11.0976 18.7071 10.7071C19.0976 10.3166 19.0976 9.68342 18.7071 9.29289L17.2929 10.7071ZM6.70711 10.7071L12.7071 4.70711L11.2929 3.29289L5.29289 9.29289L6.70711 10.7071ZM11.2929 4.70711L17.2929 10.7071L18.7071 9.29289L12.7071 3.29289L11.2929 4.70711Z" fill="#fff"></path>
-                      <path d="M12 4L12 20" stroke="#fff" strokewidth="2" strokelinecap="round" strokelinejoin="round"></path>
+                      <path d="M12 4L12 20" stroke="#fff" strokewidth="2" strokeLinecap="round" strokelinejoin="round"></path>
                     </svg>
                   </div>
                   <div className="custom_arrows custom-next-arrow">
                     <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M18.7071 14.7071C19.0976 14.3166 19.0976 13.6834 18.7071 13.2929C18.3166 12.9024 17.6834 12.9024 17.2929 13.2929L18.7071 14.7071ZM12 20L11.2929 20.7071C11.6834 21.0976 12.3166 21.0976 12.7071 20.7071L12 20ZM6.70711 13.2929C6.31658 12.9024 5.68342 12.9024 5.29289 13.2929C4.90237 13.6834 4.90237 14.3166 5.29289 14.7071L6.70711 13.2929ZM17.2929 13.2929L11.2929 19.2929L12.7071 20.7071L18.7071 14.7071L17.2929 13.2929ZM12.7071 19.2929L6.70711 13.2929L5.29289 14.7071L11.2929 20.7071L12.7071 19.2929Z" fill="#fff"></path>
-                      <path d="M12 20L12 4" stroke="#fff" strokewidth="2" strokelinecap="round" strokelinejoin="round"></path>
+                      <path d="M12 20L12 4" stroke="#fff" strokewidth="2" strokeLinecap="round" strokelinejoin="round"></path>
                     </svg>
                   </div>
                   {props.product?.images?.nodes.map((img, i) => {

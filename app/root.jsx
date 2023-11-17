@@ -23,6 +23,8 @@ import gridStyles from './styles/grid.css';
 import allStyles from './styles/style.css';
 import appStyles from './styles/app.css';
 import {Layout} from '~/components/Layout';
+import lightgallery from 'lightgallery/css/lightgallery.css';
+import lightgalleryZoom from 'lightgallery/css/lg-zoom.css';
 
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
@@ -47,6 +49,8 @@ export function links() {
     {rel: 'stylesheet', href: slickStyle},
     {rel: 'stylesheet', href: slickStyle2},
     {rel: 'stylesheet', href: swiperStyle},
+    {rel: 'stylesheet', href: lightgallery},
+    {rel: 'stylesheet', href: lightgalleryZoom},
     {rel: 'stylesheet', href: bootstrapStyle},
     {rel: 'stylesheet', href: gridStyles},
     {rel: 'stylesheet', href: appStyles},

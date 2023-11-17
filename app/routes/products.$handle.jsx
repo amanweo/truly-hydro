@@ -14,6 +14,9 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation } from 'swiper/modules';
 import { useRef } from 'react';
 import { useState } from 'react';
+import LightGallery from 'lightgallery/react';
+
+import lgZoom from 'lightgallery/plugins/zoom';
 
 /**
  * @type {V2_MetaFunction}
@@ -139,25 +142,69 @@ export default function Product() {
     }
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     document.body.classList.remove("modal_open");
-  },[location.pathname])
+  }, [location.pathname])
+
+  const onBeforeSlide = (detail) => {
+    const { index, prevIndex } = detail;
+    console.log(index, prevIndex);
+  };
+  const onAfterClose = () => {
+    document.body.classList.remove("modal_open");
+  };
+  const onAfterOpen = () => {
+    onSlideItemLoad()
+  }
+
+  const onSlideItemLoad = () => {
+    setTimeout(() => {      
+      document.body.classList.add("modal_open");
+    }, 200);
+  }
 
   return (
     <div className="commonSection product-page">
       <div className="container-fluid">
         <div className="row gx-5">
           <div className="col-lg-6 col-md-6">
-            {/* <ProductImage image={selectedVariant?.image} /> */}
             <div className='product_detail_images'>
               <div className='product_detail_single_image'>
-                <Image
-                  alt={activeSlide.altText || 'Product Image'}
-                  aspectRatio="0"
-                  data={activeSlide}
-                  sizes="200vw"
-                  style={{ borderRadius: 20 }}
-                />
+                <LightGallery
+                  elementClassNames="custom-wrapper-class"
+                  onBeforeSlide={onBeforeSlide}
+                  onAfterClose={onAfterClose}
+                  onAfterOpen={onAfterOpen}
+                  // onSlideItemLoad={onSlideItemLoad}
+                  plugins={[lgZoom]}
+                  download={false}
+                  infiniteZoom={false}
+                  hideScrollbar={true}
+                  speed={100}
+                  mode="lg-fade"
+                >
+
+                  <a data-src={activeSlide?.url} className='product_slides activeSlide' style={{cursor: "crosshair"}}>
+                    <Image
+                      alt={activeSlide.altText || ''}
+                      aspectRatio="0"
+                      data={activeSlide}
+                      sizes="200vw"
+                    />
+                  </a>
+                  {product?.images?.nodes.filter((x) => x?.id !== activeSlide?.id).map((img, i) => {
+                    return (
+                      <a data-src={img?.url} key={i + 1} className='product_slides'>
+                        <Image
+                          alt={img.altText || ''}
+                          aspectRatio="0"
+                          data={img}
+                          sizes="200vw"
+                        />
+                      </a>
+                    )
+                  })}
+                </LightGallery>
               </div>
               <div className='product_image_thumb'>
                 <Swiper
@@ -177,13 +224,13 @@ export default function Product() {
                   <div className="custom_arrows custom-prev-arrow">
                     <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M5.29289 9.29289C4.90237 9.68342 4.90237 10.3166 5.29289 10.7071C5.68342 11.0976 6.31658 11.0976 6.70711 10.7071L5.29289 9.29289ZM12 4L12.7071 3.29289C12.3166 2.90237 11.6834 2.90237 11.2929 3.29289L12 4ZM17.2929 10.7071C17.6834 11.0976 18.3166 11.0976 18.7071 10.7071C19.0976 10.3166 19.0976 9.68342 18.7071 9.29289L17.2929 10.7071ZM6.70711 10.7071L12.7071 4.70711L11.2929 3.29289L5.29289 9.29289L6.70711 10.7071ZM11.2929 4.70711L17.2929 10.7071L18.7071 9.29289L12.7071 3.29289L11.2929 4.70711Z" fill="#fff"></path>
-                      <path d="M12 4L12 20" stroke="#fff" strokewidth="2" strokelinecap="round" strokelinejoin="round"></path>
+                      <path d="M12 4L12 20" stroke="#fff" strokewidth="2" strokeLinecap="round" strokelinejoin="round"></path>
                     </svg>
                   </div>
                   <div className="custom_arrows custom-next-arrow">
                     <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M18.7071 14.7071C19.0976 14.3166 19.0976 13.6834 18.7071 13.2929C18.3166 12.9024 17.6834 12.9024 17.2929 13.2929L18.7071 14.7071ZM12 20L11.2929 20.7071C11.6834 21.0976 12.3166 21.0976 12.7071 20.7071L12 20ZM6.70711 13.2929C6.31658 12.9024 5.68342 12.9024 5.29289 13.2929C4.90237 13.6834 4.90237 14.3166 5.29289 14.7071L6.70711 13.2929ZM17.2929 13.2929L11.2929 19.2929L12.7071 20.7071L18.7071 14.7071L17.2929 13.2929ZM12.7071 19.2929L6.70711 13.2929L5.29289 14.7071L11.2929 20.7071L12.7071 19.2929Z" fill="#fff"></path>
-                      <path d="M12 20L12 4" stroke="#fff" strokewidth="2" strokelinecap="round" strokelinejoin="round"></path>
+                      <path d="M12 20L12 4" stroke="#fff" strokewidth="2" strokeLinecap="round" strokelinejoin="round"></path>
                     </svg>
                   </div>
                   {product?.images?.nodes.map((img, i) => {
@@ -195,7 +242,6 @@ export default function Product() {
                             aspectRatio="0"
                             data={img}
                             sizes="200vw"
-                            style={{ borderRadius: 10 }}
                           />
                         </button>
                       </SwiperSlide>
@@ -306,7 +352,7 @@ function ProductPrice({ selectedVariant }) {
           </div>
         </>
       ) : (
-        selectedVariant?.price && <Money data={selectedVariant?.price} />
+        selectedVariant?.price && <Money data={selectedVariant?.price} as="h4" />
       )}
     </div>
   );
@@ -409,7 +455,7 @@ function AddToCartButton({ analytics, children, disabled, lines, onClick }) {
             type="submit"
             onClick={onClick}
             disabled={disabled ?? fetcher.state !== 'idle'}
-            className='btn btn-primary'
+            className='btn btn-primary btn-lg'
           >
             {children}
           </button>
