@@ -111,7 +111,7 @@ export default function Login() {
                 </div>
               </fieldset>
               {error ? (
-                <p className='text-danger'>
+                <p className='text-danger mb-2'>
                   <mark>
                     <small>{error}</small>
                   </mark>
@@ -124,7 +124,7 @@ export default function Login() {
             <br />
             <div className='d-flex justify-content-between'>
               <p className='text-center'>
-                Don't have an account? <Link to="/account/register" className='link'>Register</Link>
+                Don't have an account? <Link to="/account/register" className='link text-danger'>Register</Link>
               </p>
               <p className='text-end'>
                 <Link to="/account/recover" className='text-danger'>Forgot password?</Link>

@@ -234,27 +234,26 @@ a {
 .btn {
   padding: 12px 30px;
   border-radius: 0;
-  border: 0;
+  border: transparent 1px solid;
   position: relative;
   z-index: 0;
 }
 
 .btn:not(.noHover):after {
   content: "";
-  border: transparent 2px solid;
   position: absolute;
   top: 0;
-  left: 0;
-  width: 100%;
+  left: 50%;
+  width: 0;
   height: 100%;
   z-index: -1;
-  transition: ease 0.3s;
+  transition: ease .3s;
+  background: var(--primary);
+  transform: translateX(-50%);
 }
 
 .btn:not(.noHover):hover:after {
-  border-color: var(--color-dark);
-  top: 3px;
-  left: 3px;
+  width: 100%;
 }
 
 .btn-sm {
@@ -267,22 +266,26 @@ a {
   color: var(--color-dark);
 }
 
-.btn.btn-secondary:not(.noHover):hover,
-.btn.btn-secondary:not(.noHover):focus,
-.btn.btn-secondary:not(.noHover):active,
-.btn.btn-primary {
+.btn.btn-primary,
+.btn.btn-secondary:not(.noHover):hover:after,
+.btn.btn-secondary:not(.noHover):focus:after,
+.btn.btn-secondary:not(.noHover):active:after{
   background: var(--color-dark) !important;
   border-color: var(--color-dark) !important;
-  color: var(--color-light);
 }
 
-/* .btn.btn-primary:not(.noHover):focus,
+.btn.btn-primary:not(.noHover):focus,
 .btn.btn-primary:not(.noHover):active,
 .btn.btn-primary:not(.noHover):hover {
-  background: var(--primary) !important;
-  border-color: var(--color-dark) !important;
   color: var(--color-dark);
-} */
+  border-color: var(--color-dark);
+}
+
+.btn.btn-secondary:not(.noHover):focus,
+.btn.btn-secondary:not(.noHover):active,
+.btn.btn-secondary:not(.noHover):hover {
+  color: var(--color-light);
+}
 
 .btn.btn-shadow {
   box-shadow: rgba(0, 0, 0, 0.1) 5px 5px 4px;

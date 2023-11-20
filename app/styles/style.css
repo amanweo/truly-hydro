@@ -686,3 +686,10 @@ div#cart-aside aside main {
     max-width: 500px;
     margin: auto;
 }
+
+.account_orders{
+    padding: 15px;
+    border: #eee 1px solid;
+    margin-bottom: 30px;
+    background-color: #fbfbfb;
+}

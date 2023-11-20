@@ -1,19 +1,19 @@
-import {Link, useLoaderData} from '@remix-run/react';
-import {Money, Pagination, getPaginationVariables} from '@shopify/hydrogen';
-import {json, redirect} from '@shopify/remix-oxygen';
+import { Link, useLoaderData } from '@remix-run/react';
+import { Money, Pagination, getPaginationVariables } from '@shopify/hydrogen';
+import { json, redirect } from '@shopify/remix-oxygen';
 
 /**
  * @type {V2_MetaFunction}
  */
 export const meta = () => {
-  return [{title: 'Orders'}];
+  return [{ title: 'Orders' }];
 };
 
 /**
  * @param {LoaderArgs}
  */
-export async function loader({request, context}) {
-  const {session, storefront} = context;
+export async function loader({ request, context }) {
+  const { session, storefront } = context;
 
   const customerAccessToken = await session.get('customerAccessToken');
   if (!customerAccessToken?.accessToken) {
@@ -25,7 +25,7 @@ export async function loader({request, context}) {
       pageBy: 20,
     });
 
-    const {customer} = await storefront.query(CUSTOMER_ORDERS_QUERY, {
+    const { customer } = await storefront.query(CUSTOMER_ORDERS_QUERY, {
       variables: {
         customerAccessToken: customerAccessToken.accessToken,
         country: storefront.i18n.country,
@@ -39,19 +39,19 @@ export async function loader({request, context}) {
       throw new Error('Customer not found');
     }
 
-    return json({customer});
+    return json({ customer });
   } catch (error) {
     if (error instanceof Error) {
-      return json({error: error.message}, {status: 400});
+      return json({ error: error.message }, { status: 400 });
     }
-    return json({error}, {status: 400});
+    return json({ error }, { status: 400 });
   }
 }
 
 export default function Orders() {
   /** @type {LoaderReturnData} */
-  const {customer} = useLoaderData();
-  const {orders, numberOfOrders} = customer;
+  const { customer } = useLoaderData();
+  const { orders, numberOfOrders } = customer;
   return (
     <div className="orders">
       <h2>
@@ -66,20 +66,22 @@ export default function Orders() {
 /**
  * @param {Pick<CustomerOrdersFragment, 'orders'>}
  */
-function OrdersTable({orders}) {
+function OrdersTable({ orders }) {
   return (
     <div className="acccount-orders">
       {orders?.nodes.length ? (
         <Pagination connection={orders}>
-          {({nodes, isLoading, PreviousLink, NextLink}) => {
+          {({ nodes, isLoading, PreviousLink, NextLink }) => {
             return (
               <>
-                <PreviousLink>
+                {/* <PreviousLink>
                   {isLoading ? 'Loading...' : <span>↑ Load previous</span>}
-                </PreviousLink>
-                {nodes.map((order) => {
-                  return <OrderItem key={order.id} order={order} />;
-                })}
+                </PreviousLink> */}
+                <div className='row'>
+                  {nodes.map((order) => {
+                    return <OrderItem key={order.id} order={order} />;
+                  })}
+                </div>
                 <NextLink>
                   {isLoading ? 'Loading...' : <span>Load more ↓</span>}
                 </NextLink>
@@ -109,18 +111,33 @@ function EmptyOrders() {
 /**
  * @param {{order: OrderItemFragment}}
  */
-function OrderItem({order}) {
+function OrderItem({ order }) {
+  console.log("order: ", order);
   return (
     <>
-      <fieldset>
-        <Link to={`/account/orders/${order.id}`}>
-          <strong>#{order.orderNumber}</strong>
-        </Link>
-        <p>{new Date(order.processedAt).toDateString()}</p>
-        <p>{order.financialStatus}</p>
-        <p>{order.fulfillmentStatus}</p>
-        <Money data={order.currentTotalPrice} />
-        <Link to={`/account/orders/${btoa(order.id)}`}>View Order →</Link>
+      <fieldset className='col-sm-6 col-md-3'>
+        <div className='account_orders'>
+
+          <div className='d-flex justify-content-between'>
+            <div className='order_detail_left'>
+              <p>
+                <Link to={`/account/orders/${order.id}`}>
+                  <strong>#{order.orderNumber}</strong>
+                </Link>
+              </p>
+              <p><strong>{order.financialStatus}</strong></p>
+              <Money data={order.currentTotalPrice} />
+            </div>
+            <div className='order_detail_right text-end'>
+              <p>
+                <Link className='link text-secondary' to={`/account/orders/${btoa(order.id)}`}>Order Details</Link>
+              </p>
+              <p className='mb-0'>{new Date(order.processedAt).toDateString()}</p>
+              <p>{order.fulfillmentStatus}</p>
+            </div>
+          </div>
+
+        </div>
       </fieldset>
       <br />
     </>

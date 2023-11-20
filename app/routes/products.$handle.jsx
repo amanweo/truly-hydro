@@ -180,8 +180,6 @@ export default function Product() {
                   download={false}
                   infiniteZoom={false}
                   hideScrollbar={true}
-                  speed={100}
-                  mode="lg-fade"
                 >
 
                   <a data-src={activeSlide?.url} className='product_slides activeSlide' style={{cursor: "crosshair"}}>
