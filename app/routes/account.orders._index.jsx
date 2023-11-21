@@ -1,6 +1,7 @@
 import { Link, useLoaderData } from '@remix-run/react';
-import { Money, Pagination, getPaginationVariables } from '@shopify/hydrogen';
+import { Image, Money, Pagination, getPaginationVariables } from '@shopify/hydrogen';
 import { json, redirect } from '@shopify/remix-oxygen';
+import images from '~/components/images';
 
 /**
  * @type {V2_MetaFunction}
@@ -55,7 +56,7 @@ export default function Orders() {
   return (
     <div className="orders">
       <h2>
-        Orders <small>({numberOfOrders})</small>
+        My Orders <small>({numberOfOrders})</small>
       </h2>
       <br />
       {orders.nodes.length ? <OrdersTable orders={orders} /> : <EmptyOrders />}
@@ -82,9 +83,11 @@ function OrdersTable({ orders }) {
                     return <OrderItem key={order.id} order={order} />;
                   })}
                 </div>
-                <NextLink>
-                  {isLoading ? 'Loading...' : <span>Load more ↓</span>}
-                </NextLink>
+                <div className='text-center mt-3'>
+                  <NextLink className='btn btn-primary'>
+                    {isLoading ? 'Loading...' : <span>Load more</span>}
+                  </NextLink>
+                </div>
               </>
             );
           }}
@@ -115,25 +118,53 @@ function OrderItem({ order }) {
   console.log("order: ", order);
   return (
     <>
-      <fieldset className='col-sm-6 col-md-3'>
+      <fieldset className='col-sm-6 col-md-4 mb-4'>
         <div className='account_orders'>
 
-          <div className='d-flex justify-content-between'>
+          <div className='order_detail_header'>
             <div className='order_detail_left'>
-              <p>
-                <Link to={`/account/orders/${order.id}`}>
-                  <strong>#{order.orderNumber}</strong>
-                </Link>
-              </p>
-              <p><strong>{order.financialStatus}</strong></p>
-              <Money data={order.currentTotalPrice} />
+              <p><strong>{order.financialStatus}</strong> <small>({order.fulfillmentStatus})</small></p>
+              <Money data={order.currentTotalPrice} as={"strong"} className='mb-0' />
             </div>
+
             <div className='order_detail_right text-end'>
               <p>
-                <Link className='link text-secondary' to={`/account/orders/${btoa(order.id)}`}>Order Details</Link>
+                {/* <Link to={`/account/orders/${order.id}`}> */}
+                  <strong>Order No. #{order.orderNumber}</strong>
+                {/* </Link> */}
+                <p className='mb-0'><small>{new Date(order.processedAt).toDateString()}</small></p>
               </p>
-              <p className='mb-0'>{new Date(order.processedAt).toDateString()}</p>
-              <p>{order.fulfillmentStatus}</p>
+            </div>
+          </div>
+          <hr />
+          <div className='row'>
+            <div className='col-md-8'>
+              {order.lineItems.nodes.length > 0 && order.lineItems.nodes.map((opt, i) => {
+                let img = opt?.variant?.image
+                return (
+                  <div className='order_line_items' key={i}>
+                    {/* {img ?
+                      <Image
+                        alt={opt?.variant?.image.altText || ''}
+                        aspectRatio="0"
+                        data={img}
+                        sizes="200vw"
+                        style={{ width: 80 }}
+                      />
+                      :
+                      <img src={images.logo} alt="Truly" width={80} />
+                    } */}
+                    <div className=''>
+                      <p><small>{opt?.title}</small></p>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+            <div className='col-md-4 text-end'>
+              <p>
+                <Link className='btn btn-sm btn-primary px-3' to={`/account/orders/${btoa(order.id)}`}>Order Details</Link>
+              </p>
             </div>
           </div>
 

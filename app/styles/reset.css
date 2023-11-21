@@ -274,8 +274,6 @@ a {
   border-color: var(--color-dark) !important;
 }
 
-.btn.btn-primary:not(.noHover):focus,
-.btn.btn-primary:not(.noHover):active,
 .btn.btn-primary:not(.noHover):hover {
   color: var(--color-dark);
   border-color: var(--color-dark);

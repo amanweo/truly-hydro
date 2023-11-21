@@ -690,6 +690,19 @@ div#cart-aside aside main {
 .account_orders{
     padding: 15px;
     border: #eee 1px solid;
-    margin-bottom: 30px;
-    background-color: #fbfbfb;
+    height: 100%;
+}
+.order_line_items{
+    display: flex;
+}
+.order_line_items + .order_line_items{
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: #eee 1px solid;
+}
+.order_detail_header{
+    display: flex;
+    justify-content: space-between;
+    background-color: var(--primary);
+    padding: 15px;
 }
