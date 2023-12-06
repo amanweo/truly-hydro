@@ -117,7 +117,18 @@ export default function Product() {
   const swiperRef = useRef(null);
   const location = useLocation()
   const [activeSlide, setActiveSlide] = useState(product?.images?.nodes[0] || {})
+  const [metaFields, setmetaFields] = useState({})
 
+  useEffect(() => {
+    let newObj = {}
+    product.metafields.length > 0 && product.metafields.map((opt) => {
+      if (opt) {
+        newObj[opt.key] = opt.value
+      }
+    })
+    console.log("newObj: ", newObj)
+    setmetaFields(newObj)
+  }, [])
 
   const handleSlideChange = () => {
     if (swiperRef.current) {
@@ -158,7 +169,7 @@ export default function Product() {
   }
 
   const onSlideItemLoad = () => {
-    setTimeout(() => {      
+    setTimeout(() => {
       document.body.classList.add("modal_open");
     }, 200);
   }
@@ -182,7 +193,7 @@ export default function Product() {
                   hideScrollbar={true}
                 >
 
-                  <a data-src={activeSlide?.url} className='product_slides activeSlide' style={{cursor: "crosshair"}}>
+                  <a data-src={activeSlide?.url} className='product_slides activeSlide' style={{ cursor: "crosshair" }}>
                     <Image
                       alt={activeSlide.altText || ''}
                       aspectRatio="0"
@@ -249,11 +260,12 @@ export default function Product() {
               </div>
             </div>
           </div>
-          <div className='col-lg-6 col-md-6'>
+          <div className='col-lg-5 col-md-6'>
             <ProductMain
               selectedVariant={selectedVariant}
               product={product}
               variants={variants}
+              metaFields={metaFields}
             />
           </div>
         </div>
@@ -289,14 +301,49 @@ function ProductImage({ image }) {
  *   variants: Promise<ProductVariantsQuery>;
  * }}
  */
-function ProductMain({ selectedVariant, product, variants }) {
-  const { title, descriptionHtml } = product;
-  const [read, setRead] = useState(false)
+function ProductMain({ selectedVariant, product, variants, metaFields }) {
+  console.log("metaFields: ", metaFields)
+  const { title, descriptionHtml, description } = product;
+  const [openedNumber, setOpenedNumber] = useState(-1);
+  const [openedNumber2, setOpenedNumber2] = useState(false);
+  const showStyle = {
+    height: "auto"
+  };
+  const hideStyle = {
+    height: "0",
+    paddingTop: "0",
+    paddingBottom: "0"
+  };
   return (
     <div className="product-main">
-      <h1>{title}</h1>
+      <h1 className='mb-2'>{title}</h1>
+      {metaFields?.bundle_product_short_title ?
+        <p><strong>{metaFields?.bundle_product_short_title}</strong></p>
+        :
+        null
+      }
+      {metaFields?.bundle_good_to_know ?
+        <div className='good_to_know' dangerouslySetInnerHTML={{ __html: metaFields?.bundle_good_to_know }}></div>
+        :
+        metaFields?.good_to_know ?
+          <div className='good_to_know' dangerouslySetInnerHTML={{ __html: metaFields?.good_to_know }}></div>
+          :
+          null
+      }
+      {metaFields?.bundle_product_short_descripti ?
+        <p dangerouslySetInnerHTML={{ __html: metaFields?.bundle_product_short_descripti }}></p>
+        :
+        <p>{description}</p>
+      }
+      {metaFields?.bundle_whats_inside ?
+        <div className='bundle_whats_inside'>
+          <h5>{metaFields?.whats_inside_title}</h5>
+          <div dangerouslySetInnerHTML={{ __html: metaFields?.bundle_whats_inside }}>
+          </div>
+        </div>
+        : null
+      }
       <ProductPrice selectedVariant={selectedVariant} />
-      <br />
       <Suspense
         fallback={
           <ProductForm
@@ -320,14 +367,68 @@ function ProductMain({ selectedVariant, product, variants }) {
         </Await>
       </Suspense>
       <br />
-      <br />
-      <p>
-        <strong>Description</strong>
-      </p>
-      <br />
-      <div className={`product_description ${read ? "full" : ""}`} dangerouslySetInnerHTML={{ __html: descriptionHtml }} />
-      <br />
-      <p><a className='noStyle link' onClick={() => setRead(!read)}>Read {read ? "less" : "more"}</a></p>
+      {metaFields?.bundle_why_it_special && metaFields?.bundle_why_it_special_description ?
+        <div className='bundle_why_it_special'>
+          <h5>{metaFields?.bundle_why_it_special}</h5>
+          <div dangerouslySetInnerHTML={{ __html: metaFields?.bundle_why_it_special_description }}></div>
+        </div>
+        : null
+      }
+      {metaFields?.bundle_what_makes_good_title && metaFields?.bundle_what_makes_good_descrip ?
+        <div className='bundle_why_it_special'>
+          <h5>{metaFields?.bundle_what_makes_good_title}</h5>
+          <div dangerouslySetInnerHTML={{ __html: metaFields?.bundle_what_makes_good_descrip }}></div>
+        </div>
+        : null
+      }
+      {metaFields?.essential_ingradient_main_titl ?
+        <h5 className='mb-2'>{metaFields?.essential_ingradient_main_titl}</h5>
+        : null
+      }
+      {metaFields?.title ?
+        <div className='ingrediant_tab'>
+          {JSON.parse(metaFields?.title).map((opt, i) => {
+            return (
+              <div className={`ingrediant_tab_panel ${openedNumber === i ? "active" : ""}`} key={opt}>
+                <div className='ingrediant_tab_header' onClick={() => setOpenedNumber(i !== openedNumber ? i : -1)}>
+                  {opt}
+                  <span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="9.334" height="17.334" viewBox="0 0 9.334 17.334">
+                      <path d="M4.695,1.695a.667.667,0,0,1,.944,0l8,8a.667.667,0,0,1,0,.944l-8,8a.668.668,0,1,1-.944-.944l7.529-7.528L4.695,2.639a.667.667,0,0,1,0-.944Z" transform="translate(-4.5 -1.5)" fill="var(--color-dark)" fill-rule="evenodd"></path>
+                    </svg>
+                  </span>
+                </div>
+                {metaFields?.description_essen ?
+                  <div className='ingrediant_tab_body' style={openedNumber === i ? showStyle : hideStyle} dangerouslySetInnerHTML={{ __html: JSON.parse(metaFields?.description_essen)[i] }}>
+                  </div>
+                  : null
+                }
+              </div>
+            )
+          })}
+        </div>
+        : null
+      }
+      {metaFields?.key_ingredients_text ?
+        <div className='ingrediant_tab'>
+          <div className={`ingrediant_tab_panel ${openedNumber2 ? "active" : ""}`}>
+            <div className='ingrediant_tab_header' onClick={() => setOpenedNumber2(!openedNumber2)}>
+              Full ingredients:
+              <span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="9.334" height="17.334" viewBox="0 0 9.334 17.334">
+                  <path d="M4.695,1.695a.667.667,0,0,1,.944,0l8,8a.667.667,0,0,1,0,.944l-8,8a.668.668,0,1,1-.944-.944l7.529-7.528L4.695,2.639a.667.667,0,0,1,0-.944Z" transform="translate(-4.5 -1.5)" fill="var(--color-dark)" fill-rule="evenodd"></path>
+                </svg>
+              </span>
+            </div>
+            {metaFields?.key_ingredients_text ?
+              <div className='ingrediant_tab_body' style={openedNumber2 ? showStyle : hideStyle} dangerouslySetInnerHTML={{ __html: metaFields?.key_ingredients_text }}>
+              </div>
+              : null
+            }
+          </div>
+        </div>
+        : null
+      }
     </div>
   );
 }
@@ -530,6 +631,12 @@ const PRODUCT_FRAGMENT = `#graphql
     seo {
       description
       title
+    }
+    metafields(
+      identifiers: [{namespace: "accentuate", key: "bundle_product_short_title"}, {namespace: "accentuate", key: "sub_title_one"}, {namespace: "accentuate", key: "sub_title_two"}, {namespace: "accentuate", key: "sub_title_one"}, {namespace: "accentuate", key: "bundle_good_to_know"}, {namespace: "accentuate", key: "good_to_know_title"}, {namespace: "accentuate", key: "good_to_know"}, {namespace: "accentuate", key: "bundle_product_short_descripti"}, {namespace: "accentuate", key: "description"}, {namespace: "accentuate", key: "bundle_whats_inside"}, {namespace: "accentuate", key: "whats_inside_title"}, {namespace: "accentuate", key: "bundle_why_it_special_description"}, {namespace: "accentuate", key: "bundle_why_it_special"}, {namespace: "accentuate", key: "why_its_special"}, {namespace: "accentuate", key: "bundle_what_makes_good_title"}, {namespace: "accentuate", key: "bundle_what_makes_good_descrip"}, {namespace: "accentuate", key: "title"}, {namespace: "accentuate", key: "essential_ingradient_main_titl"}, {namespace: "accentuate", key: "description_essen"}, {namespace: "accentuate", key: "key_ingredients"}, {namespace: "accentuate", key: "full_ingradient_main_titl"}, {namespace: "accentuate", key: "full_ingredient_text"}, {namespace: "accentuate", key: "full_ingredient_title"}, {namespace: "product", key: "key_ingredients_text"}]
+    ) {
+      key
+      value
     }
   }
   ${PRODUCT_VARIANT_FRAGMENT}
