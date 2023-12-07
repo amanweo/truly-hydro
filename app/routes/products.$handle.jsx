@@ -114,10 +114,13 @@ export default function Product() {
   const { product, variants } = useLoaderData();
   console.log("selected product: ", product);
   const { selectedVariant } = product;
+  const videoRef = useRef()
   const swiperRef = useRef(null);
+  const swiperRef2 = useRef(null);
   const location = useLocation()
   const [activeSlide, setActiveSlide] = useState(product?.images?.nodes[0] || {})
   const [metaFields, setmetaFields] = useState({})
+  const [videoPlay, setvideoPlay] = useState("")
 
   useEffect(() => {
     let newObj = {}
@@ -173,6 +176,28 @@ export default function Product() {
       document.body.classList.add("modal_open");
     }, 200);
   }
+
+  const playVideo = () => {
+    setvideoPlay(!videoPlay)
+  }
+
+  const handleVideoEnded = () => {
+    setvideoPlay("")
+    if (videoRef.current) {
+      videoRef.current.currentTime = 0
+    }
+  }
+  useEffect(() => {
+    if (videoRef && videoRef.current) {
+      console.log("videoref", videoRef)
+      if (videoPlay) {
+        videoRef.current.play()
+      } else {
+        videoRef.current.pause()
+      }
+    }
+  }, [videoPlay])
+  console.log("videoPlay: ", videoPlay)
 
   return (
     <div className="commonSection product-page">
@@ -270,8 +295,138 @@ export default function Product() {
           </div>
         </div>
       </div>
-    </div>
+
+
+      <div className='container'>
+        <div className='how_to_use_block primary-bg mt-5'>
+          <div className='row align-items-center'>
+            <div className='col-sm-7'>
+              <div className='p-4 px-5'>
+                <h2>{isJsonString(metaFields?.how_to_use_title) ? JSON.parse(metaFields?.how_to_use_title) : metaFields?.how_to_use_title}</h2>
+                {metaFields?.how_to_use_text ?
+                  <div className='how_to_use_list'>
+                    <ol className='px-3'>
+                      {JSON.parse(metaFields?.how_to_use_text).map((opt, i) => {
+                        return (
+                          <li key={i} className='mb-3'><strong>{JSON.parse(metaFields?.bundle_how_to_use_heading)[i]}: </strong>{opt}
+                          </li>
+                        )
+                      })}
+                    </ol>
+                  </div>
+                  : null
+                }
+              </div>
+            </div>
+            <div className='col-sm-5'>
+              {metaFields?.bundle_howtouse_video_link ?
+                <div className='how_to_use_video'>
+                  <video id="mydVideo" playsinline="" className="PlayTargetVideo d-block posterCover w_how" ref={videoRef} onEnded={handleVideoEnded}
+                    width="100%" poster={metaFields?.bundle_how_to_use_poster_link} data-src={metaFields?.bundle_howtouse_video_link} src={metaFields?.bundle_howtouse_video_link} type="video/mp4">
+                    Your browser does not support the video tag.
+                  </video>
+                  <button className={`playpauseBtn ${!videoPlay ? "play" : "pause"}`} id="videoplayBtn" tabindex="0" onClick={playVideo}>
+                    {!videoPlay ?
+                      <img loading="lazy" src="https://cdn.shopify.com/s/files/1/0053/4462/4675/files/play__button.svg?v=1621433193" alt="play-button" width="" height="" className="playBtn" />
+                      :
+                      <img loading="lazy" src="https://cdn.shopify.com/s/files/1/0053/4462/4675/files/pause__icon.svg?v=1621433193" alt="pause-button" width="" height="" className="pausebtn" />
+                    }
+                  </button>
+                </div>
+                : null
+              }
+            </div>
+          </div>
+
+          <div className='how_to_use_block primary-bg mt-5'>
+            <div className='row align-items-center'>
+              <div className='col-sm-5'>
+                <div className='what_it_target_slider'>
+                  <Swiper
+                    spaceBetween={0}
+                    slidesPerView={1}
+                    loop={true}
+                    navigation={true, {
+                      nextEl: '.next-arrow',
+                      prevEl: '.prev-arrow',
+                    }}
+                    modules={[Navigation]}
+                    ref={swiperRef2}
+                    onSwiper={(swiper) => console.log("swiper", swiper)}
+                  >
+                    {metaFields?.bundle_whatistarget_image && isJsonString(metaFields?.bundle_whatistarget_image) ?
+                      <>
+                        {JSON.parse(metaFields?.bundle_whatistarget_image).map((img, i) => {
+                          { console.log("sdfs", img) }
+                          return (
+                            <SwiperSlide key={i}>
+                              <Image
+                                alt={""}
+                                aspectRatio="0"
+                                data={{ url: img }}
+                                sizes="200vw"
+                              />
+                            </SwiperSlide>
+                          )
+                        })}
+                      </>
+                      : null
+                    }
+                    <div class="short-info">
+                      *The model in these images is a paid model demonstrating use and intended results of the products, these are not actual customer images.
+                    </div>
+
+                    <div className='d-flex py-3 justify-content-end'>
+                      <div className="custom_arrows arrows_horizontal next-arrow me-3">
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M18.7071 14.7071C19.0976 14.3166 19.0976 13.6834 18.7071 13.2929C18.3166 12.9024 17.6834 12.9024 17.2929 13.2929L18.7071 14.7071ZM12 20L11.2929 20.7071C11.6834 21.0976 12.3166 21.0976 12.7071 20.7071L12 20ZM6.70711 13.2929C6.31658 12.9024 5.68342 12.9024 5.29289 13.2929C4.90237 13.6834 4.90237 14.3166 5.29289 14.7071L6.70711 13.2929ZM17.2929 13.2929L11.2929 19.2929L12.7071 20.7071L18.7071 14.7071L17.2929 13.2929ZM12.7071 19.2929L6.70711 13.2929L5.29289 14.7071L11.2929 20.7071L12.7071 19.2929Z" fill="#fff"></path>
+                          <path d="M12 20L12 4" stroke="#fff" strokewidth="2" strokeLinecap="round" strokelinejoin="round"></path>
+                        </svg>
+                      </div>
+                      <div className="custom_arrows arrows_horizontal prev-arrow ">
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M5.29289 9.29289C4.90237 9.68342 4.90237 10.3166 5.29289 10.7071C5.68342 11.0976 6.31658 11.0976 6.70711 10.7071L5.29289 9.29289ZM12 4L12.7071 3.29289C12.3166 2.90237 11.6834 2.90237 11.2929 3.29289L12 4ZM17.2929 10.7071C17.6834 11.0976 18.3166 11.0976 18.7071 10.7071C19.0976 10.3166 19.0976 9.68342 18.7071 9.29289L17.2929 10.7071ZM6.70711 10.7071L12.7071 4.70711L11.2929 3.29289L5.29289 9.29289L6.70711 10.7071ZM11.2929 4.70711L17.2929 10.7071L18.7071 9.29289L12.7071 3.29289L11.2929 4.70711Z" fill="#fff"></path>
+                          <path d="M12 4L12 20" stroke="#fff" strokewidth="2" strokeLinecap="round" strokelinejoin="round"></path>
+                        </svg>
+                      </div>
+                    </div>
+                  </Swiper>
+                </div>
+              </div>
+              <div className='col-sm-7'>
+                <div className='p-4 px-5'>
+                  <h2>{isJsonString(metaFields?.target_title) ? JSON.parse(metaFields?.target_title) : metaFields?.target_title}</h2>
+                  {metaFields?.what_it_targets_text ?
+                    <div className='how_to_use_list'>
+                      {JSON.parse(metaFields?.what_it_targets_text).map((opt, i) => {
+                        return (
+                          <div key={i} className='mb-3'>
+                            <p className='mb-0'><strong>{JSON.parse(metaFields?.what_it_targets_heading)[i]}: </strong></p>
+                            <p>{opt}</p>
+                          </div>
+                        )
+                      })}
+                    </div>
+                    : null
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div >
   );
+}
+
+
+function isJsonString(str) {
+  try {
+    JSON.parse(str);
+  } catch (e) {
+    return false;
+  }
+  return true;
 }
 
 /**
@@ -318,7 +473,11 @@ function ProductMain({ selectedVariant, product, variants, metaFields }) {
     <div className="product-main">
       <h1 className='mb-2'>{title}</h1>
       {metaFields?.bundle_product_short_title ?
-        <p><strong>{metaFields?.bundle_product_short_title}</strong></p>
+        <p><strong>
+          {isJsonString(metaFields?.bundle_product_short_title) ?
+            JSON.parse(metaFields?.bundle_product_short_title) :
+            metaFields?.bundle_product_short_title}
+        </strong></p>
         :
         null
       }
@@ -337,7 +496,7 @@ function ProductMain({ selectedVariant, product, variants, metaFields }) {
       }
       {metaFields?.bundle_whats_inside ?
         <div className='bundle_whats_inside'>
-          <h5>{metaFields?.whats_inside_title}</h5>
+          <h5>{isJsonString(metaFields?.whats_inside_title) ? JSON.parse(metaFields?.whats_inside_title) : metaFields?.whats_inside_title}</h5>
           <div dangerouslySetInnerHTML={{ __html: metaFields?.bundle_whats_inside }}>
           </div>
         </div>
@@ -369,20 +528,20 @@ function ProductMain({ selectedVariant, product, variants, metaFields }) {
       <br />
       {metaFields?.bundle_why_it_special && metaFields?.bundle_why_it_special_description ?
         <div className='bundle_why_it_special'>
-          <h5>{metaFields?.bundle_why_it_special}</h5>
+          <h5 dangerouslySetInnerHTML={{ __html: isJsonString(metaFields?.bundle_why_it_special) ? JSON.parse(metaFields?.bundle_why_it_special) : metaFields?.bundle_why_it_special }}></h5>
           <div dangerouslySetInnerHTML={{ __html: metaFields?.bundle_why_it_special_description }}></div>
         </div>
         : null
       }
       {metaFields?.bundle_what_makes_good_title && metaFields?.bundle_what_makes_good_descrip ?
         <div className='bundle_why_it_special'>
-          <h5>{metaFields?.bundle_what_makes_good_title}</h5>
+          <h5 dangerouslySetInnerHTML={{ __html: isJsonString(metaFields?.bundle_what_makes_good_title) ? JSON.parse(metaFields?.bundle_what_makes_good_title) : metaFields?.bundle_what_makes_good_title }}></h5>
           <div dangerouslySetInnerHTML={{ __html: metaFields?.bundle_what_makes_good_descrip }}></div>
         </div>
         : null
       }
       {metaFields?.essential_ingradient_main_titl ?
-        <h5 className='mb-2'>{metaFields?.essential_ingradient_main_titl}</h5>
+        <h5 className='mb-2' dangerouslySetInnerHTML={{ __html: isJsonString(metaFields?.essential_ingradient_main_titl) ? JSON.parse(metaFields?.essential_ingradient_main_titl) : metaFields?.essential_ingradient_main_titl }}></h5>
         : null
       }
       {metaFields?.title ?
@@ -633,7 +792,7 @@ const PRODUCT_FRAGMENT = `#graphql
       title
     }
     metafields(
-      identifiers: [{namespace: "accentuate", key: "bundle_product_short_title"}, {namespace: "accentuate", key: "sub_title_one"}, {namespace: "accentuate", key: "sub_title_two"}, {namespace: "accentuate", key: "sub_title_one"}, {namespace: "accentuate", key: "bundle_good_to_know"}, {namespace: "accentuate", key: "good_to_know_title"}, {namespace: "accentuate", key: "good_to_know"}, {namespace: "accentuate", key: "bundle_product_short_descripti"}, {namespace: "accentuate", key: "description"}, {namespace: "accentuate", key: "bundle_whats_inside"}, {namespace: "accentuate", key: "whats_inside_title"}, {namespace: "accentuate", key: "bundle_why_it_special_description"}, {namespace: "accentuate", key: "bundle_why_it_special"}, {namespace: "accentuate", key: "why_its_special"}, {namespace: "accentuate", key: "bundle_what_makes_good_title"}, {namespace: "accentuate", key: "bundle_what_makes_good_descrip"}, {namespace: "accentuate", key: "title"}, {namespace: "accentuate", key: "essential_ingradient_main_titl"}, {namespace: "accentuate", key: "description_essen"}, {namespace: "accentuate", key: "key_ingredients"}, {namespace: "accentuate", key: "full_ingradient_main_titl"}, {namespace: "accentuate", key: "full_ingredient_text"}, {namespace: "accentuate", key: "full_ingredient_title"}, {namespace: "product", key: "key_ingredients_text"}]
+      identifiers: [{namespace: "accentuate", key: "bundle_product_short_title"}, {namespace: "accentuate", key: "sub_title_one"}, {namespace: "accentuate", key: "sub_title_two"}, {namespace: "accentuate", key: "sub_title_one"}, {namespace: "accentuate", key: "bundle_good_to_know"}, {namespace: "accentuate", key: "good_to_know_title"}, {namespace: "accentuate", key: "good_to_know"}, {namespace: "accentuate", key: "bundle_product_short_descripti"}, {namespace: "accentuate", key: "description"}, {namespace: "accentuate", key: "bundle_whats_inside"}, {namespace: "accentuate", key: "whats_inside_title"}, {namespace: "accentuate", key: "bundle_why_it_special_description"}, {namespace: "accentuate", key: "bundle_why_it_special"}, {namespace: "accentuate", key: "why_its_special"}, {namespace: "accentuate", key: "bundle_what_makes_good_title"}, {namespace: "accentuate", key: "bundle_what_makes_good_descrip"}, {namespace: "accentuate", key: "title"}, {namespace: "accentuate", key: "essential_ingradient_main_titl"}, {namespace: "accentuate", key: "description_essen"}, {namespace: "accentuate", key: "key_ingredients"}, {namespace: "accentuate", key: "full_ingradient_main_titl"}, {namespace: "accentuate", key: "full_ingredient_text"}, {namespace: "accentuate", key: "full_ingredient_title"}, {namespace: "product", key: "key_ingredients_text"}, {namespace: "accentuate", key: "how_to_use_title"}, {namespace: "accentuate", key: "bundle_howtouse_video_link"}, {namespace: "accentuate", key: "how_to_use_text"}, {namespace: "accentuate", key: "bundle_how_to_use_heading"}, {namespace: "accentuate", key: "bundle_howtouse_video_link"}, {namespace: "accentuate", key: "bundle_how_to_use_poster_link"}, {namespace: "accentuate", key: "target_title"}, {namespace: "accentuate", key: "what_it_targets_heading"}, {namespace: "accentuate", key: "what_it_targets_text"}, {namespace: "accentuate", key: "bundle_whatistarget_image"}, {namespace: "accentuate", key: "bundle_what_it_targets_video"}]
     ) {
       key
       value
