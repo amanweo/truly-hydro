@@ -344,6 +344,17 @@ img {
 .primary-bg {
   background-color: var(--primary) !important;
 }
+.modal-backdrop {
+  --bs-backdrop-bg: #fff;
+  --bs-backdrop-opacity: .9;
+}
+.modal-content {
+  border: 0;
+  box-shadow: rgba(0,0,0,0.1) 0 0 20px;
+}
+.modal-body {
+  padding: 40px;
+}
 
 @media (min-width: 1200px) {
   .col-xl-20 {

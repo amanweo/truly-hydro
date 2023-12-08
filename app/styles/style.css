@@ -753,9 +753,11 @@ div#cart-aside aside main {
 .bundle_whats_inside ul li {
     margin-top: 5px;
 }
-.product-main ul li{
+
+.product-main ul li {
     margin-bottom: 10px;
 }
+
 .ingrediant_tab_header {
     padding: 10px 0;
     font-size: 18px;
@@ -777,6 +779,7 @@ div#cart-aside aside main {
     transform: rotate(90deg);
     transition: 0.3s ease;
 }
+
 .ingrediant_tab_panel.active .ingrediant_tab_header span {
     transform: rotate(-90deg);
 }
@@ -784,16 +787,20 @@ div#cart-aside aside main {
 .ingrediant_tab_header span svg {
     width: 8px;
 }
-.ingrediant_tab_body{
+
+.ingrediant_tab_body {
     transition: 0.5s ease;
     padding: 15px 0 0;
 }
+
 .ingrediant_tab_panel {
     overflow: hidden;
 }
-.product-main h1{
+
+.product-main h1 {
     font-size: 40px;
 }
+
 button.playpauseBtn {
     background-color: var(--primary2);
     width: 62px;
@@ -808,11 +815,13 @@ button.playpauseBtn {
     top: 50%;
     border: 0;
     z-index: 8;
-    -webkit-transform: translate(-50%,-50%);
-    -ms-transform: translate(-50%,-50%);
-    transform: translate(-50%,-50%);
+    -webkit-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
 }
-button.playpauseBtn:before, button.playpauseBtn:after {
+
+button.playpauseBtn:before,
+button.playpauseBtn:after {
     content: "";
     background-color: #f01f75;
     width: 90px;
@@ -824,39 +833,133 @@ button.playpauseBtn:before, button.playpauseBtn:after {
     box-shadow: 0 0 8px #2f2429;
     transition: inherit;
 }
-button.playpauseBtn:after  {
+
+button.playpauseBtn:after {
     opacity: .6;
     width: 78px;
     height: 78px;
     box-shadow: 0 0;
 }
+
 .playpauseBtn img {
     max-width: 100px;
     width: 50px;
     opacity: .7;
 }
+
 button.playpauseBtn img {
-    width: 20px!important;
+    width: 20px !important;
 }
-.how_to_use_video{
+
+.how_to_use_video {
     position: relative;
 }
-.playpauseBtn.pause{
+
+.playpauseBtn.pause {
     opacity: 0;
 }
-.how_to_use_video:hover .playpauseBtn.pause{
+
+.how_to_use_video:hover .playpauseBtn.pause {
     opacity: 1;
 }
+
 .custom_arrows.arrows_horizontal {
     position: relative;
     transform: rotate(-90deg);
     inset: 0;
 }
-.custom_arrows.arrows_horizontal.next-arrow {
-    transform: rotate(90deg);
-}
-.short-info{
+
+.short-info {
     font-size: 12px;
     color: var(--primary2);
     padding: 5px 10px 0;
+}
+
+.subscribe_save_block {
+    display: flex;
+    justify-content: space-between;
+    background: #fff;
+    padding: 5px 10px;
+    border-radius: 26px;
+    align-items: center;
+}
+
+.subscribe_save_select select {
+    border: 0;
+    box-shadow: none;
+    appearance: none;
+    -webkit-appearance: none;
+    padding: 5px;
+    padding-right: 25px;
+    cursor: pointer;
+}
+
+.subscribe_save_select {
+    position: relative;
+}
+
+.subscribe_save_select:after {
+    content: "";
+    border-top: #000 5px solid;
+    border-right: transparent 5px solid;
+    border-left: transparent 5px solid;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 5px;
+}
+
+.whySubscribe {
+    margin-top: 10px;
+}
+
+.whySubscribe button {
+    color: var(--primary2);
+    font-size: 14px;
+}
+
+label.custom_radio {
+    cursor: pointer;
+}
+
+label.custom_radio input[type=radio] {
+    display: none;
+}
+
+.product_purchase_options {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: var(--primary) 1px solid;
+    padding: 10px;
+    position: relative;
+}
+
+label.custom_radio input[type=radio] + span:after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--primary);
+    z-index: -5;
+    box-shadow: rgba(0,0,0,0.1) 0 0 10px;
+    width: 0;
+    opacity: 0.4;
+    transition: ease 0.3s;
+}
+label.custom_radio input[type=radio]:checked + span:after {
+    width: 100%;
+}
+
+label.custom_radio input[type=radio]+span {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    border: var(--primary) 1px solid;
+    border-radius: 50%;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+label.custom_radio input[type=radio]:checked+span {
+    box-shadow: inset #000 0 0 0 7px;
 }

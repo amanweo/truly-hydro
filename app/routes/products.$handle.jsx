@@ -15,6 +15,7 @@ import { Navigation } from 'swiper/modules';
 import { useRef } from 'react';
 import { useState } from 'react';
 import LightGallery from 'lightgallery/react';
+import { Modal } from "react-bootstrap"
 
 import lgZoom from 'lightgallery/plugins/zoom';
 
@@ -121,6 +122,11 @@ export default function Product() {
   const [activeSlide, setActiveSlide] = useState(product?.images?.nodes[0] || {})
   const [metaFields, setmetaFields] = useState({})
   const [videoPlay, setvideoPlay] = useState("")
+
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
   useEffect(() => {
     let newObj = {}
@@ -326,11 +332,11 @@ export default function Product() {
             <div className='col-sm-5'>
               {metaFields?.bundle_howtouse_video_link ?
                 <div className='how_to_use_video'>
-                  <video id="mydVideo" playsinline="" className="PlayTargetVideo d-block posterCover w_how" ref={videoRef} onEnded={handleVideoEnded}
+                  <video id="mydVideo" playsInline="" className="PlayTargetVideo d-block posterCover w_how" ref={videoRef} onEnded={handleVideoEnded}
                     width="100%" poster={metaFields?.bundle_how_to_use_poster_link} data-src={metaFields?.bundle_howtouse_video_link} src={metaFields?.bundle_howtouse_video_link} type="video/mp4">
                     Your browser does not support the video tag.
                   </video>
-                  <button className={`playpauseBtn ${!videoPlay ? "play" : "pause"}`} id="videoplayBtn" tabindex="0" onClick={playVideo}>
+                  <button className={`playpauseBtn ${!videoPlay ? "play" : "pause"}`} id="videoplayBtn" tabIndex="0" onClick={playVideo}>
                     {!videoPlay ?
                       <img loading="lazy" src="https://cdn.shopify.com/s/files/1/0053/4462/4675/files/play__button.svg?v=1621433193" alt="play-button" width="" height="" className="playBtn" />
                       :
@@ -343,7 +349,7 @@ export default function Product() {
             </div>
           </div>
 
-          <div className='how_to_use_block primary-bg mt-5'>
+          <div className='how_to_use_block mt-5'>
             <div className='row align-items-center'>
               <div className='col-sm-5'>
                 <div className='what_it_target_slider'>
@@ -382,16 +388,16 @@ export default function Product() {
                     </div>
 
                     <div className='d-flex py-3 justify-content-end'>
-                      <div className="custom_arrows arrows_horizontal next-arrow me-3">
-                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M18.7071 14.7071C19.0976 14.3166 19.0976 13.6834 18.7071 13.2929C18.3166 12.9024 17.6834 12.9024 17.2929 13.2929L18.7071 14.7071ZM12 20L11.2929 20.7071C11.6834 21.0976 12.3166 21.0976 12.7071 20.7071L12 20ZM6.70711 13.2929C6.31658 12.9024 5.68342 12.9024 5.29289 13.2929C4.90237 13.6834 4.90237 14.3166 5.29289 14.7071L6.70711 13.2929ZM17.2929 13.2929L11.2929 19.2929L12.7071 20.7071L18.7071 14.7071L17.2929 13.2929ZM12.7071 19.2929L6.70711 13.2929L5.29289 14.7071L11.2929 20.7071L12.7071 19.2929Z" fill="#fff"></path>
-                          <path d="M12 20L12 4" stroke="#fff" strokewidth="2" strokeLinecap="round" strokelinejoin="round"></path>
-                        </svg>
-                      </div>
                       <div className="custom_arrows arrows_horizontal prev-arrow ">
                         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                           <path d="M5.29289 9.29289C4.90237 9.68342 4.90237 10.3166 5.29289 10.7071C5.68342 11.0976 6.31658 11.0976 6.70711 10.7071L5.29289 9.29289ZM12 4L12.7071 3.29289C12.3166 2.90237 11.6834 2.90237 11.2929 3.29289L12 4ZM17.2929 10.7071C17.6834 11.0976 18.3166 11.0976 18.7071 10.7071C19.0976 10.3166 19.0976 9.68342 18.7071 9.29289L17.2929 10.7071ZM6.70711 10.7071L12.7071 4.70711L11.2929 3.29289L5.29289 9.29289L6.70711 10.7071ZM11.2929 4.70711L17.2929 10.7071L18.7071 9.29289L12.7071 3.29289L11.2929 4.70711Z" fill="#fff"></path>
                           <path d="M12 4L12 20" stroke="#fff" strokewidth="2" strokeLinecap="round" strokelinejoin="round"></path>
+                        </svg>
+                      </div>
+                      <div className="custom_arrows arrows_horizontal next-arrow ms-3">
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M18.7071 14.7071C19.0976 14.3166 19.0976 13.6834 18.7071 13.2929C18.3166 12.9024 17.6834 12.9024 17.2929 13.2929L18.7071 14.7071ZM12 20L11.2929 20.7071C11.6834 21.0976 12.3166 21.0976 12.7071 20.7071L12 20ZM6.70711 13.2929C6.31658 12.9024 5.68342 12.9024 5.29289 13.2929C4.90237 13.6834 4.90237 14.3166 5.29289 14.7071L6.70711 13.2929ZM17.2929 13.2929L11.2929 19.2929L12.7071 20.7071L18.7071 14.7071L17.2929 13.2929ZM12.7071 19.2929L6.70711 13.2929L5.29289 14.7071L11.2929 20.7071L12.7071 19.2929Z" fill="#fff"></path>
+                          <path d="M12 20L12 4" stroke="#fff" strokewidth="2" strokeLinecap="round" strokelinejoin="round"></path>
                         </svg>
                       </div>
                     </div>
@@ -418,12 +424,80 @@ export default function Product() {
               </div>
             </div>
           </div>
+
+          <div className='how_to_use_block mt-5'>
+            <div className='row flex-row-reverse align-items-center'>
+              <div className='col-sm-5'>
+                {metaFields?.bundle_subscribe_save_image ?
+                  <div className='what_it_target_slider'>
+                    <Image
+                      alt={""}
+                      aspectRatio="0"
+                      data={{ url: metaFields?.bundle_subscribe_save_image }}
+                      sizes="200vw"
+                    />
+                  </div>
+                  : null
+                }
+              </div>
+              <div className='col-sm-7'>
+                <div className='p-4 px-5'>
+                  <h2>{isJsonString(metaFields?.["subscribe-title"]) ? JSON.parse(metaFields?.["subscribe-title"]) : metaFields?.["subscribe-title"]}</h2>
+                  <div dangerouslySetInnerHTML={{ __html: isJsonString(metaFields?.subscribe_and_save_desc) ? JSON.parse(metaFields?.subscribe_and_save_desc) : metaFields?.subscribe_and_save_desc }}></div>
+
+                  <div className='subscribe_save_block'>
+                    <div className='subscribe_save_text_block'>
+                      <img loading="lazy" src="https://cdn.shopify.com/s/files/1/0053/4462/4675/files/Ellipse_11_2.png?v=1686303350" alt="ellipse" width="24" height="24" />
+                      &nbsp; Subscribe & save 10% on each order!
+                    </div>
+                    <div className='subscribe_save_select'>
+                      {product?.sellingPlanGroups ?
+                        <select>
+                          {product?.sellingPlanGroups?.edges[0]?.node?.sellingPlans?.edges.map((data, index) => {
+                            return (
+                              <option key={index}>{data?.node.name}</option>
+                            )
+                          })}
+                        </select>
+                        : null
+                      }
+                    </div>
+                  </div>
+                  <div className='whySubscribe'>
+                    <button onClick={() => setShow(true)} className='noStyle'>Why should I subscribe?&nbsp;
+                      <img src="https://cdn.shopify.com/s/files/1/0053/4462/4675/files/i-tip_2.svg?v=1686305428" alt="i" />
+                    </button>
+                  </div>
+                  {selectedVariant?.sellingPlanAllocations ?
+                    <div className='mt-3'>
+                      <button className='btn btn-primary'>
+                        Subscribe + Save
+                        <Money data={selectedVariant?.sellingPlanAllocations?.edges[0].node?.priceAdjustments[0]?.price} as={"span"} className='mx-2' />
+                        <s><Money data={selectedVariant?.compareAtPrice} as={"span"} /></s>
+                      </button>
+                    </div>
+                    : null
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
+      <Modal show={show} onHide={handleClose} size='lg' centered>
+        <Modal.Body>
+          <p>Put your favorite Truly products on auto-ship and never worry about running about again! Simply select your desired frequency, and we’ll send you reminders a few days prior to each shipment.</p>
+          <p><strong>Exclusive Perks:</strong></p>
+          <ul>
+            <li>Enjoy 10% off on all your auto-ship orders</li>
+            <li>Special access and priority response time from our Priority Customer Experience Team</li>
+            <li>Pause or cancel anytime</li>
+          </ul>
+        </Modal.Body>
+      </Modal>
     </div >
   );
 }
-
 
 function isJsonString(str) {
   try {
@@ -558,7 +632,7 @@ function ProductMain({ selectedVariant, product, variants, metaFields }) {
                   {opt}
                   <span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="9.334" height="17.334" viewBox="0 0 9.334 17.334">
-                      <path d="M4.695,1.695a.667.667,0,0,1,.944,0l8,8a.667.667,0,0,1,0,.944l-8,8a.668.668,0,1,1-.944-.944l7.529-7.528L4.695,2.639a.667.667,0,0,1,0-.944Z" transform="translate(-4.5 -1.5)" fill="var(--color-dark)" fill-rule="evenodd"></path>
+                      <path d="M4.695,1.695a.667.667,0,0,1,.944,0l8,8a.667.667,0,0,1,0,.944l-8,8a.668.668,0,1,1-.944-.944l7.529-7.528L4.695,2.639a.667.667,0,0,1,0-.944Z" transform="translate(-4.5 -1.5)" fill="var(--color-dark)" fillRule="evenodd"></path>
                     </svg>
                   </span>
                 </div>
@@ -580,7 +654,7 @@ function ProductMain({ selectedVariant, product, variants, metaFields }) {
               Full ingredients:
               <span>
                 <svg xmlns="http://www.w3.org/2000/svg" width="9.334" height="17.334" viewBox="0 0 9.334 17.334">
-                  <path d="M4.695,1.695a.667.667,0,0,1,.944,0l8,8a.667.667,0,0,1,0,.944l-8,8a.668.668,0,1,1-.944-.944l7.529-7.528L4.695,2.639a.667.667,0,0,1,0-.944Z" transform="translate(-4.5 -1.5)" fill="var(--color-dark)" fill-rule="evenodd"></path>
+                  <path d="M4.695,1.695a.667.667,0,0,1,.944,0l8,8a.667.667,0,0,1,0,.944l-8,8a.668.668,0,1,1-.944-.944l7.529-7.528L4.695,2.639a.667.667,0,0,1,0-.944Z" transform="translate(-4.5 -1.5)" fill="var(--color-dark)" fillRule="evenodd"></path>
                 </svg>
               </span>
             </div>
@@ -603,20 +677,73 @@ function ProductMain({ selectedVariant, product, variants, metaFields }) {
  * }}
  */
 function ProductPrice({ selectedVariant }) {
+  const [quantity, setQuantity] = useState(1)
+  const [activeOption, setActiveOption] = useState("onTime")
+  const handleRadioChange = (e) => {
+    setActiveOption(e.target.value)
+  }
+  const handleQty = (e, type) => {
+    if (type == "inc") {
+      setQuantity(quantity + 1)
+    } else {
+      setQuantity(quantity - 1)
+    }
+  }
+
   return (
     <div className="product-price">
-      {selectedVariant?.compareAtPrice ? (
-        <>
-          <div className="product-price-on-sale">
-            {selectedVariant ? <Money data={selectedVariant.price} as="h4" /> : null}
-            <s>
-              <Money data={selectedVariant.compareAtPrice} as="h4" />
-            </s>
+      <label className='product_purchase_options custom_radio'>
+        <div className='d-flex align-items-center justify-content-between'>
+          <input type='radio' checked={activeOption == "onTime"} id="onTime" name="sellingplan_option" value="onTime" onChange={handleRadioChange} />
+          <span></span>
+          <div className=''>
+            <p className='mb-0'><small>One-time purchase</small></p>
+            {selectedVariant?.compareAtPrice ? (
+              <>
+                <div className="product-price-on-sale">
+                  {selectedVariant ? <Money data={selectedVariant.price} /> : null}
+                  <s>
+                    <Money data={selectedVariant.compareAtPrice} />
+                  </s>
+                </div>
+              </>
+            ) : (
+              selectedVariant?.price && <Money data={selectedVariant?.price} />
+            )}
           </div>
-        </>
-      ) : (
-        selectedVariant?.price && <Money data={selectedVariant?.price} as="h4" />
-      )}
+        </div>
+        {activeOption == "onTime" ?
+          <div className='product_qty_block'>
+            <button onClick={(e) => handleQty(e, "dec")}>-</button>
+            <input type='number' value={quantity} />
+            <button onClick={(e) => handleQty(e, "inc")}>+</button>
+          </div>
+          : null
+        }
+      </label>
+      <label className='product_purchase_options custom_radio'>
+        <div className='d-flex align-items-center'>
+          <input type='radio' checked={activeOption == "subscribe"} id="subscribe" name="sellingplan_option" value="subscribe" onChange={handleRadioChange} />
+          <span></span>
+          <div className=''>
+            <p className='mb-0'><small>Subscribe & save 10% Off</small></p>
+
+
+            {selectedVariant?.compareAtPrice ? (
+              <>
+                <div className="product-price-on-sale">
+                  {selectedVariant ? <Money data={selectedVariant?.sellingPlanAllocations?.edges[0].node?.priceAdjustments[0]?.price} /> : null}
+                  <s>
+                    <Money data={selectedVariant?.compareAtPrice} />
+                  </s>
+                </div>
+              </>
+            ) : (
+              selectedVariant?.sellingPlanAllocations?.edges[0].node?.priceAdjustments[0]?.price && <Money data={selectedVariant?.sellingPlanAllocations?.edges[0].node?.priceAdjustments[0]?.price} />
+            )}
+          </div>
+        </div>
+      </label>
     </div>
   );
 }
@@ -756,6 +883,18 @@ const PRODUCT_VARIANT_FRAGMENT = `#graphql
       name
       value
     }
+    sellingPlanAllocations(first:1){
+      edges{
+        node{
+          priceAdjustments{
+            price{
+              amount
+              currencyCode
+            }
+          }
+        }
+      }
+    }
     sku
     title
     unitPrice {
@@ -796,8 +935,27 @@ const PRODUCT_FRAGMENT = `#graphql
       description
       title
     }
+    sellingPlanGroups(first: 3) {
+      edges {
+        node {
+          name
+          appName
+          options {
+            name
+            values
+          }
+          sellingPlans(first: 3) {
+          edges {
+            node {
+              name
+            }
+          }
+        }
+        }
+      }
+    }
     metafields(
-      identifiers: [{namespace: "accentuate", key: "bundle_product_short_title"}, {namespace: "accentuate", key: "sub_title_one"}, {namespace: "accentuate", key: "sub_title_two"}, {namespace: "accentuate", key: "sub_title_one"}, {namespace: "accentuate", key: "bundle_good_to_know"}, {namespace: "accentuate", key: "good_to_know_title"}, {namespace: "accentuate", key: "good_to_know"}, {namespace: "accentuate", key: "bundle_product_short_descripti"}, {namespace: "accentuate", key: "description"}, {namespace: "accentuate", key: "bundle_whats_inside"}, {namespace: "accentuate", key: "whats_inside_title"}, {namespace: "accentuate", key: "bundle_why_it_special_description"}, {namespace: "accentuate", key: "bundle_why_it_special"}, {namespace: "accentuate", key: "why_its_special"}, {namespace: "accentuate", key: "bundle_what_makes_good_title"}, {namespace: "accentuate", key: "bundle_what_makes_good_descrip"}, {namespace: "accentuate", key: "title"}, {namespace: "accentuate", key: "essential_ingradient_main_titl"}, {namespace: "accentuate", key: "description_essen"}, {namespace: "accentuate", key: "key_ingredients"}, {namespace: "accentuate", key: "full_ingradient_main_titl"}, {namespace: "accentuate", key: "full_ingredient_text"}, {namespace: "accentuate", key: "full_ingredient_title"}, {namespace: "product", key: "key_ingredients_text"}, {namespace: "accentuate", key: "how_to_use_title"}, {namespace: "accentuate", key: "bundle_howtouse_video_link"}, {namespace: "accentuate", key: "how_to_use_text"}, {namespace: "accentuate", key: "bundle_how_to_use_heading"}, {namespace: "accentuate", key: "bundle_howtouse_video_link"}, {namespace: "accentuate", key: "bundle_how_to_use_poster_link"}, {namespace: "accentuate", key: "target_title"}, {namespace: "accentuate", key: "what_it_targets_heading"}, {namespace: "accentuate", key: "what_it_targets_text"}, {namespace: "accentuate", key: "bundle_whatistarget_image"}, {namespace: "accentuate", key: "bundle_what_it_targets_video"}]
+      identifiers: [{namespace: "accentuate", key: "bundle_product_short_title"}, {namespace: "accentuate", key: "sub_title_one"}, {namespace: "accentuate", key: "sub_title_two"}, {namespace: "accentuate", key: "sub_title_one"}, {namespace: "accentuate", key: "bundle_good_to_know"}, {namespace: "accentuate", key: "good_to_know_title"}, {namespace: "accentuate", key: "good_to_know"}, {namespace: "accentuate", key: "bundle_product_short_descripti"}, {namespace: "accentuate", key: "description"}, {namespace: "accentuate", key: "bundle_whats_inside"}, {namespace: "accentuate", key: "whats_inside_title"}, {namespace: "accentuate", key: "bundle_why_it_special_description"}, {namespace: "accentuate", key: "bundle_why_it_special"}, {namespace: "accentuate", key: "why_its_special"}, {namespace: "accentuate", key: "bundle_what_makes_good_title"}, {namespace: "accentuate", key: "bundle_what_makes_good_descrip"}, {namespace: "accentuate", key: "title"}, {namespace: "accentuate", key: "essential_ingradient_main_titl"}, {namespace: "accentuate", key: "description_essen"}, {namespace: "accentuate", key: "key_ingredients"}, {namespace: "accentuate", key: "full_ingradient_main_titl"}, {namespace: "accentuate", key: "full_ingredient_text"}, {namespace: "accentuate", key: "full_ingredient_title"}, {namespace: "product", key: "key_ingredients_text"}, {namespace: "accentuate", key: "how_to_use_title"}, {namespace: "accentuate", key: "bundle_howtouse_video_link"}, {namespace: "accentuate", key: "how_to_use_text"}, {namespace: "accentuate", key: "bundle_how_to_use_heading"}, {namespace: "accentuate", key: "bundle_howtouse_video_link"}, {namespace: "accentuate", key: "bundle_how_to_use_poster_link"}, {namespace: "accentuate", key: "target_title"}, {namespace: "accentuate", key: "what_it_targets_heading"}, {namespace: "accentuate", key: "what_it_targets_text"}, {namespace: "accentuate", key: "bundle_whatistarget_image"}, {namespace: "accentuate", key: "bundle_what_it_targets_video"}, {namespace: "accentuate", key: "subscribe_and_save_desc"}, {namespace: "accentuate", key: "subscribe-title"}, {namespace: "accentuate", key: "bundle_subscribe_save_image"}]
     ) {
       key
       value
