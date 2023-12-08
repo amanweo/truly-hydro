@@ -308,7 +308,12 @@ export default function Product() {
                     <ol className='px-3'>
                       {JSON.parse(metaFields?.how_to_use_text).map((opt, i) => {
                         return (
-                          <li key={i} className='mb-3'><strong>{JSON.parse(metaFields?.bundle_how_to_use_heading)[i]}: </strong>{opt}
+                          <li key={i} className='mb-3'>
+                            {JSON.parse(metaFields?.bundle_how_to_use_heading)[i] ?
+                              <strong>{JSON.parse(metaFields?.bundle_how_to_use_heading)[i]}: </strong>
+                              : null
+                            }
+                            {opt}
                           </li>
                         )
                       })}
