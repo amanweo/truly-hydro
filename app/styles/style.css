@@ -963,3 +963,22 @@ label.custom_radio input[type=radio]+span {
 label.custom_radio input[type=radio]:checked+span {
     box-shadow: inset #000 0 0 0 7px;
 }
+
+.product_qty_block button {
+    border: 0;
+    background: #fff;
+    box-shadow: none;
+    padding: 5px 10px;
+    font-size: 20px;
+}
+
+.product_qty_block input {
+    width: 50px;
+    text-align: center;
+    border: 0;
+    background: #fff;
+}
+
+.product_qty_block {
+    display: flex;
+}

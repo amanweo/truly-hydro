@@ -126,7 +126,21 @@ export default function Product() {
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const showPopup = () => setShow(true);
+
+  const [quantity, setQuantity] = useState(1)
+  const handleQty = (type) => {
+    if (type == "inc") {
+      setQuantity(parseInt(quantity + 1))
+    } else {
+      if (quantity > 0) {
+        setQuantity(parseInt(quantity - 1))
+      }
+    }
+  }
+  const handleQtyChange = (e) => {
+    setQuantity(parseInt(e.target.value))
+  }
 
   useEffect(() => {
     let newObj = {}
@@ -193,6 +207,12 @@ export default function Product() {
       videoRef.current.currentTime = 0
     }
   }
+
+  const [saveOption, setSaveOption]=useState(product?.sellingPlanGroups?.edges[0]?.node?.options[0]?.values[0] || "")
+  const handleOptionChange = (e) => {
+    setSaveOption(e.target.value)
+  }
+
   useEffect(() => {
     if (videoRef && videoRef.current) {
       console.log("videoref", videoRef)
@@ -203,7 +223,7 @@ export default function Product() {
       }
     }
   }, [videoPlay])
-  console.log("videoPlay: ", videoPlay)
+  console.log("saveOption: ", saveOption)
 
   return (
     <div className="commonSection product-page">
@@ -297,6 +317,10 @@ export default function Product() {
               product={product}
               variants={variants}
               metaFields={metaFields}
+              showPopup={showPopup}
+              handleQtyChange={handleQtyChange}
+              handleQty={handleQty}
+              quantity={quantity}
             />
           </div>
         </div>
@@ -324,6 +348,29 @@ export default function Product() {
                         )
                       })}
                     </ol>
+
+                    <AddToCartButton
+                      fullBtn={false}
+                      disabled={!selectedVariant || !selectedVariant.availableForSale}
+                      onClick={() => {
+                        setTimeout(() => {
+                          window.location.href = window.location.href + '#cart-aside';
+                        }, 500);
+                      }}
+                      lines={
+                        selectedVariant
+                          ? [{
+                            merchandiseId: selectedVariant.id,
+                            quantity: quantity || 1
+                          }
+                          ]
+                          : []
+                      }
+                    >
+                      Add to Bag
+                      <Money data={selectedVariant?.price} as={"span"} className='mx-2' />
+                      <s><Money data={selectedVariant?.compareAtPrice} as={"span"} /></s>
+                    </AddToCartButton>
                   </div>
                   : null
                 }
@@ -417,6 +464,28 @@ export default function Product() {
                           </div>
                         )
                       })}
+                      <AddToCartButton
+                        fullBtn={false}
+                        disabled={!selectedVariant || !selectedVariant.availableForSale}
+                        onClick={() => {
+                          setTimeout(() => {
+                            window.location.href = window.location.href + '#cart-aside';
+                          }, 500);
+                        }}
+                        lines={
+                          selectedVariant
+                            ? [{
+                              merchandiseId: selectedVariant.id,
+                              quantity: quantity || 1
+                            }
+                            ]
+                            : []
+                        }
+                      >
+                        Add to Bag
+                        <Money data={selectedVariant?.price} as={"span"} className='mx-2' />
+                        <s><Money data={selectedVariant?.compareAtPrice} as={"span"} /></s>
+                      </AddToCartButton>
                     </div>
                     : null
                   }
@@ -452,10 +521,10 @@ export default function Product() {
                     </div>
                     <div className='subscribe_save_select'>
                       {product?.sellingPlanGroups ?
-                        <select>
+                        <select onChange={handleOptionChange}>
                           {product?.sellingPlanGroups?.edges[0]?.node?.sellingPlans?.edges.map((data, index) => {
                             return (
-                              <option key={index}>{data?.node.name}</option>
+                              <option key={index} value={product?.sellingPlanGroups?.edges[0]?.node?.options[0]?.values[index]}>{data?.node.name}</option>
                             )
                           })}
                         </select>
@@ -470,11 +539,29 @@ export default function Product() {
                   </div>
                   {selectedVariant?.sellingPlanAllocations ?
                     <div className='mt-3'>
-                      <button className='btn btn-primary'>
+                      <AddToCartButton
+                        fullBtn={false}
+                        disabled={!selectedVariant || !selectedVariant.availableForSale}
+                        onClick={() => {
+                          setTimeout(() => {
+                            window.location.href = window.location.href + '#cart-aside';
+                          }, 500);
+                        }}
+                        lines={
+                          selectedVariant
+                            ? [{
+                              merchandiseId: selectedVariant.id,
+                              quantity: quantity || 1,
+                              sellingPlanId: selectedVariant?.sellingPlanAllocations?.edges[0].node?.sellingPlan?.id
+                            }
+                            ]
+                            : []
+                        }
+                      >
                         Subscribe + Save
                         <Money data={selectedVariant?.sellingPlanAllocations?.edges[0].node?.priceAdjustments[0]?.price} as={"span"} className='mx-2' />
                         <s><Money data={selectedVariant?.compareAtPrice} as={"span"} /></s>
-                      </button>
+                      </AddToCartButton>
                     </div>
                     : null
                   }
@@ -535,11 +622,12 @@ function ProductImage({ image }) {
  *   variants: Promise<ProductVariantsQuery>;
  * }}
  */
-function ProductMain({ selectedVariant, product, variants, metaFields }) {
+function ProductMain({ selectedVariant, product, variants, metaFields, showPopup, quantity, handleQty, handleQtyChange }) {
   console.log("metaFields: ", metaFields)
   const { title, descriptionHtml, description } = product;
   const [openedNumber, setOpenedNumber] = useState(-1);
   const [openedNumber2, setOpenedNumber2] = useState(false);
+  const [activeOption, setActiveOption] = useState("onTime")
   const showStyle = {
     height: "auto"
   };
@@ -548,6 +636,11 @@ function ProductMain({ selectedVariant, product, variants, metaFields }) {
     paddingTop: "0",
     paddingBottom: "0"
   };
+  const handleRadioChange = (e) => {
+    setActiveOption(e.target.value)
+  }
+
+
   return (
     <div className="product-main">
       <h1 className='mb-2'>{title}</h1>
@@ -581,13 +674,23 @@ function ProductMain({ selectedVariant, product, variants, metaFields }) {
         </div>
         : null
       }
-      <ProductPrice selectedVariant={selectedVariant} />
+      <ProductPrice
+        selectedVariant={selectedVariant}
+        quantity={quantity}
+        handleQty={handleQty}
+        handleQtyChange={handleQtyChange}
+        showPopup={showPopup}
+        handleRadioChange={handleRadioChange}
+        activeOption={activeOption}
+      />
       <Suspense
         fallback={
           <ProductForm
             product={product}
             selectedVariant={selectedVariant}
             variants={[]}
+            quantity={quantity}
+            activeOption={activeOption}
           />
         }
       >
@@ -600,6 +703,8 @@ function ProductMain({ selectedVariant, product, variants, metaFields }) {
               product={product}
               selectedVariant={selectedVariant}
               variants={data.product?.variants.nodes || []}
+              quantity={quantity}
+              activeOption={activeOption}
             />
           )}
         </Await>
@@ -676,20 +781,7 @@ function ProductMain({ selectedVariant, product, variants, metaFields }) {
  *   selectedVariant: ProductFragment['selectedVariant'];
  * }}
  */
-function ProductPrice({ selectedVariant }) {
-  const [quantity, setQuantity] = useState(1)
-  const [activeOption, setActiveOption] = useState("onTime")
-  const handleRadioChange = (e) => {
-    setActiveOption(e.target.value)
-  }
-  const handleQty = (e, type) => {
-    if (type == "inc") {
-      setQuantity(quantity + 1)
-    } else {
-      setQuantity(quantity - 1)
-    }
-  }
-
+function ProductPrice({ selectedVariant, quantity, handleQtyChange, handleQty, showPopup, activeOption, handleRadioChange }) {
   return (
     <div className="product-price">
       <label className='product_purchase_options custom_radio'>
@@ -714,34 +806,42 @@ function ProductPrice({ selectedVariant }) {
         </div>
         {activeOption == "onTime" ?
           <div className='product_qty_block'>
-            <button onClick={(e) => handleQty(e, "dec")}>-</button>
-            <input type='number' value={quantity} />
-            <button onClick={(e) => handleQty(e, "inc")}>+</button>
+            <button onClick={() => handleQty("dec")}>-</button>
+            <input type='number' value={quantity || 1} onChange={handleQtyChange} />
+            <button onClick={() => handleQty("inc")}>+</button>
           </div>
           : null
         }
       </label>
       <label className='product_purchase_options custom_radio'>
-        <div className='d-flex align-items-center'>
-          <input type='radio' checked={activeOption == "subscribe"} id="subscribe" name="sellingplan_option" value="subscribe" onChange={handleRadioChange} />
-          <span></span>
-          <div className=''>
-            <p className='mb-0'><small>Subscribe & save 10% Off</small></p>
-
-
-            {selectedVariant?.compareAtPrice ? (
-              <>
-                <div className="product-price-on-sale">
-                  {selectedVariant ? <Money data={selectedVariant?.sellingPlanAllocations?.edges[0].node?.priceAdjustments[0]?.price} /> : null}
-                  <s>
-                    <Money data={selectedVariant?.compareAtPrice} />
-                  </s>
-                </div>
-              </>
-            ) : (
-              selectedVariant?.sellingPlanAllocations?.edges[0].node?.priceAdjustments[0]?.price && <Money data={selectedVariant?.sellingPlanAllocations?.edges[0].node?.priceAdjustments[0]?.price} />
-            )}
+        <div>
+          <div className='d-flex align-items-center justify-content-between'>
+            <input type='radio' checked={activeOption == "subscribe"} id="subscribe" name="sellingplan_option" value="subscribe" onChange={handleRadioChange} />
+            <span></span>
+            <div className=''>
+              <p className='mb-0'><small>Subscribe & save 10% Off</small></p>
+              {selectedVariant?.compareAtPrice ? (
+                <>
+                  <div className="product-price-on-sale">
+                    {selectedVariant ? <Money data={selectedVariant?.sellingPlanAllocations?.edges[0].node?.priceAdjustments[0]?.price} /> : null}
+                    <s>
+                      <Money data={selectedVariant?.compareAtPrice} />
+                    </s>
+                  </div>
+                </>
+              ) : (
+                selectedVariant?.sellingPlanAllocations?.edges[0].node?.priceAdjustments[0]?.price && <Money data={selectedVariant?.sellingPlanAllocations?.edges[0].node?.priceAdjustments[0]?.price} />
+              )}
+            </div>
           </div>
+        </div>
+
+        <div className='whySubscribe'>
+          <button onClick={showPopup} className='noStyle'>
+            <small>Why should I subscribe?&nbsp;
+              <img src="https://cdn.shopify.com/s/files/1/0053/4462/4675/files/i-tip_2.svg?v=1686305428" alt="i" width={10} />
+            </small>
+          </button>
         </div>
       </label>
     </div>
@@ -755,7 +855,7 @@ function ProductPrice({ selectedVariant }) {
  *   variants: Array<ProductVariantFragment>;
  * }}
  */
-function ProductForm({ product, selectedVariant, variants }) {
+function ProductForm({ product, selectedVariant, variants, quantity, activeOption }) {
   console.log("selectedVariant: ", selectedVariant)
   return (
     <div className="product-form">
@@ -768,6 +868,7 @@ function ProductForm({ product, selectedVariant, variants }) {
       </VariantSelector>
       <br />
       <AddToCartButton
+        fullBtn
         disabled={!selectedVariant || !selectedVariant.availableForSale}
         onClick={() => {
           setTimeout(() => {
@@ -777,15 +878,21 @@ function ProductForm({ product, selectedVariant, variants }) {
         lines={
           selectedVariant
             ? [
-              {
+              activeOption !== "onTime" ? {
                 merchandiseId: selectedVariant.id,
-                quantity: 1,
-              },
+                quantity: quantity || 1,
+                sellingPlanId: selectedVariant?.sellingPlanAllocations?.edges[0].node?.sellingPlan?.id
+              }
+                :
+                {
+                  merchandiseId: selectedVariant.id,
+                  quantity: quantity || 1
+                }
             ]
             : []
         }
       >
-        {selectedVariant?.availableForSale ? 'Add to Bag' : 'Sold out'}
+        {activeOption !== "onTime" ? "Subscribe Now" : selectedVariant?.availableForSale ? 'Add to Bag' : 'Sold out'}
       </AddToCartButton>
     </div>
   );
@@ -831,7 +938,7 @@ function ProductOptions({ option }) {
  *   onClick?: () => void;
  * }}
  */
-function AddToCartButton({ analytics, children, disabled, lines, onClick }) {
+function AddToCartButton({ analytics, children, disabled, lines, onClick, fullBtn }) {
   return (
     <CartForm route="/cart" inputs={{ lines }} action={CartForm.ACTIONS.LinesAdd}>
       {(fetcher) => (
@@ -845,7 +952,7 @@ function AddToCartButton({ analytics, children, disabled, lines, onClick }) {
             type="submit"
             onClick={onClick}
             disabled={disabled ?? fetcher.state !== 'idle'}
-            className='btn btn-primary btn-lg'
+            className={`btn btn-primary btn-lg ${fullBtn ? "w-100" : ""}`}
           >
             {children}
           </button>
@@ -886,6 +993,9 @@ const PRODUCT_VARIANT_FRAGMENT = `#graphql
     sellingPlanAllocations(first:1){
       edges{
         node{
+          sellingPlan{
+            id
+          }
           priceAdjustments{
             price{
               amount
@@ -947,7 +1057,12 @@ const PRODUCT_FRAGMENT = `#graphql
           sellingPlans(first: 3) {
           edges {
             node {
+              id
               name
+              options{
+                value
+                name
+              }
             }
           }
         }
