@@ -1,13 +1,26 @@
 :root {
-  --aside-width: 400px;
-  --cart-aside-summary-height-with-discount: 300px;
-  --cart-aside-summary-height: 250px;
-  --grid-item-width: 355px;
-  --header-height: 64px;
+  --primary: #ffdde7;
+  --primary2: #d6315c;
   --color-dark: #000;
   --color-light: #fff;
+  --primary-font: 'Nunito Sans', sans-serif;
+  --mdExI: 'AwesomeSerifItalic-MdExraTall';
+  --fontReg: 'AwesomeSerif-Regular';
+  --fontRegI: 'AwesomeSerifItalic-Regular';
+  --mdEx: 'AwesomeSerif-MediumExtraTall';
+  --lightI: 'AwesomeSerifItalicVAR-Light';
+}
+html, body {
+    min-height: 100vh;
 }
 
+body {
+    display: flex;
+    flex-direction: column;
+}
+body > main{
+  flex: 1 0 auto;
+}
 img {
   border-radius: 4px;
 }

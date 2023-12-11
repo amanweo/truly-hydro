@@ -14,9 +14,17 @@ import {
   isRouteErrorResponse,
 } from '@remix-run/react';
 import favicon from '../public/favicon.svg';
+import slickStyle from "slick-carousel/slick/slick.css"; 
+import slickStyle2 from "slick-carousel/slick/slick-theme.css";
+import swiperStyle from 'swiper/css';
+import bootstrapStyle from 'bootstrap/dist/css/bootstrap.min.css';
 import resetStyles from './styles/reset.css';
+import gridStyles from './styles/grid.css';
+import allStyles from './styles/style.css';
 import appStyles from './styles/app.css';
 import {Layout} from '~/components/Layout';
+import lightgallery from 'lightgallery/css/lightgallery.css';
+import lightgalleryZoom from 'lightgallery/css/lg-zoom.css';
 
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
@@ -38,8 +46,16 @@ export const shouldRevalidate = ({formMethod, currentUrl, nextUrl}) => {
 
 export function links() {
   return [
-    {rel: 'stylesheet', href: resetStyles},
+    {rel: 'stylesheet', href: slickStyle},
+    {rel: 'stylesheet', href: slickStyle2},
+    {rel: 'stylesheet', href: swiperStyle},
+    {rel: 'stylesheet', href: lightgallery},
+    {rel: 'stylesheet', href: lightgalleryZoom},
+    {rel: 'stylesheet', href: bootstrapStyle},
+    {rel: 'stylesheet', href: gridStyles},
     {rel: 'stylesheet', href: appStyles},
+    {rel: 'stylesheet', href: resetStyles},
+    {rel: 'stylesheet', href: allStyles},
     {
       rel: 'preconnect',
       href: 'https://cdn.shopify.com',
@@ -73,7 +89,13 @@ export async function loader({context}) {
   const footerPromise = storefront.query(FOOTER_QUERY, {
     cache: storefront.CacheLong(),
     variables: {
-      footerMenuHandle: 'footer', // Adjust to your footer menu handle
+      footerMenuHandle: 'account', // Adjust to your footer menu handle
+    },
+  });
+  const footerPromise2 = storefront.query(FOOTER_QUERY, {
+    cache: storefront.CacheLong(),
+    variables: {
+      footerMenuHandle: 'discover', // Adjust to your footer menu handle
     },
   });
 
@@ -88,7 +110,8 @@ export async function loader({context}) {
   return defer(
     {
       cart: cartPromise,
-      footer: footerPromise,
+      footer: await footerPromise,
+      footer2: await footerPromise2,
       header: await headerPromise,
       isLoggedIn,
       publicStoreDomain,
@@ -101,7 +124,7 @@ export default function App() {
   const nonce = useNonce();
   /** @type {LoaderReturnData} */
   const data = useLoaderData();
-
+  console.log("App data: ", data)
   return (
     <html lang="en">
       <head>
@@ -109,6 +132,8 @@ export default function App() {
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <Meta />
         <Links />
+        <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
       </head>
       <body>
         <Layout {...data}>

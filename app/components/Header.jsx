@@ -1,18 +1,38 @@
-import {Await, NavLink, useMatches} from '@remix-run/react';
-import {Suspense} from 'react';
+import { Await, NavLink, useMatches } from '@remix-run/react';
+import { Suspense, useState } from 'react';
+import Images from "./images";
+import { PredictiveSearchForm, PredictiveSearchResults } from './Search';
+import { CartMain } from './Cart';
 
 /**
  * @param {HeaderProps}
  */
-export function Header({header, isLoggedIn, cart}) {
-  const {shop, menu} = header;
+export function Header({ header, isLoggedIn, cart }) {
+  const { shop, menu } = header;
+  const [showSearch, setShowSearch] = useState(false)
+  const toggleSearch = () => {
+    setShowSearch(!showSearch)
+  }
   return (
-    <header className="header">
-      <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
-        <strong>{shop.name}</strong>
-      </NavLink>
-      <HeaderMenu menu={menu} viewport="desktop" />
-      <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
+    <header className='truly_header'>
+      <div className='container-fluid'>
+        <div className='main_header'>
+          <div className='truly_logo'>
+            <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
+              <strong>
+                <img src={Images?.logo} width="150" alt={shop.name} /></strong>
+            </NavLink>
+          </div>
+          <div className='truly_navbar'>
+            <HeaderMenu menu={menu} viewport="desktop" />
+          </div>
+          <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} toggleSearch={toggleSearch} />
+        </div>
+      </div>
+      {showSearch ?
+        <HeaderSearch toggleSearch={toggleSearch} />
+        : null
+      }
     </header>
   );
 }
@@ -23,7 +43,7 @@ export function Header({header, isLoggedIn, cart}) {
  *   viewport: Viewport;
  * }}
  */
-export function HeaderMenu({menu, viewport}) {
+export function HeaderMenu({ menu, viewport }) {
   const [root] = useMatches();
   const publicStoreDomain = root?.data?.publicStoreDomain;
   const className = `header-menu-${viewport}`;
@@ -36,7 +56,7 @@ export function HeaderMenu({menu, viewport}) {
   }
 
   return (
-    <nav className={className} role="navigation">
+    <ul>
       {viewport === 'mobile' && (
         <NavLink
           end
@@ -54,40 +74,93 @@ export function HeaderMenu({menu, viewport}) {
         // if the url is internal, we strip the domain
         const url =
           item.url.includes('myshopify.com') ||
-          item.url.includes(publicStoreDomain)
+            item.url.includes(publicStoreDomain)
             ? new URL(item.url).pathname
             : item.url;
         return (
-          <NavLink
-            className="header-menu-item"
-            end
-            key={item.id}
-            onClick={closeAside}
-            prefetch="intent"
-            style={activeLinkStyle}
-            to={url}
-          >
-            {item.title}
-          </NavLink>
+          <li key={item.id}>
+            <NavLink
+              className="header-menu-item"
+              end
+              onClick={closeAside}
+              prefetch="intent"
+              style={activeLinkStyle}
+              to={url}
+            >
+              {item.title}
+            </NavLink>
+          </li>
         );
       })}
-    </nav>
+    </ul>
   );
+}
+
+function HeaderSearch(props) {
+  return (
+    <div className="predictive-search">
+      <div className="container-fluid">
+        <PredictiveSearchForm>
+          {({ fetchResults, inputRef }) => (
+            <div className='d-flex'>
+              <input
+                name="q"
+                onChange={fetchResults}
+                onFocus={fetchResults}
+                placeholder="Search"
+                ref={inputRef}
+                type="search"
+                className='form-control'
+              />
+              &nbsp;
+              <button className='noStyle ps-3' onClick={props.toggleSearch}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 10.667 10.667">
+                  <path fill="currentColor" d="M4.723,4.723a.762.762,0,0,1,1.079,0L9.833,8.756l4.031-4.033A.763.763,0,1,1,14.942,5.8L10.91,9.833l4.033,4.031a.763.763,0,1,1-1.079,1.079L9.833,10.91,5.8,14.942a.763.763,0,1,1-1.079-1.079L8.756,9.833,4.723,5.8a.762.762,0,0,1,0-1.079Z" transform="translate(-4.499 -4.499)"></path>
+                </svg>
+              </button>
+            </div>
+          )}
+        </PredictiveSearchForm>
+        <PredictiveSearchResults />
+      </div>
+    </div>
+  )
+}
+
+function HeaderCart(props) {
+  return (
+    <Suspense fallback={<p>Loading cart ...</p>}>
+      <Await resolve={props.cart}>
+        {(cart) => {
+          return <CartMain cart={cart} toggleCart={props.toggleCart} />;
+        }}
+      </Await>
+    </Suspense>
+  )
 }
 
 /**
  * @param {Pick<HeaderProps, 'isLoggedIn' | 'cart'>}
  */
-function HeaderCtas({isLoggedIn, cart}) {
+function HeaderCtas({ isLoggedIn, cart, toggleSearch, toggleCart }) {
   return (
-    <nav className="header-ctas" role="navigation">
-      <HeaderMenuMobileToggle />
+    <div className="truly_header_links">
+      <div className="navAccount search--icon">
+        <SearchToggle toggleSearch={toggleSearch} />
+      </div>
+      <div className="navAccount user--icon">
+        <NavLink prefetch="intent" to="/account">
+          <img src={Images?.user} alt="user" />
+        </NavLink>
+      </div>
+      <div className="navAccount cart--icon">
+        <CartToggle cart={cart} />
+      </div>
+      {/* <HeaderMenuMobileToggle />
       <NavLink prefetch="intent" to="/account" style={activeLinkStyle}>
         {isLoggedIn ? 'Account' : 'Sign in'}
-      </NavLink>
-      <SearchToggle />
-      <CartToggle cart={cart} />
-    </nav>
+      </NavLink> */}
+    </div>
   );
 }
 
@@ -99,27 +172,30 @@ function HeaderMenuMobileToggle() {
   );
 }
 
-function SearchToggle() {
-  return <a href="#search-aside">Search</a>;
+function SearchToggle(props) {
+  return <button className='noStyle' onClick={props.toggleSearch}><img src={Images.search} alt="search" width={15} /></button>;
 }
 
 /**
  * @param {{count: number}}
- */
-function CartBadge({count}) {
-  return <a href="#cart-aside">Cart {count}</a>;
+*/
+function CartBadge(props) {
+  // return <button className='noStyle header_cart_icon' onClick={props.toggleCart}><img src={Images.cart} alt="search" width={15} /><strong className='cartItemCounter'>{props.count}</strong></button>;
+  return <a href="#cart-aside">
+    <img src={Images.cart} alt="cart" width={15} /> <strong className='cartItemCounter'>{props.count}</strong>
+  </a>;
 }
 
 /**
  * @param {Pick<HeaderProps, 'cart'>}
  */
-function CartToggle({cart}) {
+function CartToggle(props) {
   return (
-    <Suspense fallback={<CartBadge count={0} />}>
-      <Await resolve={cart}>
+    <Suspense fallback={<CartBadge count={0} toggleCart={props.toggleCart} />}>
+      <Await resolve={props.cart}>
         {(cart) => {
-          if (!cart) return <CartBadge count={0} />;
-          return <CartBadge count={cart.totalQuantity || 0} />;
+          if (!cart) return <CartBadge count={0} toggleCart={props.toggleCart} />;
+          return <CartBadge count={cart.totalQuantity || 0} toggleCart={props.toggleCart} />;
         }}
       </Await>
     </Suspense>
@@ -174,10 +250,10 @@ const FALLBACK_HEADER_MENU = {
  *   isPending: boolean;
  * }}
  */
-function activeLinkStyle({isActive, isPending}) {
+function activeLinkStyle({ isActive, isPending }) {
   return {
-    fontWeight: isActive ? 'bold' : undefined,
-    color: isPending ? 'grey' : 'black',
+    // fontWeight: isActive ? 'bold' : undefined,
+    // color: isPending ? 'grey' : 'black',
   };
 }
 

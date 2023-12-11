@@ -1,9 +1,9 @@
-import {Await} from '@remix-run/react';
-import {Suspense} from 'react';
-import {Aside} from '~/components/Aside';
-import {Footer} from '~/components/Footer';
-import {Header, HeaderMenu} from '~/components/Header';
-import {CartMain} from '~/components/Cart';
+import { Await } from '@remix-run/react';
+import { Suspense } from 'react';
+import { Aside } from '~/components/Aside';
+import { Footer } from '~/components/Footer';
+import { Header, HeaderMenu } from '~/components/Header';
+import { CartMain } from '~/components/Cart';
 import {
   PredictiveSearchForm,
   PredictiveSearchResults,
@@ -12,17 +12,17 @@ import {
 /**
  * @param {LayoutProps}
  */
-export function Layout({cart, children = null, footer, header, isLoggedIn}) {
+export function Layout({ cart, children = null, footer, footer2, header, isLoggedIn }) {
   return (
     <>
       <CartAside cart={cart} />
-      <SearchAside />
+      {/* <SearchAside /> */}
       <MobileMenuAside menu={header.menu} />
       <Header header={header} cart={cart} isLoggedIn={isLoggedIn} />
       <main>{children}</main>
       <Suspense>
         <Await resolve={footer}>
-          {(footer) => <Footer menu={footer.menu} />}
+          {(footer) => <Footer menu={footer.menu} menu2={footer2.menu} />}
         </Await>
       </Suspense>
     </>
@@ -32,13 +32,20 @@ export function Layout({cart, children = null, footer, header, isLoggedIn}) {
 /**
  * @param {{cart: LayoutProps['cart']}}
  */
-function CartAside({cart}) {
+function CartAside({ cart }) {
+  const toggleCart = () => {
+    window.location.hash = ""
+    if (window.location.href.includes('#')) {
+      const cleanedUrl = window.location.href.split('#')[0];
+      window.history.replaceState(null, null, cleanedUrl);
+    }
+  }
   return (
     <Aside id="cart-aside" heading="CART">
       <Suspense fallback={<p>Loading cart ...</p>}>
         <Await resolve={cart}>
           {(cart) => {
-            return <CartMain cart={cart} layout="aside" />;
+            return <CartMain cart={cart} toggleCart={toggleCart} layout="aside" />;
           }}
         </Await>
       </Suspense>
@@ -50,10 +57,9 @@ function SearchAside() {
   return (
     <Aside id="search-aside" heading="SEARCH">
       <div className="predictive-search">
-        <br />
         <PredictiveSearchForm>
-          {({fetchResults, inputRef}) => (
-            <div>
+          {({ fetchResults, inputRef }) => (
+            <div className='d-flex'>
               <input
                 name="q"
                 onChange={fetchResults}
@@ -61,6 +67,7 @@ function SearchAside() {
                 placeholder="Search"
                 ref={inputRef}
                 type="search"
+                className='form-control'
               />
               &nbsp;
               <button type="submit">Search</button>
@@ -76,7 +83,7 @@ function SearchAside() {
 /**
  * @param {{menu: HeaderQuery['menu']}}
  */
-function MobileMenuAside({menu}) {
+function MobileMenuAside({ menu }) {
   return (
     <Aside id="mobile-menu-aside" heading="MENU">
       <HeaderMenu menu={menu} viewport="mobile" />
