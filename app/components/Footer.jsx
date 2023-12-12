@@ -5,7 +5,6 @@ import Images from "./images";
  * @param {FooterQuery}
  */
 export function Footer({ menu, menu2 }) {
-  console.log("menu: ", menu)
   return (
     <footer className="footer">
       <div className="container-fluid">

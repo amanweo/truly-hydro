@@ -89,6 +89,32 @@ export function HeaderMenu({ menu, viewport }) {
             >
               {item.title}
             </NavLink>
+            {item.items.length > 0 ?
+              <ul>
+                {item.items.map((opt, i) => {
+                  const url2 =
+                    opt.url.includes('myshopify.com') ||
+                      opt.url.includes(publicStoreDomain)
+                      ? new URL(opt.url).pathname
+                      : opt.url;
+                  return (
+                    <li key={opt.id}>
+                      <NavLink
+                        className="header-menu-item"
+                        end
+                        onClick={closeAside}
+                        prefetch="intent"
+                        style={activeLinkStyle}
+                        to={url2}
+                      >
+                        {opt.title}
+                      </NavLink>
+                    </li>
+                  )
+                })}
+              </ul>
+              : null
+            }
           </li>
         );
       })}

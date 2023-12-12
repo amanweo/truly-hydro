@@ -162,6 +162,12 @@ export default function Product() {
     }
   };
 
+  const handleSlideChange2 = () => {
+    if (swiperRef2.current) {
+      console.log("swiperRef2.current: ", swiperRef2.current)
+    }
+  };
+
   const handleThumbnailClick = (index) => {
     if (swiperRef.current) {
       if (index > -1) {
@@ -208,7 +214,7 @@ export default function Product() {
     }
   }
 
-  const [saveOption, setSaveOption]=useState(product?.sellingPlanGroups?.edges[0]?.node?.options[0]?.values[0] || "")
+  const [saveOption, setSaveOption] = useState(product?.sellingPlanGroups?.edges[0]?.node?.options[0]?.values[0] || "")
   const handleOptionChange = (e) => {
     setSaveOption(e.target.value)
   }
@@ -284,13 +290,13 @@ export default function Product() {
                   <div className="custom_arrows custom-prev-arrow">
                     <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M5.29289 9.29289C4.90237 9.68342 4.90237 10.3166 5.29289 10.7071C5.68342 11.0976 6.31658 11.0976 6.70711 10.7071L5.29289 9.29289ZM12 4L12.7071 3.29289C12.3166 2.90237 11.6834 2.90237 11.2929 3.29289L12 4ZM17.2929 10.7071C17.6834 11.0976 18.3166 11.0976 18.7071 10.7071C19.0976 10.3166 19.0976 9.68342 18.7071 9.29289L17.2929 10.7071ZM6.70711 10.7071L12.7071 4.70711L11.2929 3.29289L5.29289 9.29289L6.70711 10.7071ZM11.2929 4.70711L17.2929 10.7071L18.7071 9.29289L12.7071 3.29289L11.2929 4.70711Z" fill="#fff"></path>
-                      <path d="M12 4L12 20" stroke="#fff" strokewidth="2" strokeLinecap="round" strokelinejoin="round"></path>
+                      <path d="M12 4L12 20" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLineJoin="round"></path>
                     </svg>
                   </div>
                   <div className="custom_arrows custom-next-arrow">
                     <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M18.7071 14.7071C19.0976 14.3166 19.0976 13.6834 18.7071 13.2929C18.3166 12.9024 17.6834 12.9024 17.2929 13.2929L18.7071 14.7071ZM12 20L11.2929 20.7071C11.6834 21.0976 12.3166 21.0976 12.7071 20.7071L12 20ZM6.70711 13.2929C6.31658 12.9024 5.68342 12.9024 5.29289 13.2929C4.90237 13.6834 4.90237 14.3166 5.29289 14.7071L6.70711 13.2929ZM17.2929 13.2929L11.2929 19.2929L12.7071 20.7071L18.7071 14.7071L17.2929 13.2929ZM12.7071 19.2929L6.70711 13.2929L5.29289 14.7071L11.2929 20.7071L12.7071 19.2929Z" fill="#fff"></path>
-                      <path d="M12 20L12 4" stroke="#fff" strokewidth="2" strokeLinecap="round" strokelinejoin="round"></path>
+                      <path d="M12 20L12 4" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLineJoin="round"></path>
                     </svg>
                   </div>
                   {product?.images?.nodes.map((img, i) => {
@@ -326,144 +332,29 @@ export default function Product() {
         </div>
       </div>
 
-
-      <div className='container'>
-        <div className='how_to_use_block primary-bg mt-5'>
-          <div className='row align-items-center'>
-            <div className='col-sm-7'>
-              <div className='p-4 px-5'>
-                <h2>{isJsonString(metaFields?.how_to_use_title) ? JSON.parse(metaFields?.how_to_use_title) : metaFields?.how_to_use_title}</h2>
-                {metaFields?.how_to_use_text ?
-                  <div className='how_to_use_list'>
-                    <ol className='px-3'>
-                      {JSON.parse(metaFields?.how_to_use_text).map((opt, i) => {
-                        return (
-                          <li key={i} className='mb-3'>
-                            {JSON.parse(metaFields?.bundle_how_to_use_heading)[i] ?
-                              <strong>{JSON.parse(metaFields?.bundle_how_to_use_heading)[i]}: </strong>
-                              : null
-                            }
-                            {opt}
-                          </li>
-                        )
-                      })}
-                    </ol>
-
-                    <AddToCartButton
-                      fullBtn={false}
-                      disabled={!selectedVariant || !selectedVariant.availableForSale}
-                      onClick={() => {
-                        setTimeout(() => {
-                          window.location.href = window.location.href + '#cart-aside';
-                        }, 500);
-                      }}
-                      lines={
-                        selectedVariant
-                          ? [{
-                            merchandiseId: selectedVariant.id,
-                            quantity: quantity || 1
-                          }
-                          ]
-                          : []
-                      }
-                    >
-                      Add to Bag
-                      <Money data={selectedVariant?.price} as={"span"} className='mx-2' />
-                      <s><Money data={selectedVariant?.compareAtPrice} as={"span"} /></s>
-                    </AddToCartButton>
-                  </div>
-                  : null
-                }
-              </div>
-            </div>
-            <div className='col-sm-5'>
-              {metaFields?.bundle_howtouse_video_link ?
-                <div className='how_to_use_video'>
-                  <video id="mydVideo" playsInline="" className="PlayTargetVideo d-block posterCover w_how" ref={videoRef} onEnded={handleVideoEnded}
-                    width="100%" poster={metaFields?.bundle_how_to_use_poster_link} data-src={metaFields?.bundle_howtouse_video_link} src={metaFields?.bundle_howtouse_video_link} type="video/mp4">
-                    Your browser does not support the video tag.
-                  </video>
-                  <button className={`playpauseBtn ${!videoPlay ? "play" : "pause"}`} id="videoplayBtn" tabIndex="0" onClick={playVideo}>
-                    {!videoPlay ?
-                      <img loading="lazy" src="https://cdn.shopify.com/s/files/1/0053/4462/4675/files/play__button.svg?v=1621433193" alt="play-button" width="" height="" className="playBtn" />
-                      :
-                      <img loading="lazy" src="https://cdn.shopify.com/s/files/1/0053/4462/4675/files/pause__icon.svg?v=1621433193" alt="pause-button" width="" height="" className="pausebtn" />
-                    }
-                  </button>
-                </div>
-                : null
-              }
-            </div>
-          </div>
-
-          <div className='how_to_use_block mt-5'>
+      {metaFields ?
+        <div className='container'>
+          <div className='how_to_use_block primary-bg mt-5'>
             <div className='row align-items-center'>
-              <div className='col-sm-5'>
-                <div className='what_it_target_slider'>
-                  <Swiper
-                    spaceBetween={0}
-                    slidesPerView={1}
-                    loop={true}
-                    navigation={true, {
-                      nextEl: '.next-arrow',
-                      prevEl: '.prev-arrow',
-                    }}
-                    modules={[Navigation]}
-                    ref={swiperRef2}
-                    onSwiper={(swiper) => console.log("swiper", swiper)}
-                  >
-                    {metaFields?.bundle_whatistarget_image && isJsonString(metaFields?.bundle_whatistarget_image) ?
-                      <>
-                        {JSON.parse(metaFields?.bundle_whatistarget_image).map((img, i) => {
-                          { console.log("sdfs", img) }
-                          return (
-                            <SwiperSlide key={i}>
-                              <Image
-                                alt={""}
-                                aspectRatio="0"
-                                data={{ url: img }}
-                                sizes="200vw"
-                              />
-                            </SwiperSlide>
-                          )
-                        })}
-                      </>
-                      : null
-                    }
-                    <div class="short-info">
-                      *The model in these images is a paid model demonstrating use and intended results of the products, these are not actual customer images.
-                    </div>
-
-                    <div className='d-flex py-3 justify-content-end'>
-                      <div className="custom_arrows arrows_horizontal prev-arrow ">
-                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M5.29289 9.29289C4.90237 9.68342 4.90237 10.3166 5.29289 10.7071C5.68342 11.0976 6.31658 11.0976 6.70711 10.7071L5.29289 9.29289ZM12 4L12.7071 3.29289C12.3166 2.90237 11.6834 2.90237 11.2929 3.29289L12 4ZM17.2929 10.7071C17.6834 11.0976 18.3166 11.0976 18.7071 10.7071C19.0976 10.3166 19.0976 9.68342 18.7071 9.29289L17.2929 10.7071ZM6.70711 10.7071L12.7071 4.70711L11.2929 3.29289L5.29289 9.29289L6.70711 10.7071ZM11.2929 4.70711L17.2929 10.7071L18.7071 9.29289L12.7071 3.29289L11.2929 4.70711Z" fill="#fff"></path>
-                          <path d="M12 4L12 20" stroke="#fff" strokewidth="2" strokeLinecap="round" strokelinejoin="round"></path>
-                        </svg>
-                      </div>
-                      <div className="custom_arrows arrows_horizontal next-arrow ms-3">
-                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M18.7071 14.7071C19.0976 14.3166 19.0976 13.6834 18.7071 13.2929C18.3166 12.9024 17.6834 12.9024 17.2929 13.2929L18.7071 14.7071ZM12 20L11.2929 20.7071C11.6834 21.0976 12.3166 21.0976 12.7071 20.7071L12 20ZM6.70711 13.2929C6.31658 12.9024 5.68342 12.9024 5.29289 13.2929C4.90237 13.6834 4.90237 14.3166 5.29289 14.7071L6.70711 13.2929ZM17.2929 13.2929L11.2929 19.2929L12.7071 20.7071L18.7071 14.7071L17.2929 13.2929ZM12.7071 19.2929L6.70711 13.2929L5.29289 14.7071L11.2929 20.7071L12.7071 19.2929Z" fill="#fff"></path>
-                          <path d="M12 20L12 4" stroke="#fff" strokewidth="2" strokeLinecap="round" strokelinejoin="round"></path>
-                        </svg>
-                      </div>
-                    </div>
-                  </Swiper>
-                </div>
-              </div>
               <div className='col-sm-7'>
                 <div className='p-4 px-5'>
-                  <h2>{isJsonString(metaFields?.target_title) ? JSON.parse(metaFields?.target_title) : metaFields?.target_title}</h2>
-                  {metaFields?.what_it_targets_text ?
+                  <h2>{isJsonString(metaFields?.how_to_use_title) ? JSON.parse(metaFields?.how_to_use_title) : metaFields?.how_to_use_title}</h2>
+                  {metaFields?.how_to_use_text ?
                     <div className='how_to_use_list'>
-                      {JSON.parse(metaFields?.what_it_targets_text).map((opt, i) => {
-                        return (
-                          <div key={i} className='mb-3'>
-                            <p className='mb-0'><strong>{JSON.parse(metaFields?.what_it_targets_heading)[i]}: </strong></p>
-                            <p>{opt}</p>
-                          </div>
-                        )
-                      })}
+                      <ol className='px-3'>
+                        {JSON.parse(metaFields?.how_to_use_text).map((opt, i) => {
+                          return (
+                            <li key={i} className='mb-3'>
+                              {metaFields && metaFields?.bundle_how_to_use_heading && JSON.parse(metaFields?.bundle_how_to_use_heading)[i] ?
+                                <strong>{JSON.parse(metaFields?.bundle_how_to_use_heading)[i]}: </strong>
+                                : null
+                              }
+                              {opt}
+                            </li>
+                          )
+                        })}
+                      </ol>
+
                       <AddToCartButton
                         fullBtn={false}
                         disabled={!selectedVariant || !selectedVariant.availableForSale}
@@ -483,95 +374,234 @@ export default function Product() {
                         }
                       >
                         Add to Bag
-                        <Money data={selectedVariant?.price} as={"span"} className='mx-2' />
-                        <s><Money data={selectedVariant?.compareAtPrice} as={"span"} /></s>
+                        {selectedVariant ? <>
+                          <Money data={selectedVariant?.price} as={"span"} className='mx-2' />
+                          {selectedVariant?.compareAtPrice ? <s><Money data={selectedVariant?.compareAtPrice} as={"span"} /></s> : null}
+                        </> : null
+                        }
                       </AddToCartButton>
                     </div>
                     : null
                   }
                 </div>
               </div>
-            </div>
-          </div>
-
-          <div className='how_to_use_block mt-5'>
-            <div className='row flex-row-reverse align-items-center'>
               <div className='col-sm-5'>
-                {metaFields?.bundle_subscribe_save_image ?
-                  <div className='what_it_target_slider'>
-                    <Image
-                      alt={""}
-                      aspectRatio="0"
-                      data={{ url: metaFields?.bundle_subscribe_save_image }}
-                      sizes="200vw"
-                    />
-                  </div>
-                  : null
-                }
-              </div>
-              <div className='col-sm-7'>
-                <div className='p-4 px-5'>
-                  <h2>{isJsonString(metaFields?.["subscribe-title"]) ? JSON.parse(metaFields?.["subscribe-title"]) : metaFields?.["subscribe-title"]}</h2>
-                  <div dangerouslySetInnerHTML={{ __html: isJsonString(metaFields?.subscribe_and_save_desc) ? JSON.parse(metaFields?.subscribe_and_save_desc) : metaFields?.subscribe_and_save_desc }}></div>
-
-                  <div className='subscribe_save_block'>
-                    <div className='subscribe_save_text_block'>
-                      <img loading="lazy" src="https://cdn.shopify.com/s/files/1/0053/4462/4675/files/Ellipse_11_2.png?v=1686303350" alt="ellipse" width="24" height="24" />
-                      &nbsp; Subscribe & save 10% on each order!
-                    </div>
-                    <div className='subscribe_save_select'>
-                      {product?.sellingPlanGroups ?
-                        <select onChange={handleOptionChange}>
-                          {product?.sellingPlanGroups?.edges[0]?.node?.sellingPlans?.edges.map((data, index) => {
-                            return (
-                              <option key={index} value={product?.sellingPlanGroups?.edges[0]?.node?.options[0]?.values[index]}>{data?.node.name}</option>
-                            )
-                          })}
-                        </select>
-                        : null
+                {metaFields?.bundle_howtouse_video_link ?
+                  <div className='how_to_use_video img-shadow'>
+                    <video id="mydVideo" playsInline="" className="PlayTargetVideo d-block posterCover w_how" ref={videoRef} onEnded={handleVideoEnded}
+                      width="100%" poster={metaFields?.bundle_how_to_use_poster_link} data-src={metaFields?.bundle_howtouse_video_link} src={metaFields?.bundle_howtouse_video_link} type="video/mp4">
+                      Your browser does not support the video tag.
+                    </video>
+                    <button className={`playpauseBtn ${!videoPlay ? "play" : "pause"}`} id="videoplayBtn" tabIndex="0" onClick={playVideo}>
+                      {!videoPlay ?
+                        <img loading="lazy" src="https://cdn.shopify.com/s/files/1/0053/4462/4675/files/play__button.svg?v=1621433193" alt="play-button" width="" height="" className="playBtn" />
+                        :
+                        <img loading="lazy" src="https://cdn.shopify.com/s/files/1/0053/4462/4675/files/pause__icon.svg?v=1621433193" alt="pause-button" width="" height="" className="pausebtn" />
                       }
-                    </div>
-                  </div>
-                  <div className='whySubscribe'>
-                    <button onClick={() => setShow(true)} className='noStyle'>Why should I subscribe?&nbsp;
-                      <img src="https://cdn.shopify.com/s/files/1/0053/4462/4675/files/i-tip_2.svg?v=1686305428" alt="i" />
                     </button>
                   </div>
-                  {selectedVariant?.sellingPlanAllocations ?
-                    <div className='mt-3'>
-                      <AddToCartButton
-                        fullBtn={false}
-                        disabled={!selectedVariant || !selectedVariant.availableForSale}
-                        onClick={() => {
-                          setTimeout(() => {
-                            window.location.href = window.location.href + '#cart-aside';
-                          }, 500);
-                        }}
-                        lines={
-                          selectedVariant
-                            ? [{
-                              merchandiseId: selectedVariant.id,
-                              quantity: quantity || 1,
-                              sellingPlanId: selectedVariant?.sellingPlanAllocations?.edges[0].node?.sellingPlan?.id,
-                              // saveOption
-                            }
-                            ]
-                            : []
-                        }
+                  :
+                  <Image
+                    alt={""}
+                    aspectRatio="0"
+                    data={{ url: isJsonString(metaFields?.bundle_how_to_use_poster_link) ? JSON.parse(metaFields?.bundle_how_to_use_poster_link) : metaFields?.bundle_how_to_use_poster_link }}
+                    sizes="200vw"
+                    className='img-shadow'
+                  />
+                }
+              </div>
+            </div>
+
+            <div className='how_to_use_block mt-5'>
+              <div className='row align-items-center'>
+                <div className='col-sm-5'>
+                  <div className='what_it_target_slider'>
+                    {(metaFields?.bundle_whatistarget_image && isJsonString(metaFields?.bundle_whatistarget_image) && JSON.parse(metaFields?.bundle_whatistarget_image).length > 1) || (typeof metaFields?.bundle_whatistarget_image == "object" && metaFields?.bundle_whatistarget_image.length > 1) ?
+                      <Swiper
+                        spaceBetween={0}
+                        slidesPerView={1}
+                        loop={true}
+                        onSlideChange={handleSlideChange2}
+                        autoHeight={true}
+                        navigation={true}
+                        modules={[Navigation]}
+                        ref={swiperRef2}
+                        onSwiper={(swiper) => console.log("swiper", swiper)}
                       >
-                        Subscribe + Save
-                        <Money data={selectedVariant?.sellingPlanAllocations?.edges[0].node?.priceAdjustments[0]?.price} as={"span"} className='mx-2' />
-                        <s><Money data={selectedVariant?.compareAtPrice} as={"span"} /></s>
-                      </AddToCartButton>
+                        {metaFields?.bundle_whatistarget_image && isJsonString(metaFields?.bundle_whatistarget_image) ?
+                          <>
+                            {JSON.parse(metaFields?.bundle_whatistarget_image).map((img, i) => {
+                              return (
+                                <SwiperSlide key={i}>
+                                  <Image
+                                    alt={""}
+                                    aspectRatio="0"
+                                    data={{ url: img }}
+                                    sizes="200vw"
+                                  />
+                                </SwiperSlide>
+                              )
+                            })}
+                          </>
+                          : null
+                        }
+                        <div className="short-info">
+                          *The model in these images is a paid model demonstrating use and intended results of the products, these are not actual customer images.
+                        </div>
+                      </Swiper>
+                      :
+                      (metaFields?.bundle_whatistarget_image && isJsonString(metaFields?.bundle_whatistarget_image) && JSON.parse(metaFields?.bundle_whatistarget_image).length == 1) || (typeof metaFields?.bundle_whatistarget_image == "object" && metaFields?.bundle_whatistarget_image.length == 1) ?
+                      <Image
+                        alt={""}
+                        aspectRatio="0"
+                        data={{ url: JSON.parse(metaFields?.bundle_whatistarget_image)[0] }}
+                        sizes="200vw"
+                        className='img-shadow'
+                      />
+                      : 
+                      typeof metaFields?.bundle_whatistarget_image == "string" ?
+                      <Image
+                        alt={""}
+                        aspectRatio="0"
+                        data={{ url: metaFields?.bundle_whatistarget_image }}
+                        sizes="200vw"
+                        className='img-shadow'
+                      />
+                      :                      null
+                    }
+
+                  </div>
+                </div>
+                <div className='col-sm-7'>
+                  <div className='p-4 px-5'>
+                    <h2>{isJsonString(metaFields?.target_title) ? JSON.parse(metaFields?.target_title) : metaFields?.target_title}</h2>
+                    {metaFields?.what_it_targets_text ?
+                      <div className='how_to_use_list'>
+                        {JSON.parse(metaFields?.what_it_targets_text).map((opt, i) => {
+                          return (
+                            <div key={i} className='mb-3'>
+                              <p className='mb-0'><strong>{JSON.parse(metaFields?.what_it_targets_heading)[i]}: </strong></p>
+                              <p>{opt}</p>
+                            </div>
+                          )
+                        })}
+                        <AddToCartButton
+                          fullBtn={false}
+                          disabled={!selectedVariant || !selectedVariant.availableForSale}
+                          onClick={() => {
+                            setTimeout(() => {
+                              window.location.href = window.location.href + '#cart-aside';
+                            }, 500);
+                          }}
+                          lines={
+                            selectedVariant
+                              ? [{
+                                merchandiseId: selectedVariant.id,
+                                quantity: quantity || 1
+                              }
+                              ]
+                              : []
+                          }
+                        >
+                          Add to Bag
+                          {selectedVariant ? <>
+                            <Money data={selectedVariant?.price} as={"span"} className='mx-2' />
+                            {selectedVariant?.compareAtPrice ? <s><Money data={selectedVariant?.compareAtPrice} as={"span"} /></s> : null}
+                          </> : null
+                          }
+                        </AddToCartButton>
+                      </div>
+                      : null
+                    }
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className='how_to_use_block mt-5'>
+              <div className='row flex-row-reverse align-items-center'>
+                <div className='col-sm-5'>
+                  {metaFields?.bundle_subscribe_save_image ?
+                    <div className='what_it_target_slider img-shadow'>
+                      <Image
+                        alt={""}
+                        aspectRatio="0"
+                        data={{ url: metaFields?.bundle_subscribe_save_image }}
+                        sizes="200vw"
+                      />
                     </div>
                     : null
                   }
+                </div>
+                <div className='col-sm-7'>
+                  <div className='p-4 px-5'>
+                    <h2>{isJsonString(metaFields?.["subscribe-title"]) ? JSON.parse(metaFields?.["subscribe-title"]) : metaFields?.["subscribe-title"]}</h2>
+                    <div dangerouslySetInnerHTML={{ __html: isJsonString(metaFields?.subscribe_and_save_desc) ? JSON.parse(metaFields?.subscribe_and_save_desc) : metaFields?.subscribe_and_save_desc }}></div>
+
+                    <div className='subscribe_save_block'>
+                      <div className='subscribe_save_text_block'>
+                        <img loading="lazy" src="https://cdn.shopify.com/s/files/1/0053/4462/4675/files/Ellipse_11_2.png?v=1686303350" alt="ellipse" width="24" height="24" />
+                        &nbsp; Subscribe & save 10% on each order!
+                      </div>
+                      <div className='subscribe_save_select'>
+                        {product?.sellingPlanGroups ?
+                          <select onChange={handleOptionChange}>
+                            {product?.sellingPlanGroups?.edges[0]?.node?.sellingPlans?.edges.map((data, index) => {
+                              return (
+                                <option key={index} value={product?.sellingPlanGroups?.edges[0]?.node?.options[0]?.values[index]}>{data?.node.name}</option>
+                              )
+                            })}
+                          </select>
+                          : null
+                        }
+                      </div>
+                    </div>
+                    <div className='whySubscribe'>
+                      <button onClick={() => setShow(true)} className='noStyle'>Why should I subscribe?&nbsp;
+                        <img src="https://cdn.shopify.com/s/files/1/0053/4462/4675/files/i-tip_2.svg?v=1686305428" alt="i" style={{ verticalAlign: "inherit" }} />
+                      </button>
+                    </div>
+                    {selectedVariant?.sellingPlanAllocations ?
+                      <div className='mt-3'>
+                        <AddToCartButton
+                          fullBtn={false}
+                          disabled={!selectedVariant || !selectedVariant.availableForSale}
+                          onClick={() => {
+                            setTimeout(() => {
+                              window.location.href = window.location.href + '#cart-aside';
+                            }, 500);
+                          }}
+                          lines={
+                            selectedVariant
+                              ? [{
+                                merchandiseId: selectedVariant.id,
+                                quantity: quantity || 1,
+                                sellingPlanId: selectedVariant?.sellingPlanAllocations?.edges[0].node?.sellingPlan?.id,
+                                // saveOption
+                              }
+                              ]
+                              : []
+                          }
+                        >
+                          Subscribe + Save
+                          {selectedVariant ? <>
+                            <Money data={selectedVariant?.sellingPlanAllocations?.edges[0].node?.priceAdjustments[0]?.price} as={"span"} className='mx-2' />
+                            {selectedVariant?.compareAtPrice ? <s><Money data={selectedVariant?.compareAtPrice} as={"span"} /></s> : null}
+                          </>
+                            : null
+                          }
+                        </AddToCartButton>
+                      </div>
+                      : null
+                    }
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+        : null
+      }
       <Modal show={show} onHide={handleClose} size='lg' centered>
         <Modal.Body>
           <p>Put your favorite Truly products on auto-ship and never worry about running about again! Simply select your desired frequency, and we’ll send you reminders a few days prior to each shipment.</p>
@@ -644,133 +674,138 @@ function ProductMain({ selectedVariant, product, variants, metaFields, showPopup
 
   return (
     <div className="product-main">
-      <h1 className='mb-2'>{title}</h1>
-      {metaFields?.bundle_product_short_title ?
-        <p><strong>
-          {isJsonString(metaFields?.bundle_product_short_title) ?
-            JSON.parse(metaFields?.bundle_product_short_title) :
-            metaFields?.bundle_product_short_title}
-        </strong></p>
-        :
-        null
-      }
-      {metaFields?.bundle_good_to_know ?
-        <div className='good_to_know' dangerouslySetInnerHTML={{ __html: metaFields?.bundle_good_to_know }}></div>
-        :
-        metaFields?.good_to_know ?
-          <div className='good_to_know' dangerouslySetInnerHTML={{ __html: metaFields?.good_to_know }}></div>
-          :
-          null
-      }
-      {metaFields?.bundle_product_short_descripti ?
-        <p dangerouslySetInnerHTML={{ __html: metaFields?.bundle_product_short_descripti }}></p>
-        :
-        <p>{description}</p>
-      }
-      {metaFields?.bundle_whats_inside ?
-        <div className='bundle_whats_inside'>
-          <h5>{isJsonString(metaFields?.whats_inside_title) ? JSON.parse(metaFields?.whats_inside_title) : metaFields?.whats_inside_title}</h5>
-          <div dangerouslySetInnerHTML={{ __html: metaFields?.bundle_whats_inside }}>
-          </div>
-        </div>
-        : null
-      }
-      <ProductPrice
-        selectedVariant={selectedVariant}
-        quantity={quantity}
-        handleQty={handleQty}
-        handleQtyChange={handleQtyChange}
-        showPopup={showPopup}
-        handleRadioChange={handleRadioChange}
-        activeOption={activeOption}
-      />
-      <Suspense
-        fallback={
-          <ProductForm
-            product={product}
+      {metaFields ?
+        <>
+          <h1 className='mb-2'>{title}</h1>
+          {metaFields?.bundle_product_short_title ?
+            <p><strong>
+              {isJsonString(metaFields?.bundle_product_short_title) ?
+                JSON.parse(metaFields?.bundle_product_short_title) :
+                metaFields?.bundle_product_short_title}
+            </strong></p>
+            :
+            null
+          }
+          {metaFields?.bundle_good_to_know ?
+            <div className='good_to_know' dangerouslySetInnerHTML={{ __html: metaFields?.bundle_good_to_know }}></div>
+            :
+            metaFields?.good_to_know ?
+              <div className='good_to_know' dangerouslySetInnerHTML={{ __html: metaFields?.good_to_know }}></div>
+              :
+              null
+          }
+          {metaFields?.bundle_product_short_descripti ?
+            <p dangerouslySetInnerHTML={{ __html: metaFields?.bundle_product_short_descripti }}></p>
+            :
+            <p>{description}</p>
+          }
+          {metaFields?.bundle_whats_inside ?
+            <div className='bundle_whats_inside'>
+              <h5>{isJsonString(metaFields?.whats_inside_title) ? JSON.parse(metaFields?.whats_inside_title) : metaFields?.whats_inside_title}</h5>
+              <div dangerouslySetInnerHTML={{ __html: metaFields?.bundle_whats_inside }}>
+              </div>
+            </div>
+            : null
+          }
+          <ProductPrice
             selectedVariant={selectedVariant}
-            variants={[]}
             quantity={quantity}
+            handleQty={handleQty}
+            handleQtyChange={handleQtyChange}
+            showPopup={showPopup}
+            handleRadioChange={handleRadioChange}
             activeOption={activeOption}
           />
-        }
-      >
-        <Await
-          errorElement="There was a problem loading product variants"
-          resolve={variants}
-        >
-          {(data) => (
-            <ProductForm
-              product={product}
-              selectedVariant={selectedVariant}
-              variants={data.product?.variants.nodes || []}
-              quantity={quantity}
-              activeOption={activeOption}
-            />
-          )}
-        </Await>
-      </Suspense>
-      <br />
-      {metaFields?.bundle_why_it_special && metaFields?.bundle_why_it_special_description ?
-        <div className='bundle_why_it_special'>
-          <h5 dangerouslySetInnerHTML={{ __html: isJsonString(metaFields?.bundle_why_it_special) ? JSON.parse(metaFields?.bundle_why_it_special) : metaFields?.bundle_why_it_special }}></h5>
-          <div dangerouslySetInnerHTML={{ __html: metaFields?.bundle_why_it_special_description }}></div>
-        </div>
-        : null
-      }
-      {metaFields?.bundle_what_makes_good_title && metaFields?.bundle_what_makes_good_descrip ?
-        <div className='bundle_why_it_special'>
-          <h5 dangerouslySetInnerHTML={{ __html: isJsonString(metaFields?.bundle_what_makes_good_title) ? JSON.parse(metaFields?.bundle_what_makes_good_title) : metaFields?.bundle_what_makes_good_title }}></h5>
-          <div dangerouslySetInnerHTML={{ __html: metaFields?.bundle_what_makes_good_descrip }}></div>
-        </div>
-        : null
-      }
-      {metaFields?.essential_ingradient_main_titl ?
-        <h5 className='mb-2' dangerouslySetInnerHTML={{ __html: isJsonString(metaFields?.essential_ingradient_main_titl) ? JSON.parse(metaFields?.essential_ingradient_main_titl) : metaFields?.essential_ingradient_main_titl }}></h5>
-        : null
-      }
-      {metaFields?.title ?
-        <div className='ingrediant_tab'>
-          {JSON.parse(metaFields?.title).map((opt, i) => {
-            return (
-              <div className={`ingrediant_tab_panel ${openedNumber === i ? "active" : ""}`} key={opt}>
-                <div className='ingrediant_tab_header' onClick={() => setOpenedNumber(i !== openedNumber ? i : -1)}>
-                  {opt}
+          <Suspense
+            fallback={
+              <ProductForm
+                product={product}
+                selectedVariant={selectedVariant}
+                variants={[]}
+                quantity={quantity}
+                activeOption={activeOption}
+              />
+            }
+          >
+            <Await
+              errorElement="There was a problem loading product variants"
+              resolve={variants}
+            >
+              {(data) => (
+                <ProductForm
+                  product={product}
+                  selectedVariant={selectedVariant}
+                  variants={data.product?.variants.nodes || []}
+                  quantity={quantity}
+                  activeOption={activeOption}
+                />
+              )}
+            </Await>
+          </Suspense>
+          <br />
+          {metaFields?.bundle_why_it_special && metaFields?.bundle_why_it_special_description ?
+            <div className='bundle_why_it_special'>
+              <h5 dangerouslySetInnerHTML={{ __html: isJsonString(metaFields?.bundle_why_it_special) ? JSON.parse(metaFields?.bundle_why_it_special) : metaFields?.bundle_why_it_special }}></h5>
+              <div dangerouslySetInnerHTML={{ __html: metaFields?.bundle_why_it_special_description }}></div>
+            </div>
+            : null
+          }
+          {metaFields?.bundle_what_makes_good_title && metaFields?.bundle_what_makes_good_descrip ?
+            <div className='bundle_why_it_special'>
+              <h5 dangerouslySetInnerHTML={{ __html: isJsonString(metaFields?.bundle_what_makes_good_title) ? JSON.parse(metaFields?.bundle_what_makes_good_title) : metaFields?.bundle_what_makes_good_title }}></h5>
+              <div dangerouslySetInnerHTML={{ __html: metaFields?.bundle_what_makes_good_descrip }}></div>
+            </div>
+            : null
+          }
+          {metaFields?.essential_ingradient_main_titl ?
+            <h5 className='mb-2' dangerouslySetInnerHTML={{ __html: isJsonString(metaFields?.essential_ingradient_main_titl) ? JSON.parse(metaFields?.essential_ingradient_main_titl) : metaFields?.essential_ingradient_main_titl }}></h5>
+            : null
+          }
+          {metaFields?.title ?
+            <div className='ingrediant_tab'>
+              {JSON.parse(metaFields?.title).map((opt, i) => {
+                return (
+                  <div className={`ingrediant_tab_panel ${openedNumber === i ? "active" : ""}`} key={opt}>
+                    <div className='ingrediant_tab_header' onClick={() => setOpenedNumber(i !== openedNumber ? i : -1)}>
+                      {opt}
+                      <span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="9.334" height="17.334" viewBox="0 0 9.334 17.334">
+                          <path d="M4.695,1.695a.667.667,0,0,1,.944,0l8,8a.667.667,0,0,1,0,.944l-8,8a.668.668,0,1,1-.944-.944l7.529-7.528L4.695,2.639a.667.667,0,0,1,0-.944Z" transform="translate(-4.5 -1.5)" fill="var(--color-dark)" fillRule="evenodd"></path>
+                        </svg>
+                      </span>
+                    </div>
+                    {metaFields?.description_essen ?
+                      <div className='ingrediant_tab_body' style={openedNumber === i ? showStyle : hideStyle} dangerouslySetInnerHTML={{ __html: JSON.parse(metaFields?.description_essen)[i] }}>
+                      </div>
+                      : null
+                    }
+                  </div>
+                )
+              })}
+            </div>
+            : null
+          }
+          {metaFields?.key_ingredients_text ?
+            <div className='ingrediant_tab'>
+              <div className={`ingrediant_tab_panel ${openedNumber2 ? "active" : ""}`}>
+                <div className='ingrediant_tab_header' onClick={() => setOpenedNumber2(!openedNumber2)}>
+                  Full ingredients:
                   <span>
                     <svg xmlns="http://www.w3.org/2000/svg" width="9.334" height="17.334" viewBox="0 0 9.334 17.334">
                       <path d="M4.695,1.695a.667.667,0,0,1,.944,0l8,8a.667.667,0,0,1,0,.944l-8,8a.668.668,0,1,1-.944-.944l7.529-7.528L4.695,2.639a.667.667,0,0,1,0-.944Z" transform="translate(-4.5 -1.5)" fill="var(--color-dark)" fillRule="evenodd"></path>
                     </svg>
                   </span>
                 </div>
-                {metaFields?.description_essen ?
-                  <div className='ingrediant_tab_body' style={openedNumber === i ? showStyle : hideStyle} dangerouslySetInnerHTML={{ __html: JSON.parse(metaFields?.description_essen)[i] }}>
+                {metaFields?.key_ingredients_text ?
+                  <div className='ingrediant_tab_body' style={openedNumber2 ? showStyle : hideStyle} dangerouslySetInnerHTML={{ __html: metaFields?.key_ingredients_text }}>
                   </div>
                   : null
                 }
               </div>
-            )
-          })}
-        </div>
-        : null
-      }
-      {metaFields?.key_ingredients_text ?
-        <div className='ingrediant_tab'>
-          <div className={`ingrediant_tab_panel ${openedNumber2 ? "active" : ""}`}>
-            <div className='ingrediant_tab_header' onClick={() => setOpenedNumber2(!openedNumber2)}>
-              Full ingredients:
-              <span>
-                <svg xmlns="http://www.w3.org/2000/svg" width="9.334" height="17.334" viewBox="0 0 9.334 17.334">
-                  <path d="M4.695,1.695a.667.667,0,0,1,.944,0l8,8a.667.667,0,0,1,0,.944l-8,8a.668.668,0,1,1-.944-.944l7.529-7.528L4.695,2.639a.667.667,0,0,1,0-.944Z" transform="translate(-4.5 -1.5)" fill="var(--color-dark)" fillRule="evenodd"></path>
-                </svg>
-              </span>
             </div>
-            {metaFields?.key_ingredients_text ?
-              <div className='ingrediant_tab_body' style={openedNumber2 ? showStyle : hideStyle} dangerouslySetInnerHTML={{ __html: metaFields?.key_ingredients_text }}>
-              </div>
-              : null
-            }
-          </div>
-        </div>
+            : null
+          }
+        </>
         : null
       }
     </div>
@@ -791,17 +826,21 @@ function ProductPrice({ selectedVariant, quantity, handleQtyChange, handleQty, s
           <span></span>
           <div className=''>
             <p className='mb-0'><small>One-time purchase</small></p>
-            {selectedVariant?.compareAtPrice ? (
+            {selectedVariant && selectedVariant?.compareAtPrice ? (
               <>
                 <div className="product-price-on-sale">
-                  {selectedVariant ? <Money data={selectedVariant.price} /> : null}
-                  <s>
-                    <Money data={selectedVariant.compareAtPrice} />
-                  </s>
+                  {selectedVariant ? <>
+                    <Money data={selectedVariant.price} />
+                    <s>
+                      <Money data={selectedVariant && selectedVariant.compareAtPrice} />
+                    </s>
+                  </>
+                    : null
+                  }
                 </div>
               </>
             ) : (
-              selectedVariant?.price && <Money data={selectedVariant?.price} />
+              selectedVariant && selectedVariant?.price && <Money data={selectedVariant?.price} />
             )}
           </div>
         </div>
@@ -821,17 +860,21 @@ function ProductPrice({ selectedVariant, quantity, handleQtyChange, handleQty, s
             <span></span>
             <div className=''>
               <p className='mb-0'><small>Subscribe & save 10% Off</small></p>
-              {selectedVariant?.compareAtPrice ? (
+              {selectedVariant && selectedVariant?.compareAtPrice ? (
                 <>
                   <div className="product-price-on-sale">
-                    {selectedVariant ? <Money data={selectedVariant?.sellingPlanAllocations?.edges[0].node?.priceAdjustments[0]?.price} /> : null}
-                    <s>
-                      <Money data={selectedVariant?.compareAtPrice} />
-                    </s>
+                    {selectedVariant ? <>
+                      <Money data={selectedVariant?.sellingPlanAllocations?.edges[0].node?.priceAdjustments[0]?.price} />
+                      <s>
+                        <Money data={selectedVariant && selectedVariant?.compareAtPrice} />
+                      </s>
+                    </>
+                      : null
+                    }
                   </div>
                 </>
               ) : (
-                selectedVariant?.sellingPlanAllocations?.edges[0].node?.priceAdjustments[0]?.price && <Money data={selectedVariant?.sellingPlanAllocations?.edges[0].node?.priceAdjustments[0]?.price} />
+                selectedVariant && selectedVariant?.sellingPlanAllocations?.edges[0].node?.priceAdjustments[0]?.price && <Money data={selectedVariant?.sellingPlanAllocations?.edges[0].node?.priceAdjustments[0]?.price} />
               )}
             </div>
           </div>
