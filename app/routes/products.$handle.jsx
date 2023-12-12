@@ -552,7 +552,8 @@ export default function Product() {
                             ? [{
                               merchandiseId: selectedVariant.id,
                               quantity: quantity || 1,
-                              sellingPlanId: selectedVariant?.sellingPlanAllocations?.edges[0].node?.sellingPlan?.id
+                              sellingPlanId: selectedVariant?.sellingPlanAllocations?.edges[0].node?.sellingPlan?.id,
+                              // saveOption
                             }
                             ]
                             : []
