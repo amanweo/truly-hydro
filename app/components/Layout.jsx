@@ -8,6 +8,7 @@ import {
   PredictiveSearchForm,
   PredictiveSearchResults,
 } from '~/components/Search';
+import { Image } from '@shopify/hydrogen';
 
 /**
  * @param {LayoutProps}
@@ -19,6 +20,7 @@ export function Layout({ cart, children = null, footer, footer2, header, isLogge
       {/* <SearchAside /> */}
       <MobileMenuAside menu={header.menu} />
       <Header header={header} cart={cart} isLoggedIn={isLoggedIn} />
+      <HeaderCounter />
       <main>{children}</main>
       <Suspense>
         <Await resolve={footer}>
@@ -27,6 +29,31 @@ export function Layout({ cart, children = null, footer, footer2, header, isLogge
       </Suspense>
     </>
   );
+}
+
+export function HeaderCounter() {
+  return (
+    <div className='countdown__wrapper'>
+      <div className='container-fluid'>
+        <div className='d-flex justify-content-center'>
+          <div className=''>
+            <a href='/pages/santa-hat' className='count__downCols'>
+              <Image
+                alt={""}
+                aspectRatio="0"
+                data={{ url: 'https://www.trulybeauty.com/cdn/shop/files/Dec-off7.jpg?v=1702271774' }}
+                sizes="200vw"
+                style={{width: "auto"}}
+              />
+            </a>
+          </div>
+          <div className=''>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  )
 }
 
 /**

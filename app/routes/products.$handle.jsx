@@ -11,7 +11,7 @@ import {
 } from '@shopify/hydrogen';
 import { getVariantUrl } from '~/utils';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation } from 'swiper/modules';
+import { Navigation, Mousewheel } from 'swiper/modules';
 import { useRef } from 'react';
 import { useState } from 'react';
 import LightGallery from 'lightgallery/react';
@@ -275,7 +275,8 @@ export default function Product() {
               <div className='product_image_thumb'>
                 <Swiper
                   spaceBetween={0}
-                  slidesPerView={4}
+                  slidesPerView={3}
+                  mousewheel={true}
                   direction={'vertical'}
                   onSlideChange={handleSlideChange}
                   autoHeight={true}
@@ -283,7 +284,7 @@ export default function Product() {
                     nextEl: '.custom-next-arrow',
                     prevEl: '.custom-prev-arrow',
                   }}
-                  modules={[Navigation]}
+                  modules={[Mousewheel, Navigation]}
                   ref={swiperRef}
                   onSwiper={(swiper) => console.log("swiper", swiper)}
                 >
@@ -354,32 +355,34 @@ export default function Product() {
                           )
                         })}
                       </ol>
-
-                      <AddToCartButton
-                        fullBtn={false}
-                        disabled={!selectedVariant || !selectedVariant.availableForSale}
-                        onClick={() => {
-                          setTimeout(() => {
-                            window.location.href = window.location.href + '#cart-aside';
-                          }, 500);
-                        }}
-                        lines={
-                          selectedVariant
-                            ? [{
-                              merchandiseId: selectedVariant.id,
-                              quantity: quantity || 1
-                            }
-                            ]
-                            : []
-                        }
-                      >
-                        Add to Bag
-                        {selectedVariant ? <>
-                          <Money data={selectedVariant?.price} as={"span"} className='mx-2' />
-                          {selectedVariant?.compareAtPrice ? <s><Money data={selectedVariant?.compareAtPrice} as={"span"} /></s> : null}
-                        </> : null
-                        }
-                      </AddToCartButton>
+                      {selectedVariant?.availableForSale ?
+                        <AddToCartButton
+                          fullBtn={false}
+                          disabled={!selectedVariant || !selectedVariant.availableForSale}
+                          onClick={() => {
+                            setTimeout(() => {
+                              window.location.href = window.location.href + '#cart-aside';
+                            }, 500);
+                          }}
+                          lines={
+                            selectedVariant
+                              ? [{
+                                merchandiseId: selectedVariant.id,
+                                quantity: quantity || 1
+                              }
+                              ]
+                              : []
+                          }
+                        >
+                          Add to Bag
+                          {selectedVariant ? <>
+                            <Money data={selectedVariant?.price} as={"span"} className='mx-2' />
+                            {selectedVariant?.compareAtPrice ? <s><Money data={selectedVariant?.compareAtPrice} as={"span"} /></s> : null}
+                          </> : null
+                          }
+                        </AddToCartButton>
+                        : null
+                      }
                     </div>
                     : null
                   }
@@ -411,193 +414,209 @@ export default function Product() {
                 }
               </div>
             </div>
-
-            <div className='how_to_use_block mt-5'>
-              <div className='row align-items-center'>
-                <div className='col-sm-5'>
-                  <div className='what_it_target_slider'>
-                    {(metaFields?.bundle_whatistarget_image && isJsonString(metaFields?.bundle_whatistarget_image) && JSON.parse(metaFields?.bundle_whatistarget_image).length > 1) || (typeof metaFields?.bundle_whatistarget_image == "object" && metaFields?.bundle_whatistarget_image.length > 1) ?
-                      <Swiper
-                        spaceBetween={0}
-                        slidesPerView={1}
-                        loop={true}
-                        onSlideChange={handleSlideChange2}
-                        autoHeight={true}
-                        navigation={true}
-                        modules={[Navigation]}
-                        ref={swiperRef2}
-                        onSwiper={(swiper) => console.log("swiper", swiper)}
-                      >
-                        {metaFields?.bundle_whatistarget_image && isJsonString(metaFields?.bundle_whatistarget_image) ?
-                          <>
-                            {JSON.parse(metaFields?.bundle_whatistarget_image).map((img, i) => {
-                              return (
-                                <SwiperSlide key={i}>
-                                  <Image
-                                    alt={""}
-                                    aspectRatio="0"
-                                    data={{ url: img }}
-                                    sizes="200vw"
-                                  />
-                                </SwiperSlide>
-                              )
-                            })}
-                          </>
-                          : null
-                        }
-                        <div className="short-info">
-                          *The model in these images is a paid model demonstrating use and intended results of the products, these are not actual customer images.
+            {metaFields?.bundle_whatistarget_image && metaFields?.what_it_targets_text ?
+              <div className='how_to_use_block mt-5'>
+                <div className='row align-items-center'>
+                  <div className='col-sm-5'>
+                    <div className='what_it_target_slider'>
+                      {(metaFields?.bundle_whatistarget_image && isJsonString(metaFields?.bundle_whatistarget_image) && JSON.parse(metaFields?.bundle_whatistarget_image).length > 1) || (typeof metaFields?.bundle_whatistarget_image == "object" && metaFields?.bundle_whatistarget_image.length > 1) ?
+                        <div>
+                          <div className='img-shadow'>
+                            <Swiper
+                              spaceBetween={0}
+                              slidesPerView={1}
+                              loop={true}
+                              onSlideChange={handleSlideChange2}
+                              autoHeight={true}
+                              navigation={true}
+                              modules={[Navigation]}
+                              ref={swiperRef2}
+                              onSwiper={(swiper) => console.log("swiper", swiper)}
+                            >
+                              {metaFields?.bundle_whatistarget_image && isJsonString(metaFields?.bundle_whatistarget_image) ?
+                                <>
+                                  {JSON.parse(metaFields?.bundle_whatistarget_image).map((img, i) => {
+                                    return (
+                                      <SwiperSlide key={i}>
+                                        <Image
+                                          alt={""}
+                                          aspectRatio="0"
+                                          data={{ url: img }}
+                                          sizes="200vw"
+                                        />
+                                      </SwiperSlide>
+                                    )
+                                  })}
+                                </>
+                                : null
+                              }
+                            </Swiper>
+                          </div>
+                          <div className="short-info">
+                            *The model in these images is a paid model demonstrating use and intended results of the products, these are not actual customer images.
+                          </div>
                         </div>
-                      </Swiper>
-                      :
-                      (metaFields?.bundle_whatistarget_image && isJsonString(metaFields?.bundle_whatistarget_image) && JSON.parse(metaFields?.bundle_whatistarget_image).length == 1) || (typeof metaFields?.bundle_whatistarget_image == "object" && metaFields?.bundle_whatistarget_image.length == 1) ?
-                      <Image
-                        alt={""}
-                        aspectRatio="0"
-                        data={{ url: JSON.parse(metaFields?.bundle_whatistarget_image)[0] }}
-                        sizes="200vw"
-                        className='img-shadow'
-                      />
-                      : 
-                      typeof metaFields?.bundle_whatistarget_image == "string" ?
-                      <Image
-                        alt={""}
-                        aspectRatio="0"
-                        data={{ url: metaFields?.bundle_whatistarget_image }}
-                        sizes="200vw"
-                        className='img-shadow'
-                      />
-                      :                      null
-                    }
+                        :
+                        (metaFields?.bundle_whatistarget_image && isJsonString(metaFields?.bundle_whatistarget_image) && JSON.parse(metaFields?.bundle_whatistarget_image).length == 1) || (typeof metaFields?.bundle_whatistarget_image == "object" && metaFields?.bundle_whatistarget_image.length == 1) ?
+                          <Image
+                            alt={""}
+                            aspectRatio="0"
+                            data={{ url: JSON.parse(metaFields?.bundle_whatistarget_image)[0] }}
+                            sizes="200vw"
+                            className='img-shadow'
+                          />
+                          :
+                          typeof metaFields?.bundle_whatistarget_image == "string" ?
+                            <Image
+                              alt={""}
+                              aspectRatio="0"
+                              data={{ url: metaFields?.bundle_whatistarget_image }}
+                              sizes="200vw"
+                              className='img-shadow'
+                            />
+                            : null
+                      }
 
+                    </div>
                   </div>
-                </div>
-                <div className='col-sm-7'>
-                  <div className='p-4 px-5'>
-                    <h2>{isJsonString(metaFields?.target_title) ? JSON.parse(metaFields?.target_title) : metaFields?.target_title}</h2>
-                    {metaFields?.what_it_targets_text ?
-                      <div className='how_to_use_list'>
-                        {JSON.parse(metaFields?.what_it_targets_text).map((opt, i) => {
-                          return (
-                            <div key={i} className='mb-3'>
-                              <p className='mb-0'><strong>{JSON.parse(metaFields?.what_it_targets_heading)[i]}: </strong></p>
-                              <p>{opt}</p>
-                            </div>
-                          )
-                        })}
-                        <AddToCartButton
-                          fullBtn={false}
-                          disabled={!selectedVariant || !selectedVariant.availableForSale}
-                          onClick={() => {
-                            setTimeout(() => {
-                              window.location.href = window.location.href + '#cart-aside';
-                            }, 500);
-                          }}
-                          lines={
-                            selectedVariant
-                              ? [{
-                                merchandiseId: selectedVariant.id,
-                                quantity: quantity || 1
+                  <div className='col-sm-7'>
+                    <div className='p-4 px-5'>
+                      <h2>{isJsonString(metaFields?.target_title) ? JSON.parse(metaFields?.target_title) : metaFields?.target_title}</h2>
+                      {metaFields?.what_it_targets_text ?
+                        <div className='how_to_use_list'>
+                          {JSON.parse(metaFields?.what_it_targets_text).map((opt, i) => {
+                            return (
+                              <div key={i} className='mb-3'>
+                                <p className='mb-0'><strong>{JSON.parse(metaFields?.what_it_targets_heading)[i]}: </strong></p>
+                                <p>{opt}</p>
+                              </div>
+                            )
+                          })}
+                          {selectedVariant?.availableForSale ?
+                            <AddToCartButton
+                              fullBtn={false}
+                              disabled={!selectedVariant || !selectedVariant.availableForSale}
+                              onClick={() => {
+                                setTimeout(() => {
+                                  window.location.href = window.location.href + '#cart-aside';
+                                }, 500);
+                              }}
+                              lines={
+                                selectedVariant
+                                  ? [{
+                                    merchandiseId: selectedVariant.id,
+                                    quantity: quantity || 1
+                                  }
+                                  ]
+                                  : []
                               }
-                              ]
-                              : []
-                          }
-                        >
-                          Add to Bag
-                          {selectedVariant ? <>
-                            <Money data={selectedVariant?.price} as={"span"} className='mx-2' />
-                            {selectedVariant?.compareAtPrice ? <s><Money data={selectedVariant?.compareAtPrice} as={"span"} /></s> : null}
-                          </> : null
-                          }
-                        </AddToCartButton>
-                      </div>
-                      : null
-                    }
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className='how_to_use_block mt-5'>
-              <div className='row flex-row-reverse align-items-center'>
-                <div className='col-sm-5'>
-                  {metaFields?.bundle_subscribe_save_image ?
-                    <div className='what_it_target_slider img-shadow'>
-                      <Image
-                        alt={""}
-                        aspectRatio="0"
-                        data={{ url: metaFields?.bundle_subscribe_save_image }}
-                        sizes="200vw"
-                      />
-                    </div>
-                    : null
-                  }
-                </div>
-                <div className='col-sm-7'>
-                  <div className='p-4 px-5'>
-                    <h2>{isJsonString(metaFields?.["subscribe-title"]) ? JSON.parse(metaFields?.["subscribe-title"]) : metaFields?.["subscribe-title"]}</h2>
-                    <div dangerouslySetInnerHTML={{ __html: isJsonString(metaFields?.subscribe_and_save_desc) ? JSON.parse(metaFields?.subscribe_and_save_desc) : metaFields?.subscribe_and_save_desc }}></div>
-
-                    <div className='subscribe_save_block'>
-                      <div className='subscribe_save_text_block'>
-                        <img loading="lazy" src="https://cdn.shopify.com/s/files/1/0053/4462/4675/files/Ellipse_11_2.png?v=1686303350" alt="ellipse" width="24" height="24" />
-                        &nbsp; Subscribe & save 10% on each order!
-                      </div>
-                      <div className='subscribe_save_select'>
-                        {product?.sellingPlanGroups ?
-                          <select onChange={handleOptionChange}>
-                            {product?.sellingPlanGroups?.edges[0]?.node?.sellingPlans?.edges.map((data, index) => {
-                              return (
-                                <option key={index} value={product?.sellingPlanGroups?.edges[0]?.node?.options[0]?.values[index]}>{data?.node.name}</option>
-                              )
-                            })}
-                          </select>
-                          : null
-                        }
-                      </div>
-                    </div>
-                    <div className='whySubscribe'>
-                      <button onClick={() => setShow(true)} className='noStyle'>Why should I subscribe?&nbsp;
-                        <img src="https://cdn.shopify.com/s/files/1/0053/4462/4675/files/i-tip_2.svg?v=1686305428" alt="i" style={{ verticalAlign: "inherit" }} />
-                      </button>
-                    </div>
-                    {selectedVariant?.sellingPlanAllocations ?
-                      <div className='mt-3'>
-                        <AddToCartButton
-                          fullBtn={false}
-                          disabled={!selectedVariant || !selectedVariant.availableForSale}
-                          onClick={() => {
-                            setTimeout(() => {
-                              window.location.href = window.location.href + '#cart-aside';
-                            }, 500);
-                          }}
-                          lines={
-                            selectedVariant
-                              ? [{
-                                merchandiseId: selectedVariant.id,
-                                quantity: quantity || 1,
-                                sellingPlanId: selectedVariant?.sellingPlanAllocations?.edges[0].node?.sellingPlan?.id,
-                                // saveOption
+                            >
+                              Add to Bag
+                              {selectedVariant ? <>
+                                <Money data={selectedVariant?.price} as={"span"} className='mx-2' />
+                                {selectedVariant?.compareAtPrice ? <s><Money data={selectedVariant?.compareAtPrice} as={"span"} /></s> : null}
+                              </> : null
                               }
-                              ]
-                              : []
-                          }
-                        >
-                          Subscribe + Save
-                          {selectedVariant ? <>
-                            <Money data={selectedVariant?.sellingPlanAllocations?.edges[0].node?.priceAdjustments[0]?.price} as={"span"} className='mx-2' />
-                            {selectedVariant?.compareAtPrice ? <s><Money data={selectedVariant?.compareAtPrice} as={"span"} /></s> : null}
-                          </>
+                            </AddToCartButton>
                             : null
                           }
-                        </AddToCartButton>
+                        </div>
+                        : null
+                      }
+                    </div>
+                  </div>
+                </div>
+              </div>
+              : null
+            }
+
+            {metaFields?.bundle_subscribe_save_image && metaFields?.["subscribe-title"] ?
+              <div className='how_to_use_block mt-5'>
+                <div className='row flex-row-reverse align-items-center'>
+                  <div className='col-sm-5'>
+                    {metaFields?.bundle_subscribe_save_image ?
+                      <div className='what_it_target_slider img-shadow'>
+                        <Image
+                          alt={""}
+                          aspectRatio="0"
+                          data={{ url: metaFields?.bundle_subscribe_save_image }}
+                          sizes="200vw"
+                        />
                       </div>
                       : null
                     }
                   </div>
+                  <div className='col-sm-7'>
+                    <div className='p-4 px-5'>
+                      <h2>{isJsonString(metaFields?.["subscribe-title"]) ? JSON.parse(metaFields?.["subscribe-title"]) : metaFields?.["subscribe-title"]}</h2>
+                      <div dangerouslySetInnerHTML={{ __html: isJsonString(metaFields?.subscribe_and_save_desc) ? JSON.parse(metaFields?.subscribe_and_save_desc) : metaFields?.subscribe_and_save_desc }}></div>
+
+                      <div className='subscribe_save_block'>
+                        <div className='subscribe_save_text_block'>
+                          <img loading="lazy" src="https://cdn.shopify.com/s/files/1/0053/4462/4675/files/Ellipse_11_2.png?v=1686303350" alt="ellipse" width="24" height="24" />
+                          &nbsp; Subscribe & save 10% on each order!
+                        </div>
+                        <div className='subscribe_save_select'>
+                          {product?.sellingPlanGroups ?
+                            <select onChange={handleOptionChange}>
+                              {product?.sellingPlanGroups?.edges[0]?.node?.sellingPlans?.edges.map((data, index) => {
+                                return (
+                                  <option key={index} value={product?.sellingPlanGroups?.edges[0]?.node?.options[0]?.values[index]}>{data?.node.name}</option>
+                                )
+                              })}
+                            </select>
+                            : null
+                          }
+                        </div>
+                      </div>
+                      <div className='whySubscribe'>
+                        <button onClick={() => setShow(true)} className='noStyle'>Why should I subscribe?&nbsp;
+                          <img src="https://cdn.shopify.com/s/files/1/0053/4462/4675/files/i-tip_2.svg?v=1686305428" alt="i" style={{ verticalAlign: "inherit" }} />
+                        </button>
+                      </div>
+                      {selectedVariant?.sellingPlanAllocations ?
+                        <div className='mt-3'>
+                          <AddToCartButton
+                            fullBtn={false}
+                            disabled={!selectedVariant || !selectedVariant.availableForSale}
+                            onClick={() => {
+                              setTimeout(() => {
+                                window.location.href = window.location.href + '#cart-aside';
+                              }, 500);
+                            }}
+                            lines={
+                              selectedVariant
+                                ? [{
+                                  merchandiseId: selectedVariant.id,
+                                  quantity: quantity || 1,
+                                  sellingPlanId: selectedVariant?.sellingPlanAllocations?.edges[0].node?.sellingPlan?.id,
+                                  // saveOption
+                                }
+                                ]
+                                : []
+                            }
+                          >
+                            {selectedVariant?.availableForSale ?
+                              "Subscribe + Save"
+                              :
+                              "Sold out"
+                            }
+                            {selectedVariant ? <>
+                              <Money data={selectedVariant?.sellingPlanAllocations?.edges[0].node?.priceAdjustments[0]?.price} as={"span"} className='mx-2' />
+                              {selectedVariant?.compareAtPrice ? <s><Money data={selectedVariant?.compareAtPrice} as={"span"} /></s> : null}
+                            </>
+                              : null
+                            }
+                          </AddToCartButton>
+                        </div>
+                        : null
+                      }
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
+              : null
+            }
           </div>
         </div>
         : null
@@ -658,7 +677,7 @@ function ProductMain({ selectedVariant, product, variants, metaFields, showPopup
   const { title, descriptionHtml, description } = product;
   const [openedNumber, setOpenedNumber] = useState(-1);
   const [openedNumber2, setOpenedNumber2] = useState(false);
-  const [activeOption, setActiveOption] = useState("onTime")
+  const [activeOption, setActiveOption] = useState("oneTime")
   const showStyle = {
     height: "auto"
   };
@@ -822,7 +841,7 @@ function ProductPrice({ selectedVariant, quantity, handleQtyChange, handleQty, s
     <div className="product-price">
       <label className='product_purchase_options custom_radio'>
         <div className='d-flex align-items-center justify-content-between'>
-          <input type='radio' checked={activeOption == "onTime"} id="onTime" name="sellingplan_option" value="onTime" onChange={handleRadioChange} />
+          <input type='radio' checked={activeOption == "oneTime"} id="oneTime" name="sellingplan_option" value="oneTime" onChange={handleRadioChange} />
           <span></span>
           <div className=''>
             <p className='mb-0'><small>One-time purchase</small></p>
@@ -844,7 +863,7 @@ function ProductPrice({ selectedVariant, quantity, handleQtyChange, handleQty, s
             )}
           </div>
         </div>
-        {activeOption == "onTime" ?
+        {activeOption == "oneTime" ?
           <div className='product_qty_block'>
             <button onClick={() => handleQty("dec")}>-</button>
             <input type='number' value={quantity || 1} onChange={handleQtyChange} />
@@ -922,7 +941,7 @@ function ProductForm({ product, selectedVariant, variants, quantity, activeOptio
         lines={
           selectedVariant
             ? [
-              activeOption !== "onTime" ? {
+              activeOption !== "oneTime" ? {
                 merchandiseId: selectedVariant.id,
                 quantity: quantity || 1,
                 sellingPlanId: selectedVariant?.sellingPlanAllocations?.edges[0].node?.sellingPlan?.id
@@ -936,7 +955,7 @@ function ProductForm({ product, selectedVariant, variants, quantity, activeOptio
             : []
         }
       >
-        {activeOption !== "onTime" ? "Subscribe Now" : selectedVariant?.availableForSale ? 'Add to Bag' : 'Sold out'}
+        {activeOption !== "oneTime" ? "Subscribe Now" : selectedVariant?.availableForSale ? 'Add to Bag' : 'Sold out'}
       </AddToCartButton>
     </div>
   );

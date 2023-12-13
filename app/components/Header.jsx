@@ -3,6 +3,7 @@ import { Suspense, useState } from 'react';
 import Images from "./images";
 import { PredictiveSearchForm, PredictiveSearchResults } from './Search';
 import { CartMain } from './Cart';
+import { Image } from '@shopify/hydrogen';
 
 /**
  * @param {HeaderProps}
@@ -36,6 +37,7 @@ export function Header({ header, isLoggedIn, cart }) {
     </header>
   );
 }
+
 
 /**
  * @param {{
