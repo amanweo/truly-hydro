@@ -120,15 +120,18 @@ function CartLineItem({ layout, line }) {
           <div className='mb-2'>
             <CartLinePrice line={line} as="span" />
           </div>
-          {/* <ul className='selectedOptions'>
+          <ul className='selectedOptions'>
             {selectedOptions.map((option) => (
               <li key={option.name}>
-                <small>
-                  {option.name}: {option.value}
-                </small>
+                {option.value !== "Default Title" ?
+                  <small>
+                    {option.name}: {option.value}
+                  </small>
+                  : null
+                }
               </li>
             ))}
-          </ul> */}
+          </ul>
         </div>
         <CartLineQuantity line={line} />
       </div>
