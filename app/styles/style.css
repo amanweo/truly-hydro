@@ -1164,6 +1164,10 @@ ul.selectedOptions {
 .cart-page-line-quantity {
     display: inline-block;
 }
+table.cart-table th {
+    border: 0;
+}
 table.cart-table td {
-    padding: 20px 0;
+    padding: 15px 0;
+    border: 0;
 }
