@@ -626,7 +626,7 @@ ul.product_search_list li {
     position: relative;
 }
 
-div[aria-labelledby="cart-lines"] {
+.cart-details div[aria-labelledby="cart-lines"] {
     overflow: hidden;
     overflow-y: auto;
     flex: 1 0 auto;
@@ -1151,4 +1151,19 @@ p.discounttext {
     font-size: 18px;
     opacity: 0.9;
     margin-bottom: 20px;
+}
+.cart {
+    position: relative;
+    z-index: 999;
+}
+ul.selectedOptions {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+.cart-page-line-quantity {
+    display: inline-block;
+}
+table.cart-table td {
+    padding: 20px 0;
 }
