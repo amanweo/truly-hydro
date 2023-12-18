@@ -706,10 +706,10 @@ function ProductMain({ selectedVariant, product, variants, metaFields, showPopup
             null
           }
           {metaFields?.bundle_good_to_know ?
-            <div className='good_to_know' dangerouslySetInnerHTML={{ __html: metaFields?.bundle_good_to_know }}></div>
+            <div className='good_to_know' dangerouslySetInnerHTML={{ __html: isJsonString(metaFields?.bundle_good_to_know) ? JSON.parse(metaFields?.bundle_good_to_know) : metaFields?.bundle_good_to_know }}></div>
             :
             metaFields?.good_to_know ?
-              <div className='good_to_know' dangerouslySetInnerHTML={{ __html: metaFields?.good_to_know }}></div>
+              <div className='good_to_know' dangerouslySetInnerHTML={{ __html: isJsonString(metaFields?.good_to_know) ? JSON.parse(metaFields?.good_to_know) :  metaFields?.good_to_know }}></div>
               :
               null
           }
@@ -721,7 +721,7 @@ function ProductMain({ selectedVariant, product, variants, metaFields, showPopup
           {metaFields?.bundle_whats_inside ?
             <div className='bundle_whats_inside'>
               <h5>{isJsonString(metaFields?.whats_inside_title) ? JSON.parse(metaFields?.whats_inside_title) : metaFields?.whats_inside_title}</h5>
-              <div dangerouslySetInnerHTML={{ __html: metaFields?.bundle_whats_inside }}>
+              <div dangerouslySetInnerHTML={{ __html: isJsonString(metaFields?.bundle_whats_inside) ? JSON.parse(metaFields?.bundle_whats_inside) : metaFields?.bundle_whats_inside }}>
               </div>
             </div>
             : null

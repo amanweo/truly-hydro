@@ -1,5 +1,5 @@
 import { CartForm, Image, Money } from '@shopify/hydrogen';
-import { Link } from '@remix-run/react';
+import { Link, NavLink } from '@remix-run/react';
 import { useVariantUrl } from '~/utils';
 
 /**
@@ -64,7 +64,7 @@ function CartDetails({ layout, cart, toggleCart }) {
 }
 function CartPageDetails({ layout, cart, toggleCart }) {
   const cartHasItems = !!cart && cart.totalQuantity > 0;
-  const linesCount = Boolean(cart?.lines?.nodes?.length || 0);
+  const linesCount = Boolean(cart?.lines?.nodes?.length || 0); 
   console.log("cart: ", cart)
   return (
     <div className="commonSection">
@@ -87,7 +87,6 @@ function CartPageDetails({ layout, cart, toggleCart }) {
             <div className='col-lg-3 col-sm-4'>
               {cartHasItems && (
                 <CartPageSummary cost={cart.cost} layout={layout}>
-                  <CartDiscounts discountCodes={cart.discountCodes} />
                   <div className='mt-3'>
                     <CartCheckoutActions checkoutUrl={cart.checkoutUrl} />
                   </div>
@@ -102,7 +101,7 @@ function CartPageDetails({ layout, cart, toggleCart }) {
 }
 
 function CartLinesTable({ lines, layout }) {
-  if (!lines) return null;
+  if (!lines || lines.nodes.length == 0) return null;
 
   return (
     <table className='table w-100 cart-table'>
@@ -116,7 +115,7 @@ function CartLinesTable({ lines, layout }) {
       <tbody>
         {lines.nodes.map((line) => (
           <tr key={line.id}>
-            <CartLineTableItem  line={line} layout={layout} />
+            <CartLineTableItem line={line} layout={layout} />
             <td>
               <CartLineQuantity line={line} layout={layout} />
             </td>
@@ -302,6 +301,26 @@ export function CartPageSummary({ cost, layout, children = null }) {
           )}
         </dd>
       </dl>
+      <dl className="cart-subtotal mb-0">
+        <dd className='w-100'>Shipping</dd>
+        <dd className='w-100 text-end'>
+          {cost?.totalDutyAmount?.amount ? (
+            <Money data={cost?.totalDutyAmount} />
+          ) : (
+            'TBD'
+          )}
+        </dd>
+      </dl>
+      <dl className="cart-subtotal mb-0">
+        <dd className='w-100'>Tax</dd>
+        <dd className='w-100 text-end'>
+          {cost?.totalTaxAmount?.amount ? (
+            <Money data={cost?.totalTaxAmount} />
+          ) : (
+            'TBD'
+          )}
+        </dd>
+      </dl>
       <dl className="cart-subtotal">
         <dt className='w-100'>Estimated Total</dt>
         <dt className='w-100 text-end'>
@@ -312,6 +331,8 @@ export function CartPageSummary({ cost, layout, children = null }) {
           )}
         </dt>
       </dl>
+      <p><small>FREE SHIPPING for orders $75+ US and $125+ worldwide</small></p>
+      <p><small>Save 10% with <NavLink to={"/pages/subscribe"} className="link">SUBSCRIPTIONS</NavLink> Taxes and <NavLink to={"/policies/shipping-policy"} className="link">SHIPPING</NavLink> calculated at checkout</small></p>
       {children}
     </div>
   );
@@ -440,10 +461,11 @@ export function CartEmpty({ hidden = false, layout = 'aside' }) {
       </p>
       <br />
       <Link
-        to="/collections"
+        to="/"
+        className='btn btn-primary'
         onClick={() => {
           if (layout === 'aside') {
-            window.location.href = '/collections';
+            window.location.href = '/';
           }
         }}
       >

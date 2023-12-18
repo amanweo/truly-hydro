@@ -577,7 +577,6 @@ ul.product_search_list li {
 .cart_quantity_outer {
     display: flex;
     border: #eee 1px solid;
-    border-radius: 40px;
     padding: 0;
     align-items: center;
 }
@@ -647,8 +646,9 @@ div#cart-aside aside main {
     min-height: 710px;
 }
 .quickview_modal_body .product_detail_images .swiper-wrapper {
-    height: 500px !important;
+    height: 470px !important;
     max-height: 100vh;
+    min-height: auto;
 }
 
 .product_detail_images .product_image_thumb {
@@ -1154,7 +1154,7 @@ p.discounttext {
 }
 .cart {
     position: relative;
-    z-index: 999;
+    z-index: 9;
 }
 ul.selectedOptions {
     list-style: none;
@@ -1166,6 +1166,7 @@ ul.selectedOptions {
 }
 table.cart-table th {
     border: 0;
+    padding: 5px 0;
 }
 table.cart-table td {
     padding: 15px 0;

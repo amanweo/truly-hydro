@@ -4,7 +4,7 @@ import { Suspense, useState } from 'react';
 import { CartForm, Image, Money } from '@shopify/hydrogen';
 import ReactDOM from 'react-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation } from 'swiper/modules';
+import { Mousewheel, Navigation } from 'swiper/modules';
 import { useRef } from 'react';
 import Images from '~/components/images';
 
@@ -488,8 +488,9 @@ export function QuickView(props) {
                 {/* <Await resolve={product?.images?.nodes}> */}
                 <Swiper
                   spaceBetween={0}
-                  slidesPerView={4}
+                  slidesPerView={3}
                   direction={'vertical'}
+                  mousewheel={true}
                   onSlideChange={props.handleSlideChange}
                   // onSwiper={(swiper) => swiper}
                   autoHeight={true}
@@ -497,7 +498,7 @@ export function QuickView(props) {
                     nextEl: '.custom-next-arrow',
                     prevEl: '.custom-prev-arrow',
                   }}
-                  modules={[Navigation]}
+                  modules={[Mousewheel, Navigation]}
                   ref={props.swiperRef}
                   onSwiper={(swiper) => console.log("swiper", swiper)}
                 >
