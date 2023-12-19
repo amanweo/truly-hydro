@@ -751,7 +751,7 @@ div#cart-aside aside main {
 .order_detail_header {
     display: flex;
     justify-content: space-between;
-    background-color: var(--primary);
+    background-color: #f9f1f3;
     padding: 15px;
 }
 

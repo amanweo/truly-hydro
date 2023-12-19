@@ -146,7 +146,7 @@ function AccountMenu() {
 function Logout() {
   return (
     <Form className="account-logout" method="POST" action="/account/logout">
-      &nbsp;<button type="submit" className='btn text-danger btn-sm '>LOGOUT</button>
+      &nbsp;<button type="submit" className='btn btn-danger btn-sm '>LOGOUT</button>
     </Form>
   );
 }

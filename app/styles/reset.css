@@ -293,6 +293,9 @@ a {
 .btn.btn-secondary:not(.noHover):after {
   border-color: var(--primary);
 }
+.btn.btn-danger:not(.noHover):after {
+  border-color: var(--primary2);
+}
 .btn:not(.noHover):hover:after {
   width: 100%;
 }
@@ -306,11 +309,20 @@ a {
   border-color: var(--primary);
   color: var(--color-dark);
 }
+.btn.btn-danger {
+  background: var(--primary2);
+  border-color: var(--primary2);
+  color: var(--color-light);
+}
 
 .btn.btn-primary,
 .btn.btn-secondary:not(.noHover):hover:after,
 .btn.btn-secondary:not(.noHover):focus:after,
-.btn.btn-secondary:not(.noHover):active:after{
+.btn.btn-secondary:not(.noHover):active:after,
+.btn.btn-danger:not(.noHover):hover:after,
+.btn.btn-danger:not(.noHover):focus:after,
+.btn.btn-danger:not(.noHover):active:after
+{
   background: var(--color-dark) !important;
   border-color: var(--color-dark) !important;
 }
