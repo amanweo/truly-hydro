@@ -21,6 +21,7 @@ import bootstrapStyle from 'bootstrap/dist/css/bootstrap.min.css';
 import resetStyles from './styles/reset.css';
 import gridStyles from './styles/grid.css';
 import allStyles from './styles/style.css';
+import responsiveStyles from './styles/responsive.css';
 import appStyles from './styles/app.css';
 import {Layout} from '~/components/Layout';
 import lightgallery from 'lightgallery/css/lightgallery.css';
@@ -56,6 +57,7 @@ export function links() {
     {rel: 'stylesheet', href: appStyles},
     {rel: 'stylesheet', href: resetStyles},
     {rel: 'stylesheet', href: allStyles},
+    {rel: 'stylesheet', href: responsiveStyles},
     {
       rel: 'preconnect',
       href: 'https://cdn.shopify.com',

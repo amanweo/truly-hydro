@@ -1112,7 +1112,7 @@ label.custom_radio input[type=radio]:checked+span {
 
 .count__downCntnt {
 	text-align: center;
-	width: 244px;
+	max-width: 244px;
     margin-left: 10px;
 }
 p.discounttext {
@@ -1171,4 +1171,13 @@ table.cart-table th {
 table.cart-table td {
     padding: 15px 0;
     border: 0;
+}
+ul.header_mobile_menu {
+    position: relative;
+    z-index: 99;
+    padding: 20px 0;
+    height: 100vh;
+    overflow: hidden;
+    overflow-y: auto;
+    list-style: none;
 }

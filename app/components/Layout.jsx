@@ -273,8 +273,12 @@ function SearchAside() {
  * @param {{menu: HeaderQuery['menu']}}
  */
 function MobileMenuAside({ menu }) {
+  // const closeAside = () => {
+  //   window.location.href = '';
+  // }
   return (
-    <Aside id="mobile-menu-aside" heading="MENU">
+    <Aside id="mobile-menu-aside" heading="">
+      <div className='cart_overlay' onClick={() => history.go(-1)}></div>
       <HeaderMenu menu={menu} viewport="mobile" />
     </Aside>
   );
