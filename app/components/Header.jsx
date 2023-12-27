@@ -89,7 +89,7 @@ export function HeaderMenu({ menu, viewport }) {
             ? new URL(item.url).pathname
             : item.url;
         return (
-          <li key={item.id} className={`${item.items.length > 0 ? "has-dropdown" : ""} ${active == item.id ? "active":""}`}>
+          <li key={item.id} className={`${item.items.length > 0 ? "has-dropdown" : ""} ${active == item.id ? "active" : ""}`}>
             <NavLink
               className="header-menu-item"
               end
@@ -102,11 +102,14 @@ export function HeaderMenu({ menu, viewport }) {
             </NavLink>
             {item.items.length > 0 ?
               <>
-                <button className='noStyle dropdown-caret' onClick={() => handleToggle(item.id)}>
-                  <svg xmlns="http://www.w3.org/2000/svg" width="9.334" height="17.334" viewBox="0 0 9.334 17.334">
-                    <path d="M4.695,1.695a.667.667,0,0,1,.944,0l8,8a.667.667,0,0,1,0,.944l-8,8a.668.668,0,1,1-.944-.944l7.529-7.528L4.695,2.639a.667.667,0,0,1,0-.944Z" transform="translate(-4.5 -1.5)" fill="currentColor" fillRule="evenodd"></path>
-                  </svg>
-                </button>
+                {viewport === 'mobile' ?
+                  <button className='noStyle dropdown-caret' onClick={() => handleToggle(item.id)}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="9.334" height="17.334" viewBox="0 0 9.334 17.334">
+                      <path d="M4.695,1.695a.667.667,0,0,1,.944,0l8,8a.667.667,0,0,1,0,.944l-8,8a.668.668,0,1,1-.944-.944l7.529-7.528L4.695,2.639a.667.667,0,0,1,0-.944Z" transform="translate(-4.5 -1.5)" fill="currentColor" fillRule="evenodd"></path>
+                    </svg>
+                  </button>
+                  : null
+                }
                 <ul>
                   {item.items.map((opt, i) => {
                     const url2 =

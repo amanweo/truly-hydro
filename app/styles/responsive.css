@@ -110,4 +110,7 @@
     li.has-dropdown.active .dropdown-caret {
         transform: rotate(90deg);
     }
+    .truly_header{
+        padding: 10px 0;
+    }
 }

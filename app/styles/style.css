@@ -1172,7 +1172,7 @@ table.cart-table td {
     padding: 15px 0;
     border: 0;
 }
-ul.header_mobile_menu {
+aside main ul.header_mobile_menu {
     position: relative;
     z-index: 99;
     padding: 20px 0;
