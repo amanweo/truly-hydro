@@ -43,7 +43,7 @@ export function HeaderCounter() {
   const minuteValue = useRef(null)
   const secondsValue = useRef(null)
   // Set Launch Date (ms)
-  const launchDate = new Date("Dec 25, 2023 23:59:59 UTC-08:00").getTime();
+  const launchDate = new Date("Mar 25, 2024 23:59:59 UTC-08:00").getTime();
   // End  Date
   const endDate = new Date().getTime();
   // Context object

@@ -1049,7 +1049,7 @@ label.custom_radio input[type=radio]:checked+span {
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	width: calc(100% - 244px);
+	/* width: calc(100% - 244px); */
 }
 
 /* .count__canvasStyle .container-canvas.days {
