@@ -19,6 +19,9 @@ import { Modal } from "react-bootstrap"
 
 import lgZoom from 'lightgallery/plugins/zoom';
 
+import { useStampedReviews } from '@frontend-sdk/stamped'
+import getConfig from '@frontend-config'
+
 /**
  * @type {V2_MetaFunction}
  */
@@ -108,6 +111,39 @@ function redirectToFirstVariant({ product, request }) {
       status: 302,
     },
   );
+}
+
+export function Stamped({ product, location }) {
+  // useEffect(() => {
+  //   // Load Stamped.io widget script
+  //   const script = document.createElement('script');
+  //   script.src = 'https://cdn2.stamped.io/files/widget.min.js';
+  //   script.setAttribute('data-api-key', "pubkey-y0bQR825X6K52BT67V84qf3OGso3o0");
+  //   script.setAttribute('id', "stamped-script-widget");
+  //   script.defer = true;
+  //   document.body.appendChild(script);
+
+  //   return () => {
+  //     // Clean up if needed (e.g., removing the script from the DOM)
+  //     document.body.removeChild(script);
+  //   };
+  // }, []);
+  const { storePlatformDomain } = getConfig()
+  useStampedReviews("pubkey-y0bQR825X6K52BT67V84qf3OGso3o0", storePlatformDomain)
+
+  return (
+    <div id="stamped-main-widget"
+      data-widget-style="standard"
+      data-product-id={"4808126857251"}
+      data-name={product?.title || ""}
+      data-url={`https://www.trulybeauty.com${location?.pathname}`}
+      data-image-url={product?.images?.nodes[0]?.url}
+      data-description={product.descriptionHtml || ""}
+      data-product-sku={product.handle}
+      data-product-type={product.productType}
+      data-offset="200">
+    </div>
+  )
 }
 
 export default function Product() {
@@ -231,6 +267,7 @@ export default function Product() {
   }, [videoPlay])
   console.log("saveOption: ", saveOption)
 
+
   return (
     <div className="commonSection product-page">
       <div className="container-fluid">
@@ -332,6 +369,10 @@ export default function Product() {
           </div>
         </div>
       </div>
+      <Stamped
+        product={product}
+        location={location}
+      />
 
       {metaFields ?
         <div className='container'>
@@ -414,6 +455,8 @@ export default function Product() {
                 }
               </div>
             </div>
+
+
             {metaFields?.bundle_whatistarget_image && metaFields?.what_it_targets_text ?
               <div className='how_to_use_block mt-5'>
                 <div className='row align-items-center'>
@@ -709,7 +752,7 @@ function ProductMain({ selectedVariant, product, variants, metaFields, showPopup
             <div className='good_to_know' dangerouslySetInnerHTML={{ __html: isJsonString(metaFields?.bundle_good_to_know) ? JSON.parse(metaFields?.bundle_good_to_know) : metaFields?.bundle_good_to_know }}></div>
             :
             metaFields?.good_to_know ?
-              <div className='good_to_know' dangerouslySetInnerHTML={{ __html: isJsonString(metaFields?.good_to_know) ? JSON.parse(metaFields?.good_to_know) :  metaFields?.good_to_know }}></div>
+              <div className='good_to_know' dangerouslySetInnerHTML={{ __html: isJsonString(metaFields?.good_to_know) ? JSON.parse(metaFields?.good_to_know) : metaFields?.good_to_know }}></div>
               :
               null
           }
@@ -1085,6 +1128,7 @@ const PRODUCT_FRAGMENT = `#graphql
     handle
     descriptionHtml
     description
+    productType
     options {
       name
       values
