@@ -21,7 +21,7 @@ export function Layout({ cart, children = null, footer, footer2, header, isLogge
       <MobileMenuAside menu={header.menu} />
       <Header header={header} cart={cart} isLoggedIn={isLoggedIn} />
       <main>
-        <HeaderCounter />
+        {/* <HeaderCounter /> */}
         {children}</main>
       <Suspense>
         <Await resolve={footer}>

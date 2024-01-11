@@ -1,12 +1,13 @@
 import { defer } from '@shopify/remix-oxygen';
 import { Await, useLoaderData, Link, useLocation } from '@remix-run/react';
-import { Suspense, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { CartForm, Image, Money } from '@shopify/hydrogen';
 import ReactDOM from 'react-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Mousewheel, Navigation } from 'swiper/modules';
 import { useRef } from 'react';
 import Images from '~/components/images';
+import { Stamped } from './products.$handle';
 
 /**
  * @type {V2_MetaFunction}
@@ -63,6 +64,15 @@ export default function Homepage() {
       collectionList.push(data[key]?.collection)
     }
   }
+
+  useEffect(() => {
+    setTimeout(() => {
+      console.log("window.StampedFn: ", StampedFn)
+      if (StampedFn) {
+        StampedFn.init({ apiKey: "pubkey-y0bQR825X6K52BT67V84qf3OGso3o0", storeUrl: "trulyorganic.myshopify.com" })
+      }
+    }, 500);
+  }, [])
 
   function showQuickView(data) {
     document.body.classList.add("modal_open");
@@ -128,12 +138,12 @@ export default function Homepage() {
     <div className="home">
       <Banner />
       <RotationalBar data={data.rotational} />
-      <BestSellers products={data.collection.products} showQuickView={showQuickView} />
+      <BestSellers products={data.collection.products} showQuickView={showQuickView} location={location} />
       {/* <FeaturedCollection collection={data.featuredCollection} /> */}
       <ContentBlock />
-      <RecommendedProducts products={data.recommendedProducts} showQuickView={showQuickView} />
+      <RecommendedProducts products={data.recommendedProducts} showQuickView={showQuickView} location={location} />
       <CollectionBlock list={collectionList} />
-      <CollectionProducts collection={data["collection1"]?.collection} showQuickView={showQuickView} />
+      <CollectionProducts collection={data["collection1"]?.collection} showQuickView={showQuickView} location={location} />
 
       {showView && ReactDOM.createPortal(
         <QuickView
@@ -235,7 +245,7 @@ function FeaturedCollection({ collection }) {
   );
 }
 
-export function ProductBlock({ product, showQuickView }) {
+export function ProductBlock({ product, showQuickView, location }) {
   return (
     <div className="productBox__outer mb-5">
       <div className="productBox__img">
@@ -261,6 +271,11 @@ export function ProductBlock({ product, showQuickView }) {
       </div>
       <Link to={`/products/${product.handle}`} className='productBox__content'>
         <h6 className='productBox__title'>{product.title}</h6>
+          <Stamped
+            type="review"
+            product={product}
+            location={location}
+          />
         <div className='productBox__price'>
           <Money data={product.priceRange.minVariantPrice} />
           {product.priceRange.minVariantPrice?.amount !== product.priceRange.maxVariantPrice?.amount ?
@@ -274,7 +289,7 @@ export function ProductBlock({ product, showQuickView }) {
     </div>
   )
 }
-export function ProductRender({ products, showQuickView }) {
+export function ProductRender({ products, showQuickView, location }) {
   return (
     <div className="row">
       {console.log("products: ", products)}
@@ -284,7 +299,7 @@ export function ProductRender({ products, showQuickView }) {
             key={product.id}
             className="col-6 col-sm-6 col-md-4 col-xl-20"
           >
-            <ProductBlock product={product} showQuickView={showQuickView} />
+            <ProductBlock product={product} showQuickView={showQuickView} location={location} />
           </div>
         </>
       ))}
@@ -297,7 +312,7 @@ export function ProductRender({ products, showQuickView }) {
         *   products: Promise<RecommendedProductsQuery>;
  * }}
       */
-function RecommendedProducts({ products, showQuickView }) {
+function RecommendedProducts({ products, showQuickView, location }) {
   return (
     <div className="commonSection">
       <div className='container-fluid'>
@@ -309,7 +324,7 @@ function RecommendedProducts({ products, showQuickView }) {
         <Suspense fallback={<div>Loading...</div>}>
           <Await resolve={products}>
             {({ products }) => (
-              <ProductRender products={products} showQuickView={showQuickView} />
+              <ProductRender products={products} showQuickView={showQuickView} location={location} />
             )}
           </Await>
         </Suspense>
@@ -318,7 +333,7 @@ function RecommendedProducts({ products, showQuickView }) {
     </div>
   );
 }
-function BestSellers({ products, showQuickView }) {
+function BestSellers({ products, showQuickView, location }) {
   console.log("products best: ", products)
   return (
     <div className="commonSection">
@@ -327,7 +342,7 @@ function BestSellers({ products, showQuickView }) {
           <p>Check our</p>
           <h2>Bestsellers</h2>
         </div>
-        <ProductRender products={products} showQuickView={showQuickView} />
+        <ProductRender products={products} showQuickView={showQuickView} location={location} />
         <br />
       </div>
     </div>
@@ -454,7 +469,7 @@ function CollectionProducts(props) {
               >
                 {props.collection.products.nodes && props.collection.products.nodes.map((product, i) => (
                   <SwiperSlide key={i}>
-                    <ProductBlock product={product} showQuickView={props.showQuickView} />
+                    <ProductBlock product={product} showQuickView={props.showQuickView} location={props.location} />
                   </SwiperSlide>
                 )
                 )}

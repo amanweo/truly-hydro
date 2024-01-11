@@ -19,9 +19,6 @@ import { Modal } from "react-bootstrap"
 
 import lgZoom from 'lightgallery/plugins/zoom';
 
-import { useStampedReviews } from '@frontend-sdk/stamped'
-import getConfig from '@frontend-config'
-
 /**
  * @type {V2_MetaFunction}
  */
@@ -113,35 +110,47 @@ function redirectToFirstVariant({ product, request }) {
   );
 }
 
-export function Stamped({ product, location }) {
-  // useEffect(() => {
-  //   // Load Stamped.io widget script
-  //   const script = document.createElement('script');
-  //   script.src = 'https://cdn2.stamped.io/files/widget.min.js';
-  //   script.setAttribute('data-api-key', "pubkey-y0bQR825X6K52BT67V84qf3OGso3o0");
-  //   script.setAttribute('id', "stamped-script-widget");
-  //   script.defer = true;
-  //   document.body.appendChild(script);
-
-  //   return () => {
-  //     // Clean up if needed (e.g., removing the script from the DOM)
-  //     document.body.removeChild(script);
-  //   };
-  // }, []);
-  const { storePlatformDomain } = getConfig()
-  useStampedReviews("pubkey-y0bQR825X6K52BT67V84qf3OGso3o0", storePlatformDomain)
+export function Stamped({ type, product, location }) {
+  useEffect(() => {
+    // // Load Stamped.io widget script
+    // const script = document.createElement('script');
+    // script.src = 'https://cdn2.stamped.io/files/widget.min.js';
+    // script.setAttribute('data-api-key', "pubkey-y0bQR825X6K52BT67V84qf3OGso3o0");
+    // script.setAttribute('id', "stamped-script-widget");
+    // script.defer = true;
+    // document.head.appendChild(script);
+    // return () => {
+    //   // Clean up if needed (e.g., removing the script from the DOM)
+    //   document.head.removeChild(script);
+    // };
+  }, []);
 
   return (
-    <div id="stamped-main-widget"
-      data-widget-style="standard"
-      data-product-id={"4808126857251"}
-      data-name={product?.title || ""}
-      data-url={`https://www.trulybeauty.com${location?.pathname}`}
-      data-image-url={product?.images?.nodes[0]?.url}
-      data-description={product.descriptionHtml || ""}
-      data-product-sku={product.handle}
-      data-product-type={product.productType}
-      data-offset="200">
+    <div>
+      {type == "main" ?
+        <div id="stamped-main-widget"
+          data-widget-style="standard"
+          data-product-id={product?.id && product?.id.split("/Product/")[1]}
+          data-name={product?.title || ""}
+          data-url={`https://www.trulybeauty.com${location?.pathname}`}
+          data-image-url={product?.images?.nodes[0]?.url}
+          data-description={product.descriptionHtml || ""}
+          data-product-sku={product.handle}
+          data-product-type={product.productType}
+          data-offset="200"
+          data-widget-type="full-page">
+        </div>
+        :
+        // <a href={`${location.pathname}/#review-single`}>
+          <span
+            className="stamped-product-reviews-badge"
+            data-product-sku={product?.handle}
+            data-id={product?.id && product?.id.split("/Product/")[1]}
+            data-product-title={product?.title || ""}
+            data-product-type={product.productType}
+          ></span>
+        // </a>
+      }
     </div>
   )
 }
@@ -267,6 +276,14 @@ export default function Product() {
   }, [videoPlay])
   console.log("saveOption: ", saveOption)
 
+  useEffect(() => {
+    setTimeout(() => {
+      console.log("window.StampedFn: ", StampedFn)
+      if (StampedFn) {
+        StampedFn.init({ apiKey: "pubkey-y0bQR825X6K52BT67V84qf3OGso3o0", storeUrl: "trulyorganic.myshopify.com" })
+      }
+    }, 1000);
+  }, [])
 
   return (
     <div className="commonSection product-page">
@@ -365,17 +382,14 @@ export default function Product() {
               handleQtyChange={handleQtyChange}
               handleQty={handleQty}
               quantity={quantity}
+              location={location}
             />
           </div>
         </div>
       </div>
-      <Stamped
-        product={product}
-        location={location}
-      />
 
       {metaFields ?
-        <div className='container'>
+        <div className='container mb-5'>
           <div className='how_to_use_block primary-bg mt-5'>
             <div className='row align-items-center'>
               <div className='col-sm-7'>
@@ -664,6 +678,13 @@ export default function Product() {
         </div>
         : null
       }
+
+      <hr />
+      <Stamped
+        type="main"
+        product={product}
+        location={location}
+      />
       <Modal show={show} onHide={handleClose} size='lg' centered>
         <Modal.Body>
           <p>Put your favorite Truly products on auto-ship and never worry about running about again! Simply select your desired frequency, and we’ll send you reminders a few days prior to each shipment.</p>
@@ -715,7 +736,7 @@ function ProductImage({ image }) {
  *   variants: Promise<ProductVariantsQuery>;
  * }}
  */
-function ProductMain({ selectedVariant, product, variants, metaFields, showPopup, quantity, handleQty, handleQtyChange }) {
+function ProductMain({ selectedVariant, product, variants, metaFields, showPopup, quantity, handleQty, handleQtyChange, location }) {
   console.log("metaFields: ", metaFields)
   const { title, descriptionHtml, description } = product;
   const [openedNumber, setOpenedNumber] = useState(-1);
@@ -733,14 +754,13 @@ function ProductMain({ selectedVariant, product, variants, metaFields, showPopup
     setActiveOption(e.target.value)
   }
 
-
   return (
     <div className="product-main">
       {metaFields ?
         <>
           <h1 className='mb-2'>{title}</h1>
           {metaFields?.bundle_product_short_title ?
-            <p><strong>
+            <p className='mb-1'><strong>
               {isJsonString(metaFields?.bundle_product_short_title) ?
                 JSON.parse(metaFields?.bundle_product_short_title) :
                 metaFields?.bundle_product_short_title}
@@ -748,6 +768,12 @@ function ProductMain({ selectedVariant, product, variants, metaFields, showPopup
             :
             null
           }
+          <Stamped
+            type="review"
+            product={product}
+            location={location}
+          />
+
           {metaFields?.bundle_good_to_know ?
             <div className='good_to_know' dangerouslySetInnerHTML={{ __html: isJsonString(metaFields?.bundle_good_to_know) ? JSON.parse(metaFields?.bundle_good_to_know) : metaFields?.bundle_good_to_know }}></div>
             :

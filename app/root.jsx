@@ -1,5 +1,5 @@
-import {useNonce} from '@shopify/hydrogen';
-import {defer} from '@shopify/remix-oxygen';
+import { useNonce } from '@shopify/hydrogen';
+import { defer } from '@shopify/remix-oxygen';
 import {
   Links,
   Meta,
@@ -14,7 +14,7 @@ import {
   isRouteErrorResponse,
 } from '@remix-run/react';
 import favicon from '../public/favicon.svg';
-import slickStyle from "slick-carousel/slick/slick.css"; 
+import slickStyle from "slick-carousel/slick/slick.css";
 import slickStyle2 from "slick-carousel/slick/slick-theme.css";
 import swiperStyle from 'swiper/css';
 import bootstrapStyle from 'bootstrap/dist/css/bootstrap.min.css';
@@ -23,15 +23,16 @@ import gridStyles from './styles/grid.css';
 import allStyles from './styles/style.css';
 import responsiveStyles from './styles/responsive.css';
 import appStyles from './styles/app.css';
-import {Layout} from '~/components/Layout';
+import { Layout } from '~/components/Layout';
 import lightgallery from 'lightgallery/css/lightgallery.css';
 import lightgalleryZoom from 'lightgallery/css/lg-zoom.css';
+import { useEffect } from 'react';
 
 /**
  * This is important to avoid re-fetching root queries on sub-navigations
  * @type {ShouldRevalidateFunction}
  */
-export const shouldRevalidate = ({formMethod, currentUrl, nextUrl}) => {
+export const shouldRevalidate = ({ formMethod, currentUrl, nextUrl }) => {
   // revalidate when a mutation is performed e.g add to cart, login...
   if (formMethod && formMethod !== 'GET') {
     return true;
@@ -47,17 +48,17 @@ export const shouldRevalidate = ({formMethod, currentUrl, nextUrl}) => {
 
 export function links() {
   return [
-    {rel: 'stylesheet', href: slickStyle},
-    {rel: 'stylesheet', href: slickStyle2},
-    {rel: 'stylesheet', href: swiperStyle},
-    {rel: 'stylesheet', href: lightgallery},
-    {rel: 'stylesheet', href: lightgalleryZoom},
-    {rel: 'stylesheet', href: bootstrapStyle},
-    {rel: 'stylesheet', href: gridStyles},
-    {rel: 'stylesheet', href: appStyles},
-    {rel: 'stylesheet', href: resetStyles},
-    {rel: 'stylesheet', href: allStyles},
-    {rel: 'stylesheet', href: responsiveStyles},
+    { rel: 'stylesheet', href: slickStyle },
+    { rel: 'stylesheet', href: slickStyle2 },
+    { rel: 'stylesheet', href: swiperStyle },
+    { rel: 'stylesheet', href: lightgallery },
+    { rel: 'stylesheet', href: lightgalleryZoom },
+    { rel: 'stylesheet', href: bootstrapStyle },
+    { rel: 'stylesheet', href: gridStyles },
+    { rel: 'stylesheet', href: appStyles },
+    { rel: 'stylesheet', href: resetStyles },
+    { rel: 'stylesheet', href: allStyles },
+    { rel: 'stylesheet', href: responsiveStyles },
     {
       rel: 'preconnect',
       href: 'https://cdn.shopify.com',
@@ -66,20 +67,20 @@ export function links() {
       rel: 'preconnect',
       href: 'https://shop.app',
     },
-    {rel: 'icon', type: 'image/svg+xml', href: favicon},
+    { rel: 'icon', type: 'image/svg+xml', href: favicon },
   ];
 }
 
 /**
  * @param {LoaderArgs}
  */
-export async function loader({context}) {
-  const {storefront, session, cart} = context;
+export async function loader({ context }) {
+  const { storefront, session, cart } = context;
   const customerAccessToken = await session.get('customerAccessToken');
   const publicStoreDomain = context.env.PUBLIC_STORE_DOMAIN;
 
   // validate the customer access token is valid
-  const {isLoggedIn, headers} = await validateCustomerAccessToken(
+  const { isLoggedIn, headers } = await validateCustomerAccessToken(
     session,
     customerAccessToken,
   );
@@ -118,7 +119,7 @@ export async function loader({context}) {
       isLoggedIn,
       publicStoreDomain,
     },
-    {headers},
+    { headers },
   );
 }
 
@@ -127,6 +128,27 @@ export default function App() {
   /** @type {LoaderReturnData} */
   const data = useLoaderData();
   console.log("App data: ", data)
+
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://cdn2.stamped.io/files/widget.min.js';
+    script.setAttribute('data-api-key', "pubkey-y0bQR825X6K52BT67V84qf3OGso3o0");
+    script.setAttribute('id', "stamped-script-widget");
+    script.defer = true;
+    document.head.appendChild(script);
+
+    setTimeout(() => {
+      console.log("window.StampedFn: ", StampedFn)
+      if (StampedFn) {
+        StampedFn.init({ apiKey: "pubkey-y0bQR825X6K52BT67V84qf3OGso3o0", storeUrl: "trulyorganic.myshopify.com" })
+      }
+    }, 1000);
+    return () => {
+      // Clean up if needed (e.g., removing the script from the DOM)
+      // document.head.removeChild(script);
+    };
+  }, [])
+
   return (
     <html lang="en">
       <head>
@@ -193,7 +215,7 @@ export function ErrorBoundary() {
 /**
  * @param {{error: Error}}
  */
-export const ErrorBoundaryV1 = ({error}) => {
+export const ErrorBoundaryV1 = ({ error }) => {
   // eslint-disable-next-line no-console
   console.error(error);
 
@@ -231,7 +253,7 @@ async function validateCustomerAccessToken(session, customerAccessToken) {
   let isLoggedIn = false;
   const headers = new Headers();
   if (!customerAccessToken?.accessToken || !customerAccessToken?.expiresAt) {
-    return {isLoggedIn, headers};
+    return { isLoggedIn, headers };
   }
 
   const expiresAt = new Date(customerAccessToken.expiresAt).getTime();
@@ -245,7 +267,7 @@ async function validateCustomerAccessToken(session, customerAccessToken) {
     isLoggedIn = true;
   }
 
-  return {isLoggedIn, headers};
+  return { isLoggedIn, headers };
 }
 
 const MENU_FRAGMENT = `#graphql

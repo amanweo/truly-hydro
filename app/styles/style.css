@@ -1181,3 +1181,17 @@ aside main ul.header_mobile_menu {
     overflow-y: auto;
     list-style: none;
 }
+
+div.stamped-container[data-widget-style], div[data-widget-style] div.stamped-container {
+    max-width: 1300px;
+}
+.stamped-product-reviews-badge{
+    margin-bottom: 10px;
+    display: block;
+}
+.stamped-badge-starrating .stamped-fa {
+    color: #000!important;
+}
+.stamped-badge-starrating {
+    vertical-align: text-top;
+}
