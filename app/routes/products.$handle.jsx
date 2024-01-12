@@ -259,7 +259,8 @@ export default function Product() {
     }
   }
 
-  const [saveOption, setSaveOption] = useState(product?.sellingPlanGroups?.edges[0]?.node?.options[0]?.values[0] || "")
+  // const [saveOption, setSaveOption] = useState(product?.sellingPlanGroups?.edges[0]?.node?.options[0]?.values[0] || "")
+  const [saveOption, setSaveOption] = useState(product?.sellingPlanGroups?.edges[0]?.node?.sellingPlans?.edges[0]?.node?.id || "")
   const handleOptionChange = (e) => {
     setSaveOption(e.target.value)
   }
@@ -618,7 +619,8 @@ export default function Product() {
                             <select onChange={handleOptionChange}>
                               {product?.sellingPlanGroups?.edges[0]?.node?.sellingPlans?.edges.map((data, index) => {
                                 return (
-                                  <option key={index} value={product?.sellingPlanGroups?.edges[0]?.node?.options[0]?.values[index]}>{data?.node.name}</option>
+                                  <option key={index} value={data?.node?.id}>{data?.node.name}</option>
+                                  // <option key={index} value={product?.sellingPlanGroups?.edges[0]?.node?.options[0]?.values[index]}>{data?.node.name}</option>
                                 )
                               })}
                             </select>
@@ -646,7 +648,7 @@ export default function Product() {
                                 ? [{
                                   merchandiseId: selectedVariant.id,
                                   quantity: quantity || 1,
-                                  sellingPlanId: selectedVariant?.sellingPlanAllocations?.edges[0].node?.sellingPlan?.id,
+                                  sellingPlanId: saveOption,
                                   // saveOption
                                 }
                                 ]
