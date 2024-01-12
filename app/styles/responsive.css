@@ -152,14 +152,8 @@
     .headingholder h2 {
         font-size: 40px;
     }
-    .InStyle__Box {
-        padding: 0 10px;
-    }
     .InStyle__Box h3 {
-        font-size: clamp(14px, 1.8vw, 30px);
-    }
-    .InStyle__Box h3 span {
-        background-size: 16px;
+        font-size: 40px;
     }
     .rotationalbar, .commonSection {
         padding: 30px 0;

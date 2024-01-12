@@ -142,13 +142,13 @@ export function Stamped({ type, product, location }) {
         </div>
         :
         // <a href={`${location.pathname}/#review-single`}>
-          <span
-            className="stamped-product-reviews-badge"
-            data-product-sku={product?.handle}
-            data-id={product?.id && product?.id.split("/Product/")[1]}
-            data-product-title={product?.title || ""}
-            data-product-type={product.productType}
-          ></span>
+        <span
+          className="stamped-product-reviews-badge"
+          data-product-sku={product?.handle}
+          data-id={product?.id && product?.id.split("/Product/")[1]}
+          data-product-title={product?.title || ""}
+          data-product-type={product.productType}
+        ></span>
         // </a>
       }
     </div>
@@ -283,7 +283,7 @@ export default function Product() {
       if (StampedFn) {
         StampedFn.init({ apiKey: "pubkey-y0bQR825X6K52BT67V84qf3OGso3o0", storeUrl: "trulyorganic.myshopify.com" })
       }
-      
+
       StampedFn.reloadUGC();
     }, 1000);
   }, [])
@@ -392,8 +392,8 @@ export default function Product() {
       </div>
 
       {metaFields ?
-        <div className='container mb-5'>
-          <div className='how_to_use_block primary-bg mt-5'>
+        <div className='how_to_use_block primary-bg mt-5 py-5'>
+          <div className='container'>
             <div className='row align-items-center'>
               <div className='col-sm-7'>
                 <div className='p-4 px-5'>
@@ -683,7 +683,6 @@ export default function Product() {
         : null
       }
 
-      <hr />
       <Stamped
         type="main"
         product={product}

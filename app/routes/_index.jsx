@@ -207,7 +207,7 @@ function RotationalBar({ data }) {
         <div className="row gx-0">
           {data.map((opt, i) => {
             return (
-              <div className='col-md-4' key={i}>
+              <div className='col-lg-4' key={i}>
                 <div className="InStyle__Box">
                   <h3><span><span>{opt?.text}</span></span></h3>
                   <div className='InStyle__Box_logo'>
@@ -355,7 +355,7 @@ function ContentBlock() {
     <div className='text_over_image primary-bg'>
       {/* <div className='container-fluid'> */}
         <div className='row g-0 justify-content-between align-items-center'>
-          <div className='col-sm-7'>
+          <div className='col-sm-7 d-none d-md-block'>
             <div className='bg_image_block'>
               <Image
                 alt={""}
