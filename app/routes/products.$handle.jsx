@@ -283,6 +283,8 @@ export default function Product() {
       if (StampedFn) {
         StampedFn.init({ apiKey: "pubkey-y0bQR825X6K52BT67V84qf3OGso3o0", storeUrl: "trulyorganic.myshopify.com" })
       }
+      
+      StampedFn.reloadUGC();
     }, 1000);
   }, [])
 
@@ -1015,7 +1017,7 @@ function ProductForm({ product, selectedVariant, variants, quantity, activeOptio
               activeOption !== "oneTime" ? {
                 merchandiseId: selectedVariant.id,
                 quantity: quantity || 1,
-                sellingPlanId: selectedVariant?.sellingPlanAllocations?.edges[0].node?.sellingPlan?.id
+                sellingPlanId: saveOption
               }
                 :
                 {

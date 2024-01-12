@@ -71,6 +71,7 @@ export default function Homepage() {
       if (StampedFn) {
         StampedFn.init({ apiKey: "pubkey-y0bQR825X6K52BT67V84qf3OGso3o0", storeUrl: "trulyorganic.myshopify.com" })
       }
+      StampedFn.reloadUGC();
     }, 500);
   }, [])
 
@@ -247,7 +248,7 @@ function FeaturedCollection({ collection }) {
 
 export function ProductBlock({ product, showQuickView, location }) {
   return (
-    <div className="productBox__outer mb-5">
+    <div className="productBox__outer mb-4 mb-lg-5">
       <div className="productBox__img">
         <Link to={`/products/${product.handle}`}>
           <div className="productBox__img_front">
@@ -429,7 +430,7 @@ function CollectionProducts(props) {
     <div className='commonSection'>
       <div className='container-fluid'>
         <div className='row justify-content-between align-items-center'>
-          <div className='col-sm-5'>
+          <div className='col-xl-5 col-md-6'>
             <div className='bg_image_block'>
               <Image
                 alt={""}
@@ -439,7 +440,7 @@ function CollectionProducts(props) {
               />
             </div>
           </div>
-          <div className='col-sm-6'>
+          <div className='col-md-6'>
             <div className="headingholder text-center mb-5">
               <h2>{props.collection?.title}</h2>
               <Link to={`/collections/${props.collection?.handle}`} className='btn btn-primary'>View All Products</Link>

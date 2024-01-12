@@ -1195,3 +1195,6 @@ div.stamped-container[data-widget-style], div[data-widget-style] div.stamped-con
 .stamped-badge-starrating {
     vertical-align: text-top;
 }
+.text_over_image  .bg_image_text {
+    padding: 0 30px;
+}

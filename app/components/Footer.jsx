@@ -13,7 +13,7 @@ export function Footer({ menu, menu2 }) {
             <FooterInformation />
             <SocialLinks />
           </div>
-          <div className='col-xl-4 col-lg-4'>
+          <div className='col-xl-4 col-md-6'>
             <div className='row'>
               <div className='col-md-6'>
                 <h4>Brand</h4>
@@ -25,7 +25,7 @@ export function Footer({ menu, menu2 }) {
               </div>
             </div>
           </div>
-          <div className='col-xl-4 col-lg-4'>
+          <div className='col-xl-4 col-md-6'>
             <h4>Subscribe to Updates</h4>
             <NewsLetter />
           </div>
