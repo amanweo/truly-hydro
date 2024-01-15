@@ -1,12 +1,13 @@
 import { defer } from '@shopify/remix-oxygen';
 import { Await, useLoaderData, Link, useLocation } from '@remix-run/react';
-import { Suspense, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { CartForm, Image, Money } from '@shopify/hydrogen';
 import ReactDOM from 'react-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation } from 'swiper/modules';
+import { Mousewheel, Navigation } from 'swiper/modules';
 import { useRef } from 'react';
 import Images from '~/components/images';
+import { Stamped } from './products.$handle';
 
 /**
  * @type {V2_MetaFunction}
@@ -63,6 +64,37 @@ export default function Homepage() {
       collectionList.push(data[key]?.collection)
     }
   }
+
+  const [active, setActive] = useState(0)
+  useEffect(() => {
+    // setInterval(function () {
+    //   if (data.length > active) {
+    //     setActive(active + 1)
+    //   } else {
+    //     setActive(0)
+    //   }
+    // }, 2000);
+    const interval = setInterval(() => {
+      if (data.length > active) {
+        setActive(active + 1)
+      } else {
+        setActive(0)
+      }
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [active])
+  console.log(active)
+
+  useEffect(() => {
+    setTimeout(() => {
+      console.log("window.StampedFn: ", StampedFn)
+      if (StampedFn) {
+        StampedFn.init({ apiKey: "pubkey-y0bQR825X6K52BT67V84qf3OGso3o0", storeUrl: "trulyorganic.myshopify.com" })
+      }
+      StampedFn.reloadUGC();
+    }, 500);
+  }, [])
 
   function showQuickView(data) {
     document.body.classList.add("modal_open");
@@ -127,13 +159,13 @@ export default function Homepage() {
   return (
     <div className="home">
       <Banner />
-      <RotationalBar data={data.rotational} />
-      <BestSellers products={data.collection.products} showQuickView={showQuickView} />
+      <RotationalBar data={data.rotational} active={active} />
+      <BestSellers products={data.collection.products} showQuickView={showQuickView} location={location} />
       {/* <FeaturedCollection collection={data.featuredCollection} /> */}
       <ContentBlock />
-      <RecommendedProducts products={data.recommendedProducts} showQuickView={showQuickView} />
+      <RecommendedProducts products={data.recommendedProducts} showQuickView={showQuickView} location={location} />
       <CollectionBlock list={collectionList} />
-      <CollectionProducts collection={data["collection1"]?.collection} showQuickView={showQuickView} />
+      <CollectionProducts collection={data["collection1"]?.collection} showQuickView={showQuickView} location={location} />
 
       {showView && ReactDOM.createPortal(
         <QuickView
@@ -189,14 +221,15 @@ function Banner() {
   );
 }
 
-function RotationalBar({ data }) {
+function RotationalBar({ data, active }) {
+
   return (
     <div className="rotationalbar">
       <div className="container-fluid">
         <div className="row gx-0">
           {data.map((opt, i) => {
             return (
-              <div className='col-md-4' key={i}>
+              <div className={`col-lg-4 ${active == i ? "active" : ""}`} key={i}>
                 <div className="InStyle__Box">
                   <h3><span><span>{opt?.text}</span></span></h3>
                   <div className='InStyle__Box_logo'>
@@ -235,9 +268,9 @@ function FeaturedCollection({ collection }) {
   );
 }
 
-export function ProductBlock({ product, showQuickView }) {
+export function ProductBlock({ product, showQuickView, location }) {
   return (
-    <div className="productBox__outer mb-5">
+    <div className="productBox__outer mb-4 mb-lg-5">
       <div className="productBox__img">
         <Link to={`/products/${product.handle}`}>
           <div className="productBox__img_front">
@@ -261,6 +294,11 @@ export function ProductBlock({ product, showQuickView }) {
       </div>
       <Link to={`/products/${product.handle}`} className='productBox__content'>
         <h6 className='productBox__title'>{product.title}</h6>
+        <Stamped
+          type="review"
+          product={product}
+          location={location}
+        />
         <div className='productBox__price'>
           <Money data={product.priceRange.minVariantPrice} />
           {product.priceRange.minVariantPrice?.amount !== product.priceRange.maxVariantPrice?.amount ?
@@ -274,7 +312,7 @@ export function ProductBlock({ product, showQuickView }) {
     </div>
   )
 }
-export function ProductRender({ products, showQuickView }) {
+export function ProductRender({ products, showQuickView, location }) {
   return (
     <div className="row">
       {console.log("products: ", products)}
@@ -284,7 +322,7 @@ export function ProductRender({ products, showQuickView }) {
             key={product.id}
             className="col-6 col-sm-6 col-md-4 col-xl-20"
           >
-            <ProductBlock product={product} showQuickView={showQuickView} />
+            <ProductBlock product={product} showQuickView={showQuickView} location={location} />
           </div>
         </>
       ))}
@@ -297,7 +335,7 @@ export function ProductRender({ products, showQuickView }) {
         *   products: Promise<RecommendedProductsQuery>;
  * }}
       */
-function RecommendedProducts({ products, showQuickView }) {
+function RecommendedProducts({ products, showQuickView, location }) {
   return (
     <div className="commonSection">
       <div className='container-fluid'>
@@ -309,7 +347,7 @@ function RecommendedProducts({ products, showQuickView }) {
         <Suspense fallback={<div>Loading...</div>}>
           <Await resolve={products}>
             {({ products }) => (
-              <ProductRender products={products} showQuickView={showQuickView} />
+              <ProductRender products={products} showQuickView={showQuickView} location={location} />
             )}
           </Await>
         </Suspense>
@@ -318,7 +356,7 @@ function RecommendedProducts({ products, showQuickView }) {
     </div>
   );
 }
-function BestSellers({ products, showQuickView }) {
+function BestSellers({ products, showQuickView, location }) {
   console.log("products best: ", products)
   return (
     <div className="commonSection">
@@ -327,7 +365,7 @@ function BestSellers({ products, showQuickView }) {
           <p>Check our</p>
           <h2>Bestsellers</h2>
         </div>
-        <ProductRender products={products} showQuickView={showQuickView} />
+        <ProductRender products={products} showQuickView={showQuickView} location={location} />
         <br />
       </div>
     </div>
@@ -338,16 +376,16 @@ function ContentBlock() {
   return (
     <div className='text_over_image primary-bg'>
       {/* <div className='container-fluid'> */}
-        <div className='row g-0 justify-content-between align-items-center'>
-          <div className='col-sm-7'>
-            <div className='bg_image_block'>
-              <Image
-                alt={""}
-                aspectRatio="0"
-                data={{ url: Images?.banner_shave }}
-                sizes="200vw"
-              />
-              {/* <div className='col-sm-6'>
+      <div className='row g-0 justify-content-between align-items-center'>
+        <div className='col-sm-7 d-none d-md-block'>
+          <div className='bg_image_block'>
+            <Image
+              alt={""}
+              aspectRatio="0"
+              data={{ url: Images?.banner_shave }}
+              sizes="200vw"
+            />
+            {/* <div className='col-sm-6'>
                 <div className='bg_image_block'>
                   <Image
                     alt={""}
@@ -357,18 +395,18 @@ function ContentBlock() {
                   />
                 </div>
               </div> */}
-            </div>
           </div>
-          <div className='col-sm-5'>
-            <div className='bg_image_text text-center'>
-              <h2>The smoothest shave of all time</h2>
-              <p>Tik tok famous shave routines proven to smooth, brighten & hydrate your skin.</p>
-              <div className='mt-4'>
-                <Link to="/collections/shaving" className='btn btn-primary w-auto'>Shop Shave</Link>
-              </div>
+        </div>
+        <div className='col-sm-5'>
+          <div className='bg_image_text text-center'>
+            <h2>The smoothest shave of all time</h2>
+            <p>Tik tok famous shave routines proven to smooth, brighten & hydrate your skin.</p>
+            <div className='mt-4'>
+              <Link to="/collections/shaving" className='btn btn-primary w-auto'>Shop Shave</Link>
             </div>
           </div>
         </div>
+      </div>
       {/* </div> */}
     </div>
   )
@@ -414,7 +452,7 @@ function CollectionProducts(props) {
     <div className='commonSection'>
       <div className='container-fluid'>
         <div className='row justify-content-between align-items-center'>
-          <div className='col-sm-5'>
+          <div className='col-xl-5 col-md-6'>
             <div className='bg_image_block'>
               <Image
                 alt={""}
@@ -424,7 +462,7 @@ function CollectionProducts(props) {
               />
             </div>
           </div>
-          <div className='col-sm-6'>
+          <div className='col-md-6'>
             <div className="headingholder text-center mb-5">
               <h2>{props.collection?.title}</h2>
               <Link to={`/collections/${props.collection?.handle}`} className='btn btn-primary'>View All Products</Link>
@@ -454,7 +492,7 @@ function CollectionProducts(props) {
               >
                 {props.collection.products.nodes && props.collection.products.nodes.map((product, i) => (
                   <SwiperSlide key={i}>
-                    <ProductBlock product={product} showQuickView={props.showQuickView} />
+                    <ProductBlock product={product} showQuickView={props.showQuickView} location={props.location} />
                   </SwiperSlide>
                 )
                 )}
@@ -488,8 +526,9 @@ export function QuickView(props) {
                 {/* <Await resolve={product?.images?.nodes}> */}
                 <Swiper
                   spaceBetween={0}
-                  slidesPerView={4}
+                  slidesPerView={3}
                   direction={'vertical'}
+                  mousewheel={true}
                   onSlideChange={props.handleSlideChange}
                   // onSwiper={(swiper) => swiper}
                   autoHeight={true}
@@ -497,7 +536,7 @@ export function QuickView(props) {
                     nextEl: '.custom-next-arrow',
                     prevEl: '.custom-prev-arrow',
                   }}
-                  modules={[Navigation]}
+                  modules={[Mousewheel, Navigation]}
                   ref={props.swiperRef}
                   onSwiper={(swiper) => console.log("swiper", swiper)}
                 >

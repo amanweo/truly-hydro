@@ -3,7 +3,9 @@
   --primary2: #d6315c;
   --color-dark: #000;
   --color-light: #fff;
-  --primary-font: 'Nunito Sans', sans-serif;
+  --primary-font: 'Futura PT Book';
+  --primary-font-med: 'Futura PT Med';
+  --primary-font-bold: 'Futura PT Heavy';
   --mdExI: 'AwesomeSerifItalic-MdExraTall';
   --fontReg: 'AwesomeSerif-Regular';
   --fontRegI: 'AwesomeSerifItalic-Regular';
@@ -413,12 +415,6 @@ aside li {
 .product-image img {
   height: auto;
   width: 100%;
-}
-
-.product-main {
-  align-self: start;
-  position: sticky;
-  top: 6rem;
 }
 
 .product-price-on-sale {

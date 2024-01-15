@@ -3,6 +3,7 @@ import { Suspense, useState } from 'react';
 import Images from "./images";
 import { PredictiveSearchForm, PredictiveSearchResults } from './Search';
 import { CartMain } from './Cart';
+import { Image } from '@shopify/hydrogen';
 
 /**
  * @param {HeaderProps}
@@ -17,6 +18,11 @@ export function Header({ header, isLoggedIn, cart }) {
     <header className='truly_header'>
       <div className='container-fluid'>
         <div className='main_header'>
+          <a className='noStyle truly_toggle' href="#mobile-menu-aside">
+            <span></span>
+            <span></span>
+            <span></span>
+          </a>
           <div className='truly_logo'>
             <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
               <strong>
@@ -37,6 +43,7 @@ export function Header({ header, isLoggedIn, cart }) {
   );
 }
 
+
 /**
  * @param {{
  *   menu: HeaderProps['header']['menu'];
@@ -47,6 +54,7 @@ export function HeaderMenu({ menu, viewport }) {
   const [root] = useMatches();
   const publicStoreDomain = root?.data?.publicStoreDomain;
   const className = `header-menu-${viewport}`;
+  const [active, setActive] = useState("")
 
   function closeAside(event) {
     if (viewport === 'mobile') {
@@ -54,9 +62,12 @@ export function HeaderMenu({ menu, viewport }) {
       window.location.href = event.currentTarget.href;
     }
   }
+  function handleToggle(id) {
+    setActive(active == id ? "" : id)
+  }
 
   return (
-    <ul>
+    <ul className='header_mobile_menu'>
       {viewport === 'mobile' && (
         <NavLink
           end
@@ -78,7 +89,7 @@ export function HeaderMenu({ menu, viewport }) {
             ? new URL(item.url).pathname
             : item.url;
         return (
-          <li key={item.id}>
+          <li key={item.id} className={`${item.items.length > 0 ? "has-dropdown" : ""} ${active == item.id ? "active" : ""}`}>
             <NavLink
               className="header-menu-item"
               end
@@ -89,6 +100,42 @@ export function HeaderMenu({ menu, viewport }) {
             >
               {item.title}
             </NavLink>
+            {item.items.length > 0 ?
+              <>
+                {viewport === 'mobile' ?
+                  <button className='noStyle dropdown-caret' onClick={() => handleToggle(item.id)}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="9.334" height="17.334" viewBox="0 0 9.334 17.334">
+                      <path d="M4.695,1.695a.667.667,0,0,1,.944,0l8,8a.667.667,0,0,1,0,.944l-8,8a.668.668,0,1,1-.944-.944l7.529-7.528L4.695,2.639a.667.667,0,0,1,0-.944Z" transform="translate(-4.5 -1.5)" fill="currentColor" fillRule="evenodd"></path>
+                    </svg>
+                  </button>
+                  : null
+                }
+                <ul>
+                  {item.items.map((opt, i) => {
+                    const url2 =
+                      opt.url.includes('myshopify.com') ||
+                        opt.url.includes(publicStoreDomain)
+                        ? new URL(opt.url).pathname
+                        : opt.url;
+                    return (
+                      <li key={opt.id}>
+                        <NavLink
+                          className="header-menu-item"
+                          end
+                          onClick={closeAside}
+                          prefetch="intent"
+                          style={activeLinkStyle}
+                          to={url2}
+                        >
+                          {opt.title}
+                        </NavLink>
+                      </li>
+                    )
+                  })}
+                </ul>
+              </>
+              : null
+            }
           </li>
         );
       })}
@@ -156,8 +203,8 @@ function HeaderCtas({ isLoggedIn, cart, toggleSearch, toggleCart }) {
       <div className="navAccount cart--icon">
         <CartToggle cart={cart} />
       </div>
-      {/* <HeaderMenuMobileToggle />
-      <NavLink prefetch="intent" to="/account" style={activeLinkStyle}>
+
+      {/* <NavLink prefetch="intent" to="/account" style={activeLinkStyle}>
         {isLoggedIn ? 'Account' : 'Sign in'}
       </NavLink> */}
     </div>

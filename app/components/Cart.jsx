@@ -1,5 +1,5 @@
 import { CartForm, Image, Money } from '@shopify/hydrogen';
-import { Link } from '@remix-run/react';
+import { Link, NavLink } from '@remix-run/react';
 import { useVariantUrl } from '~/utils';
 
 /**
@@ -12,9 +12,15 @@ export function CartMain({ layout, cart, toggleCart }) {
   const className = `cart-main ${withDiscount ? 'with-discount' : ''}`;
 
   return (
-    <div className={className}>
-      <div className='cart_overlay' onClick={toggleCart}></div>
-      <CartDetails cart={cart} layout={layout} toggleCart={toggleCart} />
+    <div className={layout == "page" ? "cart-page-main" : className}>
+      {layout == "page" ?
+        <CartPageDetails cart={cart} layout={layout} toggleCart={toggleCart} />
+        :
+        <>
+          <div className='cart_overlay' onClick={toggleCart}></div>
+          <CartDetails cart={cart} layout={layout} toggleCart={toggleCart} />
+        </>
+      }
     </div>
   );
 }
@@ -56,7 +62,126 @@ function CartDetails({ layout, cart, toggleCart }) {
     </div>
   );
 }
+function CartPageDetails({ layout, cart, toggleCart }) {
+  const cartHasItems = !!cart && cart.totalQuantity > 0;
+  const linesCount = Boolean(cart?.lines?.nodes?.length || 0); 
+  console.log("cart: ", cart)
+  return (
+    <div className="commonSection">
+      <div className="container-fluid">
+        <div className="cart-page-details">
+          <div className='d-flex justify-content-between align-items-start'>
+            <div>
+              <p className='mb-2'><strong>Shopping Bag {linesCount ? `(${cart.totalQuantity} items)` : null}</strong></p>
+            </div>
+          </div>
+          <div className='row gx-5'>
+            <div className='col-lg-9 col-sm-8'>
+              <CartEmpty hidden={linesCount} layout={layout} />
+              {layout == "page" ?
+                <CartLinesTable lines={cart?.lines} layout={layout} />
+                :
+                <CartLines lines={cart?.lines} layout={layout} />
+              }
+            </div>
+            <div className='col-lg-3 col-sm-4'>
+              {cartHasItems && (
+                <CartPageSummary cost={cart.cost} layout={layout}>
+                  <div className='mt-3'>
+                    <CartCheckoutActions checkoutUrl={cart.checkoutUrl} />
+                  </div>
+                </CartPageSummary>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
+function CartLinesTable({ lines, layout }) {
+  if (!lines || lines.nodes.length == 0) return null;
+
+  return (
+    <table className='table w-100 cart-table'>
+      <thead>
+        <tr>
+          <th></th>
+          <th>Quantity</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        {lines.nodes.map((line) => (
+          <tr key={line.id}>
+            <CartLineTableItem line={line} layout={layout} />
+            <td>
+              <CartLineQuantity line={line} layout={layout} />
+            </td>
+            <td>
+              <CartLinePrice line={line} as="span" />
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
+
+function CartLineTableItem({ layout, line }) {
+  const { id, merchandise } = line;
+  const { product, title, image, selectedOptions } = merchandise;
+  const lineItemUrl = useVariantUrl(product.handle, selectedOptions);
+
+  return (
+    <td key={id} className="cart-line">
+      {image && (
+        <Image
+          alt={title}
+          aspectRatio="0"
+          data={image}
+          loading="lazy"
+          width={80}
+        />
+      )}
+
+      <div className='cart_detail_outer'>
+        <div className='cart_detail_inner'>
+          <Link
+            prefetch="intent"
+            to={lineItemUrl}
+            onClick={() => {
+              if (layout === 'aside') {
+                // close the drawer
+                window.location.href = lineItemUrl;
+              }
+            }}
+          >
+            <p>
+              <strong>{product.title}</strong>
+            </p>
+          </Link>
+          <div className='mb-2'>
+            <CartLinePrice line={line} as="span" />
+          </div>
+          <ul className='selectedOptions'>
+            {selectedOptions.map((option) => (
+              <li key={option.name}>
+                {option.value !== "Default Title" ?
+                  <small>
+                    {option.name}: {option.value}
+                  </small>
+                  : null
+                }
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </td>
+  );
+}
 /**
  * @param {{
  *   layout: CartMainProps['layout'];
@@ -97,7 +222,6 @@ function CartLineItem({ layout, line }) {
           data={image}
           loading="lazy"
           width={100}
-          style={{ borderRadius: 15 }}
         />
       )}
 
@@ -120,17 +244,20 @@ function CartLineItem({ layout, line }) {
           <div className='mb-2'>
             <CartLinePrice line={line} as="span" />
           </div>
-          {/* <ul className='selectedOptions'>
+          <ul className='selectedOptions'>
             {selectedOptions.map((option) => (
               <li key={option.name}>
-                <small>
-                  {option.name}: {option.value}
-                </small>
+                {option.value !== "Default Title" ?
+                  <small>
+                    {option.name}: {option.value}
+                  </small>
+                  : null
+                }
               </li>
             ))}
-          </ul> */}
+          </ul>
         </div>
-        <CartLineQuantity line={line} />
+        <CartLineQuantity line={line} layout={layout} />
       </div>
     </li>
   );
@@ -144,10 +271,9 @@ function CartCheckoutActions({ checkoutUrl }) {
 
   return (
     <div>
-      <a href={checkoutUrl} target="_self" className='btn btn-secondary w-100'>
-        <p>Continue to Checkout &rarr;</p>
+      <a href={checkoutUrl} target="_self" className='btn btn-primary w-100'>
+        Continue to Checkout &rarr;
       </a>
-      <br />
     </div>
   );
 }
@@ -159,6 +285,58 @@ function CartCheckoutActions({ checkoutUrl }) {
  *   layout: CartMainProps['layout'];
  * }}
  */
+export function CartPageSummary({ cost, layout, children = null }) {
+  const className =
+    layout === 'page' ? 'cart-summary-page' : 'cart-summary-aside';
+  console.log("cost", cost);
+  return (
+    <div aria-labelledby="cart-summary" className={className}>
+      <dl className="cart-subtotal mb-0">
+        <dd className='w-100'>Subtotal</dd>
+        <dd className='w-100 text-end'>
+          {cost?.subtotalAmount?.amount ? (
+            <Money data={cost?.subtotalAmount} />
+          ) : (
+            '-'
+          )}
+        </dd>
+      </dl>
+      <dl className="cart-subtotal mb-0">
+        <dd className='w-100'>Shipping</dd>
+        <dd className='w-100 text-end'>
+          {cost?.totalDutyAmount?.amount ? (
+            <Money data={cost?.totalDutyAmount} />
+          ) : (
+            'TBD'
+          )}
+        </dd>
+      </dl>
+      <dl className="cart-subtotal mb-0">
+        <dd className='w-100'>Tax</dd>
+        <dd className='w-100 text-end'>
+          {cost?.totalTaxAmount?.amount ? (
+            <Money data={cost?.totalTaxAmount} />
+          ) : (
+            'TBD'
+          )}
+        </dd>
+      </dl>
+      <dl className="cart-subtotal">
+        <dt className='w-100'>Estimated Total</dt>
+        <dt className='w-100 text-end'>
+          {cost?.totalAmount?.amount ? (
+            <Money data={cost?.totalAmount} />
+          ) : (
+            '-'
+          )}
+        </dt>
+      </dl>
+      <p><small>FREE SHIPPING for orders $75+ US and $125+ worldwide</small></p>
+      <p><small>Save 10% with <NavLink to={"/pages/subscribe"} className="link">SUBSCRIPTIONS</NavLink> Taxes and <NavLink to={"/policies/shipping-policy"} className="link">SHIPPING</NavLink> calculated at checkout</small></p>
+      {children}
+    </div>
+  );
+}
 export function CartSummary({ cost, layout, children = null }) {
   const className =
     layout === 'page' ? 'cart-summary-page' : 'cart-summary-aside';
@@ -200,14 +378,14 @@ function CartLineRemoveButton({ lineIds }) {
 /**
  * @param {{line: CartLine}}
  */
-function CartLineQuantity({ line }) {
+function CartLineQuantity({ line, layout }) {
   if (!line || typeof line?.quantity === 'undefined') return null;
   const { id: lineId, quantity } = line;
   const prevQuantity = Number(Math.max(0, quantity - 1).toFixed(0));
   const nextQuantity = Number((quantity + 1).toFixed(0));
 
   return (
-    <div className="cart-line-quantity">
+    <div className={layout == "page" ? "cart-page-line-quantity" : "cart-line-quantity"}>
       <div className='cart_quantity_outer'>
         {/* <small>Quantity: {quantity} &nbsp;&nbsp;</small> */}
         <CartLineUpdateButton lines={[{ id: lineId, quantity: prevQuantity }]}>
@@ -283,10 +461,11 @@ export function CartEmpty({ hidden = false, layout = 'aside' }) {
       </p>
       <br />
       <Link
-        to="/collections"
+        to="/"
+        className='btn btn-primary'
         onClick={() => {
           if (layout === 'aside') {
-            window.location.href = '/collections';
+            window.location.href = '/';
           }
         }}
       >
@@ -327,7 +506,7 @@ function CartDiscounts({ discountCodes }) {
       <UpdateDiscountForm discountCodes={codes}>
         <div className='d-flex'>
           <input type="text" name="discountCode" placeholder="Discount code" className='form-control sm' />
-          <button type="submit" className='btn btn-sm btn-secondary ms-3'>Apply</button>
+          <button type="submit" className='btn btn-sm btn-primary ms-3'>Apply</button>
         </div>
       </UpdateDiscountForm>
     </div>
