@@ -65,6 +65,27 @@ export default function Homepage() {
     }
   }
 
+  const [active, setActive] = useState(0)
+  useEffect(() => {
+    // setInterval(function () {
+    //   if (data.length > active) {
+    //     setActive(active + 1)
+    //   } else {
+    //     setActive(0)
+    //   }
+    // }, 2000);
+    const interval = setInterval(() => {
+      if (data.length > active) {
+        setActive(active + 1)
+      } else {
+        setActive(0)
+      }
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [active])
+  console.log(active)
+
   useEffect(() => {
     setTimeout(() => {
       console.log("window.StampedFn: ", StampedFn)
@@ -138,7 +159,7 @@ export default function Homepage() {
   return (
     <div className="home">
       <Banner />
-      <RotationalBar data={data.rotational} />
+      <RotationalBar data={data.rotational} active={active} />
       <BestSellers products={data.collection.products} showQuickView={showQuickView} location={location} />
       {/* <FeaturedCollection collection={data.featuredCollection} /> */}
       <ContentBlock />
@@ -200,14 +221,15 @@ function Banner() {
   );
 }
 
-function RotationalBar({ data }) {
+function RotationalBar({ data, active }) {
+
   return (
     <div className="rotationalbar">
       <div className="container-fluid">
         <div className="row gx-0">
           {data.map((opt, i) => {
             return (
-              <div className='col-lg-4' key={i}>
+              <div className={`col-lg-4 ${active == i ? "active" : ""}`} key={i}>
                 <div className="InStyle__Box">
                   <h3><span><span>{opt?.text}</span></span></h3>
                   <div className='InStyle__Box_logo'>
@@ -272,11 +294,11 @@ export function ProductBlock({ product, showQuickView, location }) {
       </div>
       <Link to={`/products/${product.handle}`} className='productBox__content'>
         <h6 className='productBox__title'>{product.title}</h6>
-          <Stamped
-            type="review"
-            product={product}
-            location={location}
-          />
+        <Stamped
+          type="review"
+          product={product}
+          location={location}
+        />
         <div className='productBox__price'>
           <Money data={product.priceRange.minVariantPrice} />
           {product.priceRange.minVariantPrice?.amount !== product.priceRange.maxVariantPrice?.amount ?
@@ -354,16 +376,16 @@ function ContentBlock() {
   return (
     <div className='text_over_image primary-bg'>
       {/* <div className='container-fluid'> */}
-        <div className='row g-0 justify-content-between align-items-center'>
-          <div className='col-sm-7 d-none d-md-block'>
-            <div className='bg_image_block'>
-              <Image
-                alt={""}
-                aspectRatio="0"
-                data={{ url: Images?.banner_shave }}
-                sizes="200vw"
-              />
-              {/* <div className='col-sm-6'>
+      <div className='row g-0 justify-content-between align-items-center'>
+        <div className='col-sm-7 d-none d-md-block'>
+          <div className='bg_image_block'>
+            <Image
+              alt={""}
+              aspectRatio="0"
+              data={{ url: Images?.banner_shave }}
+              sizes="200vw"
+            />
+            {/* <div className='col-sm-6'>
                 <div className='bg_image_block'>
                   <Image
                     alt={""}
@@ -373,18 +395,18 @@ function ContentBlock() {
                   />
                 </div>
               </div> */}
-            </div>
           </div>
-          <div className='col-sm-5'>
-            <div className='bg_image_text text-center'>
-              <h2>The smoothest shave of all time</h2>
-              <p>Tik tok famous shave routines proven to smooth, brighten & hydrate your skin.</p>
-              <div className='mt-4'>
-                <Link to="/collections/shaving" className='btn btn-primary w-auto'>Shop Shave</Link>
-              </div>
+        </div>
+        <div className='col-sm-5'>
+          <div className='bg_image_text text-center'>
+            <h2>The smoothest shave of all time</h2>
+            <p>Tik tok famous shave routines proven to smooth, brighten & hydrate your skin.</p>
+            <div className='mt-4'>
+              <Link to="/collections/shaving" className='btn btn-primary w-auto'>Shop Shave</Link>
             </div>
           </div>
         </div>
+      </div>
       {/* </div> */}
     </div>
   )
