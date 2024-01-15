@@ -739,7 +739,7 @@ function ProductImage({ image }) {
  *   variants: Promise<ProductVariantsQuery>;
  * }}
  */
-function ProductMain({ selectedVariant, product, variants, metaFields, showPopup, quantity, handleQty, handleQtyChange, location }) {
+export function ProductMain({ selectedVariant, product, variants, metaFields, showPopup, quantity, handleQty, handleQtyChange, location }) {
   console.log("metaFields: ", metaFields)
   const { title, descriptionHtml, description } = product;
   const [openedNumber, setOpenedNumber] = useState(-1);
@@ -990,7 +990,7 @@ function ProductPrice({ selectedVariant, quantity, handleQtyChange, handleQty, s
  *   variants: Array<ProductVariantFragment>;
  * }}
  */
-function ProductForm({ product, selectedVariant, variants, quantity, activeOption }) {
+function ProductForm({ product, selectedVariant, variants, quantity, activeOption, saveOption }) {
   console.log("selectedVariant: ", selectedVariant)
   return (
     <div className="product-form">

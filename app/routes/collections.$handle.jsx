@@ -1,5 +1,5 @@
 import { json, redirect } from '@shopify/remix-oxygen';
-import { useLoaderData, Link } from '@remix-run/react';
+import { useLoaderData, Link, useLocation } from '@remix-run/react';
 import {
   Pagination,
   getPaginationVariables,
@@ -8,7 +8,7 @@ import {
 } from '@shopify/hydrogen';
 import { useVariantUrl } from '~/utils';
 import { ProductBlock, ProductRender, QuickView } from './_index';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useState } from 'react';
 import ReactDOM from 'react-dom';
 
@@ -49,6 +49,7 @@ export default function Collection() {
   /** @type {LoaderReturnData} */
   const { collection } = useLoaderData();
   const swiperRef = useRef(null);
+  const location = useLocation()
   const [showView, setshowView] = useState(false)
   const [activeSlide, setActiveSlide] = useState({})
   const [quickViewData, setQuickViewData] = useState({})
@@ -101,6 +102,16 @@ export default function Collection() {
       }
     }
   }
+  
+  useEffect(() => {
+    setTimeout(() => {
+      console.log("window.StampedFn: ", StampedFn)
+      if (StampedFn) {
+        StampedFn.init({ apiKey: "pubkey-y0bQR825X6K52BT67V84qf3OGso3o0", storeUrl: "trulyorganic.myshopify.com" })
+      }
+      StampedFn.reloadUGC();
+    }, 1000);
+  }, [])
 
   console.log("collection: ", collection)
   return (
@@ -125,7 +136,7 @@ export default function Collection() {
                 {/* <PreviousLink>
                 {isLoading ? 'Loading...' : <span>↑ Load previous</span>}
               </PreviousLink> */}
-                <ProductRender products={collection.products} showQuickView={showQuickView} />
+                <ProductRender products={collection.products} showQuickView={showQuickView} location={location} />
                 <br />
                 <div className='text-center'>
                   <NextLink className='btn btn-primary'>

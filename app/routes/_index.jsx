@@ -65,27 +65,6 @@ export default function Homepage() {
     }
   }
 
-  const [active, setActive] = useState(0)
-  useEffect(() => {
-    // setInterval(function () {
-    //   if (data.length > active) {
-    //     setActive(active + 1)
-    //   } else {
-    //     setActive(0)
-    //   }
-    // }, 2000);
-    const interval = setInterval(() => {
-      if (data.length > active) {
-        setActive(active + 1)
-      } else {
-        setActive(0)
-      }
-    }, 2000);
-
-    return () => clearInterval(interval);
-  }, [active])
-  console.log(active)
-
   useEffect(() => {
     setTimeout(() => {
       console.log("window.StampedFn: ", StampedFn)
@@ -159,12 +138,12 @@ export default function Homepage() {
   return (
     <div className="home">
       <Banner />
-      <RotationalBar data={data.rotational} active={active} />
+      <RotationalBar data={data.rotational} />
       <BestSellers products={data.collection.products} showQuickView={showQuickView} location={location} />
       {/* <FeaturedCollection collection={data.featuredCollection} /> */}
       <ContentBlock />
-      <RecommendedProducts products={data.recommendedProducts} showQuickView={showQuickView} location={location} />
       <CollectionBlock list={collectionList} />
+      <RecommendedProducts products={data.recommendedProducts} showQuickView={showQuickView} location={location} />
       <CollectionProducts collection={data["collection1"]?.collection} showQuickView={showQuickView} location={location} />
 
       {showView && ReactDOM.createPortal(
@@ -222,7 +201,6 @@ function Banner() {
 }
 
 function RotationalBar({ data, active }) {
-
   return (
     <div className="rotationalbar">
       <div className="container-fluid">
@@ -414,35 +392,28 @@ function ContentBlock() {
 
 function CollectionBlock(props) {
   return (
-    <div className='commonSection pt-0'>
-      <div className='container-fluid'>
-        <div className="headingholder">
-          <p>Explore Our</p>
-          <h2>Featured Collections</h2>
-        </div>
-        <div className='row'>
-          {props.list.length > 0 && props.list.map((opt, i) => {
-            return (
-              <Link to={`/collections/${opt?.handle}`} className='col-sm-6' key={i}>
-                <div className='collection_block'>
-                  <div className='collection_block_image mb-2 img-zoom'>
-                    <Image
-                      alt={opt?.title}
-                      aspectRatio="0"
-                      data={{ url: Images?.[`banner_${opt?.handle}`] }}
-                      sizes="200vw"
-                    />
-                  </div>
+    <div className='row g-0 mt-2'>
+      {props.list.length > 0 && props.list.map((opt, i) => {
+        return (
+          <Link to={`/collections/${opt?.handle}`} className="col-sm-6" key={i}>
+            <div className={`collection_block_outer ${i % 2 == 0 ? "pe-1" : "ps-1"}`}>
+              <div className="collection_block">
+                <div className='collection_block_image mb-2 img-zoom'>
+                  <Image
+                    alt={opt?.title}
+                    aspectRatio="0"
+                    data={{ url: Images?.[`banner_${opt?.handle}`] }}
+                    sizes="200vw"
+                  />
                 </div>
-                <div className='collection_block_content'>
-                  <h2>{opt?.title}</h2>
-                </div>
-              </Link>
-            )
-          })}
-
-        </div>
-      </div>
+              </div>
+              <div className='collection_block_content text-center'>
+                <h2>{opt?.title}</h2>
+              </div>
+            </div>
+          </Link>
+        )
+      })}
     </div>
   )
 }
@@ -507,6 +478,17 @@ function CollectionProducts(props) {
 
 export function QuickView(props) {
   console.log("product quick:", props.product)
+  // const [metaFields, setmetaFields] = useState({})  
+  // useEffect(() => {
+  //   let newObj = {}
+  //   props.product && props.product.metafields && props.product.metafields.length > 0 && props.product.metafields.map((opt) => {
+  //     if (opt) {
+  //       newObj[opt.key] = opt.value
+  //     }
+  //   })
+  //   console.log("newObj: ", newObj)
+  //   setmetaFields(newObj)
+  // }, [])
   return (
     <div className='quickview_modal'>
       <div className='quickview_modal_backdrop' onClick={props.closeModal}></div>
@@ -583,12 +565,23 @@ export function QuickView(props) {
                   : null
                 }
               </div>
-              {props.product?.description ?
+              {/* <ProductMain
+                selectedVariant={selectedVariant}
+                product={props.product}
+                variants={variants}
+                metaFields={metaFields}
+                showPopup={showPopup}
+                handleQtyChange={handleQtyChange}
+                handleQty={handleQty}
+                quantity={quantity}
+                location={location}
+              /> */}
+              {/* {props.product?.description ?
                 <div className='mb-2'>
                   {props.product?.description.substring(0, 200)}...
                 </div>
                 : null
-              }
+              } */}
               <div className='add_to_cart_block mb-3'>
                 {/* <button className='btn btn-primary'>Add to Bag</button> */}
                 <AddToCartButton
@@ -640,11 +633,20 @@ const FEATURED_COLLECTION_QUERY = `#graphql
 
 const PRODUCT_VARIANT_FRAGMENT = `#graphql
   fragment ProductVariant on ProductVariant {
+    availableForSale
     compareAtPrice {
       amount
       currencyCode
     }
     id
+    image {
+      __typename
+      id
+      url
+      altText
+      width
+      height
+    }
     price {
       amount
       currencyCode
@@ -653,8 +655,31 @@ const PRODUCT_VARIANT_FRAGMENT = `#graphql
       title
       handle
     }
+    selectedOptions {
+      name
+      value
+    }
+    sellingPlanAllocations(first:1){
+      edges{
+        node{
+          sellingPlan{
+            id
+          }
+          priceAdjustments{
+            price{
+              amount
+              currencyCode
+            }
+          }
+        }
+      }
+    }
     sku
     title
+    unitPrice {
+      amount
+      currencyCode
+    }
   }
 `;
 
@@ -690,6 +715,14 @@ ${PRODUCT_VARIANTS_FRAGMENT}
           title
       handle
       description
+      
+    metafields(
+      identifiers: [{namespace: "accentuate", key: "bundle_product_short_title"}, {namespace: "accentuate", key: "sub_title_one"}, {namespace: "accentuate", key: "sub_title_two"}, {namespace: "accentuate", key: "sub_title_one"}, {namespace: "accentuate", key: "bundle_good_to_know"}, {namespace: "accentuate", key: "good_to_know_title"}, {namespace: "accentuate", key: "good_to_know"}, {namespace: "accentuate", key: "bundle_product_short_descripti"}, {namespace: "accentuate", key: "description"}, {namespace: "accentuate", key: "bundle_whats_inside"}, {namespace: "accentuate", key: "whats_inside_title"}, {namespace: "accentuate", key: "bundle_why_it_special_description"}, {namespace: "accentuate", key: "bundle_why_it_special"}, {namespace: "accentuate", key: "why_its_special"}, {namespace: "accentuate", key: "bundle_what_makes_good_title"}, {namespace: "accentuate", key: "bundle_what_makes_good_descrip"}, {namespace: "accentuate", key: "title"}, {namespace: "accentuate", key: "essential_ingradient_main_titl"}, {namespace: "accentuate", key: "description_essen"}, {namespace: "accentuate", key: "key_ingredients"}, {namespace: "accentuate", key: "full_ingradient_main_titl"}, {namespace: "accentuate", key: "full_ingredient_text"}, {namespace: "accentuate", key: "full_ingredient_title"}, {namespace: "product", key: "key_ingredients_text"}]
+    ) {
+      key
+      value
+    }
+
       ...ProductVariants
       priceRange {
         minVariantPrice {
