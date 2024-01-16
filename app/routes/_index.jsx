@@ -7,7 +7,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Mousewheel, Navigation } from 'swiper/modules';
 import { useRef } from 'react';
 import Images from '~/components/images';
-import { Stamped } from './products.$handle';
+import { ProductMain, Stamped } from './products.$handle';
 
 /**
  * @type {V2_MetaFunction}
@@ -149,6 +149,7 @@ export default function Homepage() {
       {showView && ReactDOM.createPortal(
         <QuickView
           product={quickViewData}
+          location={location}
           closeModal={closeModal}
           handleSlideChange={handleSlideChange}
           swiperRef={swiperRef}
@@ -478,17 +479,38 @@ function CollectionProducts(props) {
 
 export function QuickView(props) {
   console.log("product quick:", props.product)
-  // const [metaFields, setmetaFields] = useState({})  
-  // useEffect(() => {
-  //   let newObj = {}
-  //   props.product && props.product.metafields && props.product.metafields.length > 0 && props.product.metafields.map((opt) => {
-  //     if (opt) {
-  //       newObj[opt.key] = opt.value
-  //     }
-  //   })
-  //   console.log("newObj: ", newObj)
-  //   setmetaFields(newObj)
-  // }, [])
+  const [metaFields, setmetaFields] = useState({})
+
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const showPopup = () => setShow(true);
+
+  const [quantity, setQuantity] = useState(1)
+  const handleQty = (type) => {
+    if (type == "inc") {
+      setQuantity(parseInt(quantity + 1))
+    } else {
+      if (quantity > 0) {
+        setQuantity(parseInt(quantity - 1))
+      }
+    }
+  }
+  const handleQtyChange = (e) => {
+    setQuantity(parseInt(e.target.value))
+  }
+
+  useEffect(() => {
+    let newObj = {}
+    props.product && props.product.metafields && props.product.metafields.length > 0 && props.product.metafields.map((opt) => {
+      if (opt) {
+        newObj[opt.key] = opt.value
+      }
+    })
+    console.log("newObj: ", newObj)
+    setmetaFields(newObj)
+  }, [])
+  console.log("product quick metaFields:", metaFields)
   return (
     <div className='quickview_modal'>
       <div className='quickview_modal_backdrop' onClick={props.closeModal}></div>
@@ -505,14 +527,12 @@ export function QuickView(props) {
                 />
               </div>
               <div className='product_image_thumb'>
-                {/* <Await resolve={product?.images?.nodes}> */}
                 <Swiper
                   spaceBetween={0}
                   slidesPerView={3}
                   direction={'vertical'}
                   mousewheel={true}
                   onSlideChange={props.handleSlideChange}
-                  // onSwiper={(swiper) => swiper}
                   autoHeight={true}
                   navigation={true, {
                     nextEl: '.custom-next-arrow',
@@ -549,12 +569,23 @@ export function QuickView(props) {
                     )
                   })}
                 </Swiper>
-                {/* </Await> */}
               </div>
             </div>
           </div>
           <div className='col-md-6'>
-            <div className='product_details'>
+            <ProductMain
+              selectedVariant={props.product.variants.nodes[0]}
+              product={props.product}
+              variants={props.product.variants}
+              metaFields={metaFields}
+              showPopup={showPopup}
+              handleQtyChange={handleQtyChange}
+              handleQty={handleQty}
+              quantity={quantity}
+              location={props.location}
+              type="quickView"
+            />
+            {/* <div className='product_details'>
               <h3 className='mdEx'>{props.product?.title}</h3>
               <div className='d-flex primary-font strong'>
                 <Money data={props.product.priceRange.minVariantPrice} as="h5" />
@@ -565,25 +596,7 @@ export function QuickView(props) {
                   : null
                 }
               </div>
-              {/* <ProductMain
-                selectedVariant={selectedVariant}
-                product={props.product}
-                variants={variants}
-                metaFields={metaFields}
-                showPopup={showPopup}
-                handleQtyChange={handleQtyChange}
-                handleQty={handleQty}
-                quantity={quantity}
-                location={location}
-              /> */}
-              {/* {props.product?.description ?
-                <div className='mb-2'>
-                  {props.product?.description.substring(0, 200)}...
-                </div>
-                : null
-              } */}
               <div className='add_to_cart_block mb-3'>
-                {/* <button className='btn btn-primary'>Add to Bag</button> */}
                 <AddToCartButton
                   lines={[
                     {
@@ -600,9 +613,10 @@ export function QuickView(props) {
                 </AddToCartButton>
               </div>
               <Link to={`/products/${props.product.handle}`} onClick={props.handleDetail} className='link'>View Full Details</Link>
-            </div>
+            </div> */}
           </div>
         </div>
+        
       </div>
     </div>
   )
@@ -715,7 +729,30 @@ ${PRODUCT_VARIANTS_FRAGMENT}
           title
       handle
       description
-      
+      sellingPlanGroups(first: 3) {
+        edges {
+          node {
+            name
+            appName
+            options {
+              name
+              values
+            }
+            sellingPlans(first: 3) {
+            edges {
+              node {
+                id
+                name
+                options{
+                  value
+                  name
+                }
+              }
+            }
+          }
+          }
+        }
+      }
     metafields(
       identifiers: [{namespace: "accentuate", key: "bundle_product_short_title"}, {namespace: "accentuate", key: "sub_title_one"}, {namespace: "accentuate", key: "sub_title_two"}, {namespace: "accentuate", key: "sub_title_one"}, {namespace: "accentuate", key: "bundle_good_to_know"}, {namespace: "accentuate", key: "good_to_know_title"}, {namespace: "accentuate", key: "good_to_know"}, {namespace: "accentuate", key: "bundle_product_short_descripti"}, {namespace: "accentuate", key: "description"}, {namespace: "accentuate", key: "bundle_whats_inside"}, {namespace: "accentuate", key: "whats_inside_title"}, {namespace: "accentuate", key: "bundle_why_it_special_description"}, {namespace: "accentuate", key: "bundle_why_it_special"}, {namespace: "accentuate", key: "why_its_special"}, {namespace: "accentuate", key: "bundle_what_makes_good_title"}, {namespace: "accentuate", key: "bundle_what_makes_good_descrip"}, {namespace: "accentuate", key: "title"}, {namespace: "accentuate", key: "essential_ingradient_main_titl"}, {namespace: "accentuate", key: "description_essen"}, {namespace: "accentuate", key: "key_ingredients"}, {namespace: "accentuate", key: "full_ingradient_main_titl"}, {namespace: "accentuate", key: "full_ingredient_text"}, {namespace: "accentuate", key: "full_ingredient_title"}, {namespace: "product", key: "key_ingredients_text"}]
     ) {

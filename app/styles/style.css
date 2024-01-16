@@ -273,6 +273,12 @@
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
+    position: sticky;
+    top: 20px;
+}
+.quickview_modal_body .product-main {
+    max-height: 80vh;
+    overflow-y: auto;
 }
 
 .product_detail_single_image {
@@ -840,8 +846,16 @@ div#cart-aside aside main {
     padding: 15px 0 0;
 }
 
-.ingrediant_tab_panel {
+.ingrediant_tab .ingrediant_tab_panel {
     overflow: hidden;
+    border-radius: 0;
+    border: 0;
+}
+.ingrediant_tab .ingrediant_tab_panel .accordion-button{
+    background-color: #fff;
+    box-shadow: none;
+    outline: none;
+    padding: 0;
 }
 
 .product-main h1 {

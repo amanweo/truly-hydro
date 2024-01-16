@@ -15,7 +15,7 @@ import { Navigation, Mousewheel } from 'swiper/modules';
 import { useRef } from 'react';
 import { useState } from 'react';
 import LightGallery from 'lightgallery/react';
-import { Modal } from "react-bootstrap"
+import { Accordion, Modal } from "react-bootstrap"
 
 import lgZoom from 'lightgallery/plugins/zoom';
 
@@ -739,8 +739,9 @@ function ProductImage({ image }) {
  *   variants: Promise<ProductVariantsQuery>;
  * }}
  */
-export function ProductMain({ selectedVariant, product, variants, metaFields, showPopup, quantity, handleQty, handleQtyChange, location }) {
+export function ProductMain({ selectedVariant, product, variants, metaFields, showPopup, quantity, handleQty, handleQtyChange, location, type }) {
   console.log("metaFields: ", metaFields)
+  console.log("selectedVariant: ", selectedVariant)
   const { title, descriptionHtml, description } = product;
   const [openedNumber, setOpenedNumber] = useState(-1);
   const [openedNumber2, setOpenedNumber2] = useState(false);
@@ -756,7 +757,7 @@ export function ProductMain({ selectedVariant, product, variants, metaFields, sh
   const handleRadioChange = (e) => {
     setActiveOption(e.target.value)
   }
-
+  console.log("activeOption;", activeOption)
   return (
     <div className="product-main">
       {metaFields ?
@@ -815,6 +816,7 @@ export function ProductMain({ selectedVariant, product, variants, metaFields, sh
                 variants={[]}
                 quantity={quantity}
                 activeOption={activeOption}
+                type={type}
               />
             }
           >
@@ -829,71 +831,97 @@ export function ProductMain({ selectedVariant, product, variants, metaFields, sh
                   variants={data.product?.variants.nodes || []}
                   quantity={quantity}
                   activeOption={activeOption}
+                  type={type}
                 />
               )}
             </Await>
           </Suspense>
           <br />
-          {metaFields?.bundle_why_it_special && metaFields?.bundle_why_it_special_description ?
-            <div className='bundle_why_it_special'>
-              <h5 dangerouslySetInnerHTML={{ __html: isJsonString(metaFields?.bundle_why_it_special) ? JSON.parse(metaFields?.bundle_why_it_special) : metaFields?.bundle_why_it_special }}></h5>
-              <div dangerouslySetInnerHTML={{ __html: metaFields?.bundle_why_it_special_description }}></div>
-            </div>
-            : null
-          }
-          {metaFields?.bundle_what_makes_good_title && metaFields?.bundle_what_makes_good_descrip ?
-            <div className='bundle_why_it_special'>
-              <h5 dangerouslySetInnerHTML={{ __html: isJsonString(metaFields?.bundle_what_makes_good_title) ? JSON.parse(metaFields?.bundle_what_makes_good_title) : metaFields?.bundle_what_makes_good_title }}></h5>
-              <div dangerouslySetInnerHTML={{ __html: metaFields?.bundle_what_makes_good_descrip }}></div>
-            </div>
-            : null
-          }
-          {metaFields?.essential_ingradient_main_titl ?
-            <h5 className='mb-2' dangerouslySetInnerHTML={{ __html: isJsonString(metaFields?.essential_ingradient_main_titl) ? JSON.parse(metaFields?.essential_ingradient_main_titl) : metaFields?.essential_ingradient_main_titl }}></h5>
-            : null
-          }
-          {metaFields?.title ?
-            <div className='ingrediant_tab'>
-              {JSON.parse(metaFields?.title).map((opt, i) => {
-                return (
-                  <div className={`ingrediant_tab_panel ${openedNumber === i ? "active" : ""}`} key={opt}>
-                    <div className='ingrediant_tab_header' onClick={() => setOpenedNumber(i !== openedNumber ? i : -1)}>
-                      {opt}
+          {type !== "quickView" ?
+            <>
+              {metaFields?.bundle_why_it_special && metaFields?.bundle_why_it_special_description ?
+                <div className='bundle_why_it_special'>
+                  <h5 dangerouslySetInnerHTML={{ __html: isJsonString(metaFields?.bundle_why_it_special) ? JSON.parse(metaFields?.bundle_why_it_special) : metaFields?.bundle_why_it_special }}></h5>
+                  <div dangerouslySetInnerHTML={{ __html: metaFields?.bundle_why_it_special_description }}></div>
+                </div>
+                : null
+              }
+              {metaFields?.bundle_what_makes_good_title && metaFields?.bundle_what_makes_good_descrip ?
+                <div className='bundle_why_it_special'>
+                  <h5 dangerouslySetInnerHTML={{ __html: isJsonString(metaFields?.bundle_what_makes_good_title) ? JSON.parse(metaFields?.bundle_what_makes_good_title) : metaFields?.bundle_what_makes_good_title }}></h5>
+                  <div dangerouslySetInnerHTML={{ __html: metaFields?.bundle_what_makes_good_descrip }}></div>
+                </div>
+                : null
+              }
+              {metaFields?.essential_ingradient_main_titl ?
+                <h5 className='mb-2' dangerouslySetInnerHTML={{ __html: isJsonString(metaFields?.essential_ingradient_main_titl) ? JSON.parse(metaFields?.essential_ingradient_main_titl) : metaFields?.essential_ingradient_main_titl }}></h5>
+                : null
+              }
+              {metaFields?.title ?
+                <div className='ingrediant_tab'>
+                  <Accordion>
+                    {JSON.parse(metaFields?.title).map((opt, i) => {
+                      return (
+                        <Accordion.Item eventKey={openedNumber} className='ingrediant_tab_panel'>
+                          <Accordion.Header className='ingrediant_tab_header'>
+                            {opt}
+                          </Accordion.Header>
+                          <Accordion.Body>
+                            {metaFields?.description_essen ?
+                              <div className='ingrediant_tab_body' dangerouslySetInnerHTML={{ __html: JSON.parse(metaFields?.description_essen)[i] }}>
+                              </div>
+                              : null
+                            }
+                          </Accordion.Body>
+                        </Accordion.Item>
+                      )
+                    })}
+                  </Accordion>
+
+
+                  {/* {JSON.parse(metaFields?.title).map((opt, i) => {
+                    return (
+                      <div className={`ingrediant_tab_panel ${openedNumber === i ? "active" : ""}`} key={opt}>
+                        <div className='ingrediant_tab_header' onClick={() => setOpenedNumber(i !== openedNumber ? i : -1)}>
+                          {opt}
+                          <span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="9.334" height="17.334" viewBox="0 0 9.334 17.334">
+                              <path d="M4.695,1.695a.667.667,0,0,1,.944,0l8,8a.667.667,0,0,1,0,.944l-8,8a.668.668,0,1,1-.944-.944l7.529-7.528L4.695,2.639a.667.667,0,0,1,0-.944Z" transform="translate(-4.5 -1.5)" fill="var(--color-dark)" fillRule="evenodd"></path>
+                            </svg>
+                          </span>
+                        </div>
+                        {metaFields?.description_essen ?
+                          <div className='ingrediant_tab_body' style={openedNumber === i ? showStyle : hideStyle} dangerouslySetInnerHTML={{ __html: JSON.parse(metaFields?.description_essen)[i] }}>
+                          </div>
+                          : null
+                        }
+                      </div>
+                    )
+                  })} */}
+                </div>
+                : null
+              }
+              {metaFields?.key_ingredients_text ?
+                <div className='ingrediant_tab'>
+                  <div className={`ingrediant_tab_panel ${openedNumber2 ? "active" : ""}`}>
+                    <div className='ingrediant_tab_header' onClick={() => setOpenedNumber2(!openedNumber2)}>
+                      Full ingredients:
                       <span>
                         <svg xmlns="http://www.w3.org/2000/svg" width="9.334" height="17.334" viewBox="0 0 9.334 17.334">
                           <path d="M4.695,1.695a.667.667,0,0,1,.944,0l8,8a.667.667,0,0,1,0,.944l-8,8a.668.668,0,1,1-.944-.944l7.529-7.528L4.695,2.639a.667.667,0,0,1,0-.944Z" transform="translate(-4.5 -1.5)" fill="var(--color-dark)" fillRule="evenodd"></path>
                         </svg>
                       </span>
                     </div>
-                    {metaFields?.description_essen ?
-                      <div className='ingrediant_tab_body' style={openedNumber === i ? showStyle : hideStyle} dangerouslySetInnerHTML={{ __html: JSON.parse(metaFields?.description_essen)[i] }}>
+                    {metaFields?.key_ingredients_text ?
+                      <div className='ingrediant_tab_body' style={openedNumber2 ? showStyle : hideStyle} dangerouslySetInnerHTML={{ __html: metaFields?.key_ingredients_text }}>
                       </div>
                       : null
                     }
                   </div>
-                )
-              })}
-            </div>
-            : null
-          }
-          {metaFields?.key_ingredients_text ?
-            <div className='ingrediant_tab'>
-              <div className={`ingrediant_tab_panel ${openedNumber2 ? "active" : ""}`}>
-                <div className='ingrediant_tab_header' onClick={() => setOpenedNumber2(!openedNumber2)}>
-                  Full ingredients:
-                  <span>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="9.334" height="17.334" viewBox="0 0 9.334 17.334">
-                      <path d="M4.695,1.695a.667.667,0,0,1,.944,0l8,8a.667.667,0,0,1,0,.944l-8,8a.668.668,0,1,1-.944-.944l7.529-7.528L4.695,2.639a.667.667,0,0,1,0-.944Z" transform="translate(-4.5 -1.5)" fill="var(--color-dark)" fillRule="evenodd"></path>
-                    </svg>
-                  </span>
                 </div>
-                {metaFields?.key_ingredients_text ?
-                  <div className='ingrediant_tab_body' style={openedNumber2 ? showStyle : hideStyle} dangerouslySetInnerHTML={{ __html: metaFields?.key_ingredients_text }}>
-                  </div>
-                  : null
-                }
-              </div>
-            </div>
+                : null
+              }
+            </>
             : null
           }
         </>
@@ -990,7 +1018,7 @@ function ProductPrice({ selectedVariant, quantity, handleQtyChange, handleQty, s
  *   variants: Array<ProductVariantFragment>;
  * }}
  */
-function ProductForm({ product, selectedVariant, variants, quantity, activeOption, saveOption }) {
+function ProductForm({ product, selectedVariant, variants, quantity, activeOption, saveOption, type }) {
   console.log("selectedVariant: ", selectedVariant)
   return (
     <div className="product-form">
@@ -1016,7 +1044,7 @@ function ProductForm({ product, selectedVariant, variants, quantity, activeOptio
               activeOption !== "oneTime" ? {
                 merchandiseId: selectedVariant.id,
                 quantity: quantity || 1,
-                sellingPlanId: saveOption
+                sellingPlanId: type == "quickView" ? product?.sellingPlanGroups?.edges[0]?.node?.sellingPlans?.edges[0]?.node?.id || "" : saveOption
               }
                 :
                 {
