@@ -126,6 +126,16 @@ export default function Collection() {
       StampedFn.reloadUGC();
     }, 1000);
   }, [])
+  
+  useEffect(() => {
+    setTimeout(() => {
+      console.log("window.StampedFn: ", StampedFn)
+      if (StampedFn) {
+        StampedFn.init({ apiKey: "pubkey-y0bQR825X6K52BT67V84qf3OGso3o0", storeUrl: "trulyorganic.myshopify.com" })
+      }
+      StampedFn.reloadUGC();
+    }, 1000);
+  }, [collection.products])
 
 
   console.log("collection: ", collection)
