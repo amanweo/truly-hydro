@@ -1,6 +1,6 @@
 import { Suspense, useEffect } from 'react';
 import { defer, redirect } from '@shopify/remix-oxygen';
-import { Await, Link, useLoaderData, useLocation } from '@remix-run/react';
+import { Await, Link, NavLink, useLoaderData, useLocation } from '@remix-run/react';
 
 import {
   Image,
@@ -764,7 +764,13 @@ export function ProductMain({ selectedVariant, product, variants, metaFields, sh
     <div className="product-main">
       {metaFields ?
         <>
-          <h1 className='mb-2'>{title}</h1>
+          <h1 className='mb-2'>
+            {type !== "quickView" ?
+              title
+              :
+            <NavLink to={`/products/${product?.handle}`}>{title}</NavLink>
+            }
+          </h1>
           {metaFields?.bundle_product_short_title ?
             <p className='mb-1'><strong>
               {isJsonString(metaFields?.bundle_product_short_title) ?

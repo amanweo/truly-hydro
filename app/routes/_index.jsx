@@ -493,6 +493,15 @@ function CollectionProducts(props) {
   )
 }
 
+function isJsonString(str) {
+  try {
+    JSON.parse(str);
+  } catch (e) {
+    return false;
+  }
+  return true;
+}
+
 export function QuickView(props) {
   console.log("product quick:", props.product)
   const [show, setShow] = useState(false);
@@ -655,7 +664,7 @@ export function QuickView(props) {
               : null
             }
             {props.metaFields?.key_ingredients_text ?
-              <Accordion.Item eventKey={_.findLastIndex(JSON.parse(props.metaFields?.title)) + 1} className='ingrediant_tab_panel col-md-6'>
+              <Accordion.Item eventKey={_.findLastIndex(isJsonString(props.metaFields?.key_ingredients_text) ? JSON.parse(props.metaFields?.title) : props.metaFields?.title) + 1} className='ingrediant_tab_panel col-md-6'>
                 <Accordion.Header className='ingrediant_tab_header'>
                   Full ingredients:
                 </Accordion.Header>
