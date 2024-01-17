@@ -8,6 +8,8 @@ import { Mousewheel, Navigation } from 'swiper/modules';
 import { useRef } from 'react';
 import Images from '~/components/images';
 import { ProductMain, Stamped } from './products.$handle';
+import { Accordion } from 'react-bootstrap';
+import _ from "underscore"
 
 /**
  * @type {V2_MetaFunction}
@@ -64,6 +66,18 @@ export default function Homepage() {
       collectionList.push(data[key]?.collection)
     }
   }
+  
+  const [metaFields, setmetaFields] = useState({})
+  useEffect(() => {
+    let newObj = {}
+    quickViewData && quickViewData.metafields && quickViewData.metafields.length > 0 && quickViewData.metafields.map((opt) => {
+      if (opt) {
+        newObj[opt.key] = opt.value
+      }
+    })
+    console.log("newObj: ", newObj)
+    setmetaFields(newObj)
+  }, [quickViewData])
 
   useEffect(() => {
     setTimeout(() => {
@@ -73,13 +87,14 @@ export default function Homepage() {
       }
       StampedFn.reloadUGC();
     }, 500);
-  }, [])
+  }, [showView])
 
   function showQuickView(data) {
     document.body.classList.add("modal_open");
     setQuickViewData(data)
     setshowView(true)
     setActiveSlide(data?.images?.nodes[0])
+
     const customComponentRoot = document.createElement('div');
     customComponentRoot.classList.add("quickview_modal_outer")
     document.body.appendChild(customComponentRoot);
@@ -133,7 +148,7 @@ export default function Homepage() {
   //     closeModal()
   //   }
   // },[location.hash])
-  console.log("activeslide", activeSlide)
+  console.log("quickViewData", quickViewData)
 
   return (
     <div className="home">
@@ -150,6 +165,7 @@ export default function Homepage() {
         <QuickView
           product={quickViewData}
           location={location}
+          metaFields={metaFields}
           closeModal={closeModal}
           handleSlideChange={handleSlideChange}
           swiperRef={swiperRef}
@@ -295,7 +311,7 @@ export function ProductRender({ products, showQuickView, location }) {
   return (
     <div className="row">
       {console.log("products: ", products)}
-      {products.nodes && products.nodes.map((product) => (
+      {products && products.map((product) => (
         <>
           <div
             key={product.id}
@@ -320,13 +336,13 @@ function RecommendedProducts({ products, showQuickView, location }) {
       <div className='container-fluid'>
         <div className="headingholder">
           <p>Powerful Ingredients + Irresistible Scents</p>
-          <h2>Top Products</h2>
+          <h2>New Arrivals</h2>
         </div>
 
         <Suspense fallback={<div>Loading...</div>}>
           <Await resolve={products}>
             {({ products }) => (
-              <ProductRender products={products} showQuickView={showQuickView} location={location} />
+              <ProductRender products={products.nodes} showQuickView={showQuickView} location={location} />
             )}
           </Await>
         </Suspense>
@@ -344,7 +360,7 @@ function BestSellers({ products, showQuickView, location }) {
           <p>Check our</p>
           <h2>Bestsellers</h2>
         </div>
-        <ProductRender products={products} showQuickView={showQuickView} location={location} />
+        <ProductRender products={products.nodes} showQuickView={showQuickView} location={location} />
         <br />
       </div>
     </div>
@@ -479,8 +495,6 @@ function CollectionProducts(props) {
 
 export function QuickView(props) {
   console.log("product quick:", props.product)
-  const [metaFields, setmetaFields] = useState({})
-
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -500,17 +514,18 @@ export function QuickView(props) {
     setQuantity(parseInt(e.target.value))
   }
 
-  useEffect(() => {
-    let newObj = {}
-    props.product && props.product.metafields && props.product.metafields.length > 0 && props.product.metafields.map((opt) => {
-      if (opt) {
-        newObj[opt.key] = opt.value
-      }
-    })
-    console.log("newObj: ", newObj)
-    setmetaFields(newObj)
-  }, [])
-  console.log("product quick metaFields:", metaFields)
+  // const [metaFields, setmetaFields] = useState({})
+  // useEffect(() => {
+  //   let newObj = {}
+  //   props.product && props.product.metafields && props.product.metafields.length > 0 && props.product.metafields.map((opt) => {
+  //     if (opt) {
+  //       newObj[opt.key] = opt.value
+  //     }
+  //   })
+  //   console.log("newObj: ", newObj)
+  //   setmetaFields(newObj)
+  // }, [])
+  console.log("product quick metaFields:", props.metaFields)
   return (
     <div className='quickview_modal'>
       <div className='quickview_modal_backdrop' onClick={props.closeModal}></div>
@@ -577,7 +592,7 @@ export function QuickView(props) {
               selectedVariant={props.product.variants.nodes[0]}
               product={props.product}
               variants={props.product.variants}
-              metaFields={metaFields}
+              metaFields={props.metaFields}
               showPopup={showPopup}
               handleQtyChange={handleQtyChange}
               handleQty={handleQty}
@@ -616,7 +631,46 @@ export function QuickView(props) {
             </div> */}
           </div>
         </div>
-        
+        <div className='ingrediant_tab'>
+          <Accordion className='row'>
+            {props.metaFields?.title ?
+              <>
+                {JSON.parse(props.metaFields?.title).map((opt, i) => {
+                  return (
+                    <Accordion.Item eventKey={i} className='ingrediant_tab_panel col-md-6'>
+                      <Accordion.Header className='ingrediant_tab_header'>
+                        {opt}
+                      </Accordion.Header>
+                      <Accordion.Body>
+                        {props.metaFields?.description_essen ?
+                          <div className='ingrediant_tab_body' dangerouslySetInnerHTML={{ __html: JSON.parse(props.metaFields?.description_essen)[i] }}>
+                          </div>
+                          : null
+                        }
+                      </Accordion.Body>
+                    </Accordion.Item>
+                  )
+                })}
+              </>
+              : null
+            }
+            {props.metaFields?.key_ingredients_text ?
+              <Accordion.Item eventKey={_.findLastIndex(JSON.parse(props.metaFields?.title)) + 1} className='ingrediant_tab_panel col-md-6'>
+                <Accordion.Header className='ingrediant_tab_header'>
+                  Full ingredients:
+                </Accordion.Header>
+                <Accordion.Body>
+                  {props.metaFields?.key_ingredients_text ?
+                    <div className='ingrediant_tab_body' dangerouslySetInnerHTML={{ __html: props.metaFields?.key_ingredients_text }}>
+                    </div>
+                    : null
+                  }
+                </Accordion.Body>
+              </Accordion.Item>
+              : null
+            }
+          </Accordion>
+        </div>
       </div>
     </div>
   )
@@ -642,75 +696,75 @@ const FEATURED_COLLECTION_QUERY = `#graphql
       }
     }
   }
-`;
+      `;
 
 
 const PRODUCT_VARIANT_FRAGMENT = `#graphql
-  fragment ProductVariant on ProductVariant {
-    availableForSale
+      fragment ProductVariant on ProductVariant {
+        availableForSale
     compareAtPrice {
-      amount
+        amount
       currencyCode
     }
-    id
-    image {
-      __typename
+      id
+      image {
+        __typename
       id
       url
       altText
       width
       height
     }
-    price {
-      amount
+      price {
+        amount
       currencyCode
     }
-    product {
-      title
+      product {
+        title
       handle
     }
-    selectedOptions {
-      name
+      selectedOptions {
+        name
       value
     }
-    sellingPlanAllocations(first:1){
-      edges{
+      sellingPlanAllocations(first:1){
+        edges{
         node{
-          sellingPlan{
-            id
-          }
-          priceAdjustments{
-            price{
-              amount
+        sellingPlan{
+        id
+      }
+      priceAdjustments{
+        price{
+        amount
               currencyCode
             }
           }
         }
       }
     }
-    sku
-    title
-    unitPrice {
-      amount
+      sku
+      title
+      unitPrice {
+        amount
       currencyCode
     }
   }
-`;
+      `;
 
 
 const PRODUCT_VARIANTS_FRAGMENT = `#graphql
-  fragment ProductVariants on Product {
-    variants(first: 250) {
-      nodes {
+      fragment ProductVariants on Product {
+        variants(first: 250) {
+        nodes {
         ...ProductVariant
       }
     }
   }
-  ${PRODUCT_VARIANT_FRAGMENT}
+${PRODUCT_VARIANT_FRAGMENT}
 `;
 
 const COLLECTION_QUERY = `#graphql
-${PRODUCT_VARIANTS_FRAGMENT}
+      ${PRODUCT_VARIANTS_FRAGMENT}
       query Collection(
       $handle: String!
       $country: CountryCode
@@ -731,20 +785,20 @@ ${PRODUCT_VARIANTS_FRAGMENT}
       description
       sellingPlanGroups(first: 3) {
         edges {
-          node {
-            name
+        node {
+        name
             appName
-            options {
-              name
+      options {
+        name
               values
             }
-            sellingPlans(first: 3) {
-            edges {
-              node {
-                id
+      sellingPlans(first: 3) {
+        edges {
+        node {
+        id
                 name
-                options{
-                  value
+      options{
+        value
                   name
                 }
               }
@@ -753,10 +807,10 @@ ${PRODUCT_VARIANTS_FRAGMENT}
           }
         }
       }
-    metafields(
+      metafields(
       identifiers: [{namespace: "accentuate", key: "bundle_product_short_title"}, {namespace: "accentuate", key: "sub_title_one"}, {namespace: "accentuate", key: "sub_title_two"}, {namespace: "accentuate", key: "sub_title_one"}, {namespace: "accentuate", key: "bundle_good_to_know"}, {namespace: "accentuate", key: "good_to_know_title"}, {namespace: "accentuate", key: "good_to_know"}, {namespace: "accentuate", key: "bundle_product_short_descripti"}, {namespace: "accentuate", key: "description"}, {namespace: "accentuate", key: "bundle_whats_inside"}, {namespace: "accentuate", key: "whats_inside_title"}, {namespace: "accentuate", key: "bundle_why_it_special_description"}, {namespace: "accentuate", key: "bundle_why_it_special"}, {namespace: "accentuate", key: "why_its_special"}, {namespace: "accentuate", key: "bundle_what_makes_good_title"}, {namespace: "accentuate", key: "bundle_what_makes_good_descrip"}, {namespace: "accentuate", key: "title"}, {namespace: "accentuate", key: "essential_ingradient_main_titl"}, {namespace: "accentuate", key: "description_essen"}, {namespace: "accentuate", key: "key_ingredients"}, {namespace: "accentuate", key: "full_ingradient_main_titl"}, {namespace: "accentuate", key: "full_ingredient_text"}, {namespace: "accentuate", key: "full_ingredient_title"}, {namespace: "product", key: "key_ingredients_text"}]
-    ) {
-      key
+      ) {
+        key
       value
     }
 
@@ -773,19 +827,19 @@ ${PRODUCT_VARIANTS_FRAGMENT}
           }
       images(first: 100) {
         nodes {
-            id
+        id
             url
-            altText
+      altText
             }
           }
         }
       }
     }
   }
-`;
+      `;
 
 const RECOMMENDED_PRODUCTS_QUERY = `#graphql
-${PRODUCT_VARIANTS_FRAGMENT}
+      ${PRODUCT_VARIANTS_FRAGMENT}
       fragment RecommendedProduct on Product {
         id
           title

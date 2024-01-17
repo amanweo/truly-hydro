@@ -18,6 +18,7 @@ import LightGallery from 'lightgallery/react';
 import { Accordion, Modal } from "react-bootstrap"
 
 import lgZoom from 'lightgallery/plugins/zoom';
+import _ from "underscore"
 
 /**
  * @type {V2_MetaFunction}
@@ -649,7 +650,7 @@ export default function Product() {
                               selectedVariant
                                 ? [{
                                   merchandiseId: selectedVariant.id,
-                                  quantity: quantity || 1,
+                                  quantity: 1,
                                   sellingPlanId: saveOption,
                                   // saveOption
                                 }
@@ -756,6 +757,7 @@ export function ProductMain({ selectedVariant, product, variants, metaFields, sh
   };
   const handleRadioChange = (e) => {
     setActiveOption(e.target.value)
+
   }
   console.log("activeOption;", activeOption)
   return (
@@ -787,7 +789,7 @@ export function ProductMain({ selectedVariant, product, variants, metaFields, sh
               null
           }
           {metaFields?.bundle_product_short_descripti ?
-            <p dangerouslySetInnerHTML={{ __html: metaFields?.bundle_product_short_descripti }}></p>
+            <p dangerouslySetInnerHTML={{ __html: isJsonString(metaFields?.bundle_product_short_descripti) ? JSON.parse(metaFields?.bundle_product_short_descripti) : metaFields?.bundle_product_short_descripti }}></p>
             :
             <p>{description}</p>
           }
@@ -857,29 +859,48 @@ export function ProductMain({ selectedVariant, product, variants, metaFields, sh
                 <h5 className='mb-2' dangerouslySetInnerHTML={{ __html: isJsonString(metaFields?.essential_ingradient_main_titl) ? JSON.parse(metaFields?.essential_ingradient_main_titl) : metaFields?.essential_ingradient_main_titl }}></h5>
                 : null
               }
-              {metaFields?.title ?
-                <div className='ingrediant_tab'>
-                  <Accordion>
-                    {JSON.parse(metaFields?.title).map((opt, i) => {
-                      return (
-                        <Accordion.Item eventKey={openedNumber} className='ingrediant_tab_panel'>
-                          <Accordion.Header className='ingrediant_tab_header'>
-                            {opt}
-                          </Accordion.Header>
-                          <Accordion.Body>
-                            {metaFields?.description_essen ?
-                              <div className='ingrediant_tab_body' dangerouslySetInnerHTML={{ __html: JSON.parse(metaFields?.description_essen)[i] }}>
-                              </div>
-                              : null
-                            }
-                          </Accordion.Body>
-                        </Accordion.Item>
-                      )
-                    })}
-                  </Accordion>
+              <div className='ingrediant_tab'>
+                <Accordion>
+                  {metaFields?.title ?
+                    <>
+                      {JSON.parse(metaFields?.title).map((opt, i) => {
+                        return (
+                          <Accordion.Item eventKey={i} className='ingrediant_tab_panel'>
+                            <Accordion.Header className='ingrediant_tab_header'>
+                              {opt}
+                            </Accordion.Header>
+                            <Accordion.Body>
+                              {metaFields?.description_essen ?
+                                <div className='ingrediant_tab_body' dangerouslySetInnerHTML={{ __html: JSON.parse(metaFields?.description_essen)[i] }}>
+                                </div>
+                                : null
+                              }
+                            </Accordion.Body>
+                          </Accordion.Item>
+                        )
+                      })}
+                    </>
+                    : null
+                  }
+                  {metaFields?.key_ingredients_text ?
+                    <Accordion.Item eventKey={_.findLastIndex(JSON.parse(metaFields?.title)) + 1} className='ingrediant_tab_panel'>
+                      <Accordion.Header className='ingrediant_tab_header'>
+                        Full ingredients:
+                      </Accordion.Header>
+                      <Accordion.Body>
+                        {metaFields?.key_ingredients_text ?
+                          <div className='ingrediant_tab_body' dangerouslySetInnerHTML={{ __html: metaFields?.key_ingredients_text }}>
+                          </div>
+                          : null
+                        }
+                      </Accordion.Body>
+                    </Accordion.Item>
+                    : null
+                  }
+                </Accordion>
 
 
-                  {/* {JSON.parse(metaFields?.title).map((opt, i) => {
+                {/* {JSON.parse(metaFields?.title).map((opt, i) => {
                     return (
                       <div className={`ingrediant_tab_panel ${openedNumber === i ? "active" : ""}`} key={opt}>
                         <div className='ingrediant_tab_header' onClick={() => setOpenedNumber(i !== openedNumber ? i : -1)}>
@@ -898,10 +919,8 @@ export function ProductMain({ selectedVariant, product, variants, metaFields, sh
                       </div>
                     )
                   })} */}
-                </div>
-                : null
-              }
-              {metaFields?.key_ingredients_text ?
+              </div>
+              {/* {metaFields?.key_ingredients_text ?
                 <div className='ingrediant_tab'>
                   <div className={`ingrediant_tab_panel ${openedNumber2 ? "active" : ""}`}>
                     <div className='ingrediant_tab_header' onClick={() => setOpenedNumber2(!openedNumber2)}>
@@ -920,7 +939,7 @@ export function ProductMain({ selectedVariant, product, variants, metaFields, sh
                   </div>
                 </div>
                 : null
-              }
+              } */}
             </>
             : null
           }
@@ -1043,7 +1062,7 @@ function ProductForm({ product, selectedVariant, variants, quantity, activeOptio
             ? [
               activeOption !== "oneTime" ? {
                 merchandiseId: selectedVariant.id,
-                quantity: quantity || 1,
+                quantity: 1,
                 sellingPlanId: type == "quickView" ? product?.sellingPlanGroups?.edges[0]?.node?.sellingPlans?.edges[0]?.node?.id || "" : saveOption
               }
                 :

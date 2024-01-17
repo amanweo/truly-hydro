@@ -254,6 +254,9 @@
     width: 100%;
     max-width: 1100px;
     position: relative;
+    max-height: 90vh;
+    overflow: hidden;
+    overflow-y: auto;
 }
 
 .del_price {
@@ -274,13 +277,8 @@
     align-items: flex-start;
     justify-content: space-between;
     position: sticky;
-    top: 20px;
+    top: 0;
 }
-.quickview_modal_body .product-main {
-    max-height: 80vh;
-    overflow-y: auto;
-}
-
 .product_detail_single_image {
     width: 100%;
     max-width: calc(100% - 100px);
@@ -1211,4 +1209,11 @@ div.stamped-container[data-widget-style], div[data-widget-style] div.stamped-con
 }
 .text_over_image  .bg_image_text {
     padding: 0 30px;
+}
+.ingrediant_tab .accordion-body{
+    padding: 0;
+}
+.ingrediant_tab .accordion-button:after{
+    background-size: 15px;
+    background-position: center;
 }

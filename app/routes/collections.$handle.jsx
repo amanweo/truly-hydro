@@ -1,5 +1,5 @@
 import { json, redirect } from '@shopify/remix-oxygen';
-import { useLoaderData, Link, useLocation } from '@remix-run/react';
+import { useLoaderData, Link, useLocation, useNavigate } from '@remix-run/react';
 import {
   Pagination,
   getPaginationVariables,
@@ -11,6 +11,7 @@ import { ProductBlock, ProductRender, QuickView } from './_index';
 import { useEffect, useRef } from 'react';
 import { useState } from 'react';
 import ReactDOM from 'react-dom';
+import { useInView } from "react-intersection-observer";
 
 /**
  * @type {V2_MetaFunction}
@@ -48,7 +49,9 @@ export async function loader({ request, params, context }) {
 export default function Collection() {
   /** @type {LoaderReturnData} */
   const { collection } = useLoaderData();
+  const { ref, inView, entry } = useInView();
   const swiperRef = useRef(null);
+  const navigate = useNavigate();
   const location = useLocation()
   const [showView, setshowView] = useState(false)
   const [activeSlide, setActiveSlide] = useState({})
@@ -76,6 +79,17 @@ export default function Collection() {
     setshowView(false)
   }
 
+  const [metaFields, setmetaFields] = useState({})
+  useEffect(() => {
+    let newObj = {}
+    quickViewData && quickViewData.metafields && quickViewData.metafields.length > 0 && quickViewData.metafields.map((opt) => {
+      if (opt) {
+        newObj[opt.key] = opt.value
+      }
+    })
+    console.log("newObj: ", newObj)
+    setmetaFields(newObj)
+  }, [quickViewData])
 
   const handleSlideChange = () => {
     if (swiperRef.current) {
@@ -102,7 +116,7 @@ export default function Collection() {
       }
     }
   }
-  
+
   useEffect(() => {
     setTimeout(() => {
       console.log("window.StampedFn: ", StampedFn)
@@ -112,6 +126,7 @@ export default function Collection() {
       StampedFn.reloadUGC();
     }, 1000);
   }, [])
+
 
   console.log("collection: ", collection)
   return (
@@ -129,29 +144,49 @@ export default function Collection() {
           <div className="headingholder">
             {/* <h1>{collection.title}</h1> */}
           </div>
-          {/* <p className="collection-description">{collection.description}</p> */}
-          <Pagination connection={collection.products}>
-            {({ nodes, isLoading, PreviousLink, NextLink }) => (
+
+          {/* <Pagination connection={collection.products}>
+            {({ nodes, NextLink, hasNextPage, nextPageUrl, state }) => (
               <>
-                {/* <PreviousLink>
-                {isLoading ? 'Loading...' : <span>↑ Load previous</span>}
-              </PreviousLink> */}
-                <ProductRender products={collection.products} showQuickView={showQuickView} location={location} />
+                <ProductRender products={nodes} showQuickView={showQuickView} location={location} />
                 <br />
                 <div className='text-center'>
-                  <NextLink className='btn btn-primary'>
+                  <NextLink className='btn btn-primary' ref={ref}>
                     {isLoading ? 'Loading...' : <span>Load more</span>}
                   </NextLink>
                 </div>
               </>
             )}
+          </Pagination> */}
+          <Pagination connection={collection.products}>
+            {({ nodes, NextLink, hasNextPage, nextPageUrl, state, isLoading }) => (
+              <>
+                <ProductsLoadedOnScroll
+                  nodes={nodes}
+                  inView={inView}
+                  hasNextPage={hasNextPage}
+                  nextPageUrl={nextPageUrl}
+                  state={state}
+                  showQuickView={showQuickView}
+                  location={location}
+                />
+                <div className='text-center'>
+                  <NextLink className='btn btn-primary' ref={ref}>
+                    {isLoading ? 'Loading...' : ""}
+                  </NextLink>
+                </div>
+              </>
+            )}
           </Pagination>
+
         </div>
       </div>
 
       {showView && ReactDOM.createPortal(
         <QuickView
           product={quickViewData}
+          location={location}
+          metaFields={metaFields}
           closeModal={closeModal}
           handleSlideChange={handleSlideChange}
           swiperRef={swiperRef}
@@ -164,7 +199,80 @@ export default function Collection() {
   );
 }
 
+function ProductsLoadedOnScroll({ nodes, inView, hasNextPage, nextPageUrl, state, showQuickView, location }) {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (inView && hasNextPage) {
+      navigate(nextPageUrl, {
+        replace: true,
+        preventScrollReset: true,
+        state,
+      });
+    }
+  }, [inView, navigate, state, nextPageUrl, hasNextPage]);
+
+  return (
+    <ProductRender products={nodes} showQuickView={showQuickView} location={location} />
+  )
+}
+
+
+const PRODUCT_VARIANT_FRAGMENT = `#graphql
+      fragment ProductVariant on ProductVariant {
+        availableForSale
+    compareAtPrice {
+        amount
+      currencyCode
+    }
+      id
+      image {
+        __typename
+      id
+      url
+      altText
+      width
+      height
+    }
+      price {
+        amount
+      currencyCode
+    }
+      product {
+        title
+      handle
+    }
+      selectedOptions {
+        name
+      value
+    }
+      sellingPlanAllocations(first:1){
+        edges{
+        node{
+        sellingPlan{
+        id
+      }
+      priceAdjustments{
+        price{
+        amount
+              currencyCode
+            }
+          }
+        }
+      }
+    }
+      sku
+      title
+      unitPrice {
+        amount
+      currencyCode
+    }
+  }
+`;
+
+
 const PRODUCT_ITEM_FRAGMENT = `#graphql
+${PRODUCT_VARIANT_FRAGMENT}
   fragment MoneyProductItem on MoneyV2 {
     amount
     currencyCode
@@ -195,13 +303,40 @@ const PRODUCT_ITEM_FRAGMENT = `#graphql
         altText
       }
     }
+    sellingPlanGroups(first: 3) {
+      edges {
+      node {
+      name
+          appName
+    options {
+      name
+            values
+          }
+    sellingPlans(first: 3) {
+      edges {
+      node {
+      id
+              name
+    options{
+      value
+                name
+              }
+            }
+          }
+        }
+        }
+      }
+    }
+    metafields(
+    identifiers: [{namespace: "accentuate", key: "bundle_product_short_title"}, {namespace: "accentuate", key: "sub_title_one"}, {namespace: "accentuate", key: "sub_title_two"}, {namespace: "accentuate", key: "sub_title_one"}, {namespace: "accentuate", key: "bundle_good_to_know"}, {namespace: "accentuate", key: "good_to_know_title"}, {namespace: "accentuate", key: "good_to_know"}, {namespace: "accentuate", key: "bundle_product_short_descripti"}, {namespace: "accentuate", key: "description"}, {namespace: "accentuate", key: "bundle_whats_inside"}, {namespace: "accentuate", key: "whats_inside_title"}, {namespace: "accentuate", key: "bundle_why_it_special_description"}, {namespace: "accentuate", key: "bundle_why_it_special"}, {namespace: "accentuate", key: "why_its_special"}, {namespace: "accentuate", key: "bundle_what_makes_good_title"}, {namespace: "accentuate", key: "bundle_what_makes_good_descrip"}, {namespace: "accentuate", key: "title"}, {namespace: "accentuate", key: "essential_ingradient_main_titl"}, {namespace: "accentuate", key: "description_essen"}, {namespace: "accentuate", key: "key_ingredients"}, {namespace: "accentuate", key: "full_ingradient_main_titl"}, {namespace: "accentuate", key: "full_ingredient_text"}, {namespace: "accentuate", key: "full_ingredient_title"}, {namespace: "product", key: "key_ingredients_text"}]
+    ) {
+      key
+    value
+  }
+
     variants(first: 1) {
       nodes {
-        id
-        selectedOptions {
-          name
-          value
-        }
+        ...ProductVariant
       }
     }
   }
@@ -214,6 +349,8 @@ const COLLECTION_QUERY = `#graphql
     $handle: String!
     $country: CountryCode
     $language: LanguageCode
+    $startCursor: String
+    $endCursor: String
   ) @inContext(country: $country, language: $language) {
     collection(handle: $handle) {
       id
@@ -226,7 +363,8 @@ const COLLECTION_QUERY = `#graphql
         altText
       }
       products(
-        first: 15
+        first: 15,
+        before: $startCursor, after: $endCursor
       ) {
         nodes {
           ...ProductItem
