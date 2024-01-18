@@ -66,7 +66,7 @@ export default function Homepage() {
       collectionList.push(data[key]?.collection)
     }
   }
-  
+
   const [metaFields, setmetaFields] = useState({})
   useEffect(() => {
     let newObj = {}
@@ -221,20 +221,39 @@ function RotationalBar({ data, active }) {
   return (
     <div className="rotationalbar">
       <div className="container-fluid">
-        <div className="row gx-0">
-          {data.map((opt, i) => {
-            return (
-              <div className={`col-lg-4 ${active == i ? "active" : ""}`} key={i}>
-                <div className="InStyle__Box">
+        {/* {window.innerWidth > 991 ? */}
+          <div className="row gx-0">
+            {data.map((opt, i) => {
+              return (
+                <div className={`col-lg-4 ${active == i ? "active" : ""}`} key={i}>
+                  <div className="InStyle__Box">
+                    <h3><span><span>{opt?.text}</span></span></h3>
+                    <div className='InStyle__Box_logo'>
+                      <img src={opt?.logo} alt="logo" height={34} />
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+          {/* :
+          <Swiper
+            spaceBetween={0}
+            slidesPerView={1}
+            loop={true}
+          >
+            {data.map((opt, i) => {
+              return (
+                <div className="InStyle__Box" key={i}>
                   <h3><span><span>{opt?.text}</span></span></h3>
                   <div className='InStyle__Box_logo'>
                     <img src={opt?.logo} alt="logo" height={34} />
                   </div>
                 </div>
-              </div>
-            )
-          })}
-        </div>
+              )
+            })}
+          </Swiper>
+        } */}
       </div>
     </div>
   )
@@ -538,78 +557,79 @@ export function QuickView(props) {
   return (
     <div className='quickview_modal'>
       <div className='quickview_modal_backdrop' onClick={props.closeModal}></div>
-      <div className='quickview_modal_body'>
-        <div className='row gx-5'>
-          <div className='col-md-6'>
-            <div className='product_detail_images'>
-              <div className='product_detail_single_image'>
-                <Image
-                  alt={props.activeSlide.altText || 'Product Image'}
-                  aspectRatio="0"
-                  data={props.activeSlide}
-                  sizes="200vw"
-                />
-              </div>
-              <div className='product_image_thumb'>
-                <Swiper
-                  spaceBetween={0}
-                  slidesPerView={3}
-                  direction={'vertical'}
-                  mousewheel={true}
-                  onSlideChange={props.handleSlideChange}
-                  autoHeight={true}
-                  navigation={true, {
-                    nextEl: '.custom-next-arrow',
-                    prevEl: '.custom-prev-arrow',
-                  }}
-                  modules={[Mousewheel, Navigation]}
-                  ref={props.swiperRef}
-                  onSwiper={(swiper) => console.log("swiper", swiper)}
-                >
-                  <div className="custom_arrows custom-prev-arrow">
-                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M5.29289 9.29289C4.90237 9.68342 4.90237 10.3166 5.29289 10.7071C5.68342 11.0976 6.31658 11.0976 6.70711 10.7071L5.29289 9.29289ZM12 4L12.7071 3.29289C12.3166 2.90237 11.6834 2.90237 11.2929 3.29289L12 4ZM17.2929 10.7071C17.6834 11.0976 18.3166 11.0976 18.7071 10.7071C19.0976 10.3166 19.0976 9.68342 18.7071 9.29289L17.2929 10.7071ZM6.70711 10.7071L12.7071 4.70711L11.2929 3.29289L5.29289 9.29289L6.70711 10.7071ZM11.2929 4.70711L17.2929 10.7071L18.7071 9.29289L12.7071 3.29289L11.2929 4.70711Z" fill="#fff"></path>
-                      <path d="M12 4L12 20" stroke="#fff" strokewidth="2" strokeLinecap="round" strokelinejoin="round"></path>
-                    </svg>
-                  </div>
-                  <div className="custom_arrows custom-next-arrow">
-                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M18.7071 14.7071C19.0976 14.3166 19.0976 13.6834 18.7071 13.2929C18.3166 12.9024 17.6834 12.9024 17.2929 13.2929L18.7071 14.7071ZM12 20L11.2929 20.7071C11.6834 21.0976 12.3166 21.0976 12.7071 20.7071L12 20ZM6.70711 13.2929C6.31658 12.9024 5.68342 12.9024 5.29289 13.2929C4.90237 13.6834 4.90237 14.3166 5.29289 14.7071L6.70711 13.2929ZM17.2929 13.2929L11.2929 19.2929L12.7071 20.7071L18.7071 14.7071L17.2929 13.2929ZM12.7071 19.2929L6.70711 13.2929L5.29289 14.7071L11.2929 20.7071L12.7071 19.2929Z" fill="#fff"></path>
-                      <path d="M12 20L12 4" stroke="#fff" strokewidth="2" strokeLinecap="round" strokelinejoin="round"></path>
-                    </svg>
-                  </div>
-                  {props.product?.images?.nodes.map((img, i) => {
-                    return (
-                      <SwiperSlide key={i} onClick={() => props.handleThumbnailClick(i)}>
-                        <button className='noStyle d-block'>
-                          <Image
-                            alt={img.altText || 'Product Image'}
-                            aspectRatio="0"
-                            data={img}
-                            sizes="200vw"
-                          />
-                        </button>
-                      </SwiperSlide>
-                    )
-                  })}
-                </Swiper>
+      <div className='quickview_modal_body_outer'>
+        <div className='quickview_modal_body'>
+          <div className='row gx-5'>
+            <div className='col-md-6'>
+              <div className='product_detail_images'>
+                <div className='product_detail_single_image'>
+                  <Image
+                    alt={props.activeSlide.altText || 'Product Image'}
+                    aspectRatio="0"
+                    data={props.activeSlide}
+                    sizes="200vw"
+                  />
+                </div>
+                <div className='product_image_thumb'>
+                  <Swiper
+                    spaceBetween={0}
+                    slidesPerView={3}
+                    direction={'vertical'}
+                    mousewheel={true}
+                    onSlideChange={props.handleSlideChange}
+                    autoHeight={true}
+                    navigation={true, {
+                      nextEl: '.custom-next-arrow',
+                      prevEl: '.custom-prev-arrow',
+                    }}
+                    modules={[Mousewheel, Navigation]}
+                    ref={props.swiperRef}
+                    onSwiper={(swiper) => console.log("swiper", swiper)}
+                  >
+                    <div className="custom_arrows custom-prev-arrow">
+                      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M5.29289 9.29289C4.90237 9.68342 4.90237 10.3166 5.29289 10.7071C5.68342 11.0976 6.31658 11.0976 6.70711 10.7071L5.29289 9.29289ZM12 4L12.7071 3.29289C12.3166 2.90237 11.6834 2.90237 11.2929 3.29289L12 4ZM17.2929 10.7071C17.6834 11.0976 18.3166 11.0976 18.7071 10.7071C19.0976 10.3166 19.0976 9.68342 18.7071 9.29289L17.2929 10.7071ZM6.70711 10.7071L12.7071 4.70711L11.2929 3.29289L5.29289 9.29289L6.70711 10.7071ZM11.2929 4.70711L17.2929 10.7071L18.7071 9.29289L12.7071 3.29289L11.2929 4.70711Z" fill="#fff"></path>
+                        <path d="M12 4L12 20" stroke="#fff" strokewidth="2" strokeLinecap="round" strokelinejoin="round"></path>
+                      </svg>
+                    </div>
+                    <div className="custom_arrows custom-next-arrow">
+                      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M18.7071 14.7071C19.0976 14.3166 19.0976 13.6834 18.7071 13.2929C18.3166 12.9024 17.6834 12.9024 17.2929 13.2929L18.7071 14.7071ZM12 20L11.2929 20.7071C11.6834 21.0976 12.3166 21.0976 12.7071 20.7071L12 20ZM6.70711 13.2929C6.31658 12.9024 5.68342 12.9024 5.29289 13.2929C4.90237 13.6834 4.90237 14.3166 5.29289 14.7071L6.70711 13.2929ZM17.2929 13.2929L11.2929 19.2929L12.7071 20.7071L18.7071 14.7071L17.2929 13.2929ZM12.7071 19.2929L6.70711 13.2929L5.29289 14.7071L11.2929 20.7071L12.7071 19.2929Z" fill="#fff"></path>
+                        <path d="M12 20L12 4" stroke="#fff" strokewidth="2" strokeLinecap="round" strokelinejoin="round"></path>
+                      </svg>
+                    </div>
+                    {props.product?.images?.nodes.map((img, i) => {
+                      return (
+                        <SwiperSlide key={i} onClick={() => props.handleThumbnailClick(i)}>
+                          <button className='noStyle d-block'>
+                            <Image
+                              alt={img.altText || 'Product Image'}
+                              aspectRatio="0"
+                              data={img}
+                              sizes="200vw"
+                            />
+                          </button>
+                        </SwiperSlide>
+                      )
+                    })}
+                  </Swiper>
+                </div>
               </div>
             </div>
-          </div>
-          <div className='col-md-6'>
-            <ProductMain
-              selectedVariant={props.product.variants.nodes[0]}
-              product={props.product}
-              variants={props.product.variants}
-              metaFields={props.metaFields}
-              showPopup={showPopup}
-              handleQtyChange={handleQtyChange}
-              handleQty={handleQty}
-              quantity={quantity}
-              location={props.location}
-              type="quickView"
-            />
-            {/* <div className='product_details'>
+            <div className='col-md-6'>
+              <ProductMain
+                selectedVariant={props.product.variants.nodes[0]}
+                product={props.product}
+                variants={props.product.variants}
+                metaFields={props.metaFields}
+                showPopup={showPopup}
+                handleQtyChange={handleQtyChange}
+                handleQty={handleQty}
+                quantity={quantity}
+                location={props.location}
+                type="quickView"
+              />
+              {/* <div className='product_details'>
               <h3 className='mdEx'>{props.product?.title}</h3>
               <div className='d-flex primary-font strong'>
                 <Money data={props.product.priceRange.minVariantPrice} as="h5" />
@@ -638,47 +658,48 @@ export function QuickView(props) {
               </div>
               <Link to={`/products/${props.product.handle}`} onClick={props.handleDetail} className='link'>View Full Details</Link>
             </div> */}
+            </div>
           </div>
-        </div>
-        <div className='ingrediant_tab'>
-          <Accordion className='row'>
-            {props.metaFields?.title ?
-              <>
-                {JSON.parse(props.metaFields?.title).map((opt, i) => {
-                  return (
-                    <Accordion.Item eventKey={i} className='ingrediant_tab_panel col-md-6'>
-                      <Accordion.Header className='ingrediant_tab_header'>
-                        {opt}
-                      </Accordion.Header>
-                      <Accordion.Body>
-                        {props.metaFields?.description_essen ?
-                          <div className='ingrediant_tab_body' dangerouslySetInnerHTML={{ __html: JSON.parse(props.metaFields?.description_essen)[i] }}>
-                          </div>
-                          : null
-                        }
-                      </Accordion.Body>
-                    </Accordion.Item>
-                  )
-                })}
-              </>
-              : null
-            }
-            {props.metaFields?.key_ingredients_text ?
-              <Accordion.Item eventKey={_.findLastIndex(isJsonString(props.metaFields?.key_ingredients_text) ? JSON.parse(props.metaFields?.title) : props.metaFields?.title) + 1} className='ingrediant_tab_panel col-md-6'>
-                <Accordion.Header className='ingrediant_tab_header'>
-                  Full ingredients:
-                </Accordion.Header>
-                <Accordion.Body>
-                  {props.metaFields?.key_ingredients_text ?
-                    <div className='ingrediant_tab_body' dangerouslySetInnerHTML={{ __html: props.metaFields?.key_ingredients_text }}>
-                    </div>
-                    : null
-                  }
-                </Accordion.Body>
-              </Accordion.Item>
-              : null
-            }
-          </Accordion>
+          <div className='ingrediant_tab'>
+            <Accordion className='row'>
+              {props.metaFields?.title ?
+                <>
+                  {JSON.parse(props.metaFields?.title).map((opt, i) => {
+                    return (
+                      <Accordion.Item eventKey={i} className='ingrediant_tab_panel col-md-6'>
+                        <Accordion.Header className='ingrediant_tab_header'>
+                          {opt}
+                        </Accordion.Header>
+                        <Accordion.Body>
+                          {props.metaFields?.description_essen ?
+                            <div className='ingrediant_tab_body' dangerouslySetInnerHTML={{ __html: JSON.parse(props.metaFields?.description_essen)[i] }}>
+                            </div>
+                            : null
+                          }
+                        </Accordion.Body>
+                      </Accordion.Item>
+                    )
+                  })}
+                </>
+                : null
+              }
+              {props.metaFields?.key_ingredients_text ?
+                <Accordion.Item eventKey={_.findLastIndex(isJsonString(props.metaFields?.key_ingredients_text) ? JSON.parse(props.metaFields?.title) : props.metaFields?.title) + 1} className='ingrediant_tab_panel col-md-6'>
+                  <Accordion.Header className='ingrediant_tab_header'>
+                    Full ingredients:
+                  </Accordion.Header>
+                  <Accordion.Body>
+                    {props.metaFields?.key_ingredients_text ?
+                      <div className='ingrediant_tab_body' dangerouslySetInnerHTML={{ __html: props.metaFields?.key_ingredients_text }}>
+                      </div>
+                      : null
+                    }
+                  </Accordion.Body>
+                </Accordion.Item>
+                : null
+              }
+            </Accordion>
+          </div>
         </div>
       </div>
     </div>

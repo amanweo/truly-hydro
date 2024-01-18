@@ -263,6 +263,7 @@ export default function Product() {
   // const [saveOption, setSaveOption] = useState(product?.sellingPlanGroups?.edges[0]?.node?.options[0]?.values[0] || "")
   const [saveOption, setSaveOption] = useState(product?.sellingPlanGroups?.edges[0]?.node?.sellingPlans?.edges[0]?.node?.id || "")
   const handleOptionChange = (e) => {
+    console.log("e.target.value: ", e.target.value)
     setSaveOption(e.target.value)
   }
 
@@ -333,7 +334,7 @@ export default function Product() {
               <div className='product_image_thumb'>
                 <Swiper
                   spaceBetween={0}
-                  slidesPerView={3}
+                  slidesPerView={4}
                   mousewheel={true}
                   direction={'vertical'}
                   onSlideChange={handleSlideChange}
@@ -387,6 +388,7 @@ export default function Product() {
               handleQty={handleQty}
               quantity={quantity}
               location={location}
+              saveOption={saveOption}
             />
           </div>
         </div>
@@ -740,7 +742,7 @@ function ProductImage({ image }) {
  *   variants: Promise<ProductVariantsQuery>;
  * }}
  */
-export function ProductMain({ selectedVariant, product, variants, metaFields, showPopup, quantity, handleQty, handleQtyChange, location, type }) {
+export function ProductMain({ selectedVariant, product, variants, metaFields, showPopup, quantity, handleQty, handleQtyChange, location, type, saveOption }) {
   console.log("metaFields: ", metaFields)
   console.log("selectedVariant: ", selectedVariant)
   const { title, descriptionHtml, description } = product;
@@ -768,7 +770,7 @@ export function ProductMain({ selectedVariant, product, variants, metaFields, sh
             {type !== "quickView" ?
               title
               :
-            <NavLink to={`/products/${product?.handle}`}>{title}</NavLink>
+              <NavLink to={`/products/${product?.handle}`}>{title}</NavLink>
             }
           </h1>
           {metaFields?.bundle_product_short_title ?
@@ -795,55 +797,61 @@ export function ProductMain({ selectedVariant, product, variants, metaFields, sh
               null
           }
           {metaFields?.bundle_product_short_descripti ?
-            <p dangerouslySetInnerHTML={{ __html: isJsonString(metaFields?.bundle_product_short_descripti) ? JSON.parse(metaFields?.bundle_product_short_descripti) : metaFields?.bundle_product_short_descripti }}></p>
+            <div dangerouslySetInnerHTML={{ __html: isJsonString(metaFields?.bundle_product_short_descripti) ? JSON.parse(metaFields?.bundle_product_short_descripti) : metaFields?.bundle_product_short_descripti }}></div>
             :
             <p>{description}</p>
           }
-          {metaFields?.bundle_whats_inside ?
-            <div className='bundle_whats_inside'>
-              <h5>{isJsonString(metaFields?.whats_inside_title) ? JSON.parse(metaFields?.whats_inside_title) : metaFields?.whats_inside_title}</h5>
-              <div dangerouslySetInnerHTML={{ __html: isJsonString(metaFields?.bundle_whats_inside) ? JSON.parse(metaFields?.bundle_whats_inside) : metaFields?.bundle_whats_inside }}>
+          <div className={`bundle_whats_inside_outer ${type == "quickView" ? "flex-column-reverse":""}`}>
+            {metaFields?.bundle_whats_inside ?
+              <div className='bundle_whats_inside'>
+                <h5>{isJsonString(metaFields?.whats_inside_title) ? JSON.parse(metaFields?.whats_inside_title) : metaFields?.whats_inside_title}</h5>
+                <div dangerouslySetInnerHTML={{ __html: isJsonString(metaFields?.bundle_whats_inside) ? JSON.parse(metaFields?.bundle_whats_inside) : metaFields?.bundle_whats_inside }}>
+                </div>
               </div>
-            </div>
-            : null
-          }
-          <ProductPrice
-            selectedVariant={selectedVariant}
-            quantity={quantity}
-            handleQty={handleQty}
-            handleQtyChange={handleQtyChange}
-            showPopup={showPopup}
-            handleRadioChange={handleRadioChange}
-            activeOption={activeOption}
-          />
-          <Suspense
-            fallback={
-              <ProductForm
-                product={product}
-                selectedVariant={selectedVariant}
-                variants={[]}
-                quantity={quantity}
-                activeOption={activeOption}
-                type={type}
-              />
+              : null
             }
-          >
-            <Await
-              errorElement="There was a problem loading product variants"
-              resolve={variants}
-            >
-              {(data) => (
-                <ProductForm
-                  product={product}
-                  selectedVariant={selectedVariant}
-                  variants={data.product?.variants.nodes || []}
-                  quantity={quantity}
-                  activeOption={activeOption}
-                  type={type}
-                />
-              )}
-            </Await>
-          </Suspense>
+            <div>
+              <ProductPrice
+                selectedVariant={selectedVariant}
+                quantity={quantity}
+                handleQty={handleQty}
+                handleQtyChange={handleQtyChange}
+                showPopup={showPopup}
+                handleRadioChange={handleRadioChange}
+                activeOption={activeOption}
+              />
+              <Suspense
+                fallback={
+                  <ProductForm
+                    product={product}
+                    selectedVariant={selectedVariant}
+                    variants={[]}
+                    quantity={quantity}
+                    activeOption={activeOption}
+                    type={type}
+                    saveOption={saveOption}
+                  />
+                }
+              >
+                <Await
+                  errorElement="There was a problem loading product variants"
+                  resolve={variants}
+                >
+                  {(data) => (
+                    <ProductForm
+                      product={product}
+                      selectedVariant={selectedVariant}
+                      variants={data.product?.variants.nodes || []}
+                      quantity={quantity}
+                      activeOption={activeOption}
+                      type={type}
+                      saveOption={saveOption}
+                    />
+                  )}
+                </Await>
+              </Suspense>
+            </div>
+          </div>
           <br />
           {type !== "quickView" ?
             <>
@@ -1045,6 +1053,7 @@ function ProductPrice({ selectedVariant, quantity, handleQtyChange, handleQty, s
  */
 function ProductForm({ product, selectedVariant, variants, quantity, activeOption, saveOption, type }) {
   console.log("selectedVariant: ", selectedVariant)
+  console.log("saveOption 1: ", saveOption)
   return (
     <div className="product-form">
       <VariantSelector

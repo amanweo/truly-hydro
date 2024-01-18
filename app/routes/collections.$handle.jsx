@@ -135,7 +135,7 @@ export default function Collection() {
       }
       StampedFn.reloadUGC();
     }, 1000);
-  }, [collection.products])
+  }, [collection.products, showView])
 
 
   console.log("collection: ", collection)

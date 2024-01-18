@@ -246,15 +246,17 @@
     cursor: pointer;
 }
 
-.quickview_modal_body {
+.quickview_modal_body_outer {
+    padding: 20px;    
     background: var(--color-light);
-    padding: 20px;
-    box-shadow: rgba(0, 0, 0, 0.1) 0 0 15px;
     border-radius: 20px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0 0 15px;
     width: 100%;
     max-width: 1100px;
     position: relative;
-    max-height: 90vh;
+}
+.quickview_modal_body {
+    max-height: 80vh;
     overflow: hidden;
     overflow-y: auto;
 }
@@ -553,7 +555,7 @@ ul.product_search_list li {
 
 .cart-main>div:not(.cart-details, .empty_cart_alert) {
     background-color: #fff;
-    opacity: 0.8;
+    opacity: 0.5;
     position: fixed;
     inset: 0;
 }
@@ -656,11 +658,15 @@ div#cart-aside aside main {
 }
 
 .product_detail_images .product_image_thumb {
-    max-width: 20%;
+    max-width: calc(20% - 20px);
 }
 
 .product_detail_images .product_detail_single_image {
-    max-width: 75%;
+    max-width: 80%;
+}
+.product_detail_images .swiper-autoheight, .product_detail_images .swiper-autoheight .swiper-slide {
+    height: auto !important;
+    margin-bottom: 20px;
 }
 
 .product-options-item {
@@ -854,6 +860,7 @@ div#cart-aside aside main {
     box-shadow: none;
     outline: none;
     padding: 0;
+    color: inherit;
 }
 
 .product-main h1 {
@@ -1216,4 +1223,23 @@ div.stamped-container[data-widget-style], div[data-widget-style] div.stamped-con
 .ingrediant_tab .accordion-button:after{
     background-size: 15px;
     background-position: center;
+}
+.product-main {
+    display: flex;
+    flex-direction: column;
+}
+
+.bundle_whats_inside_outer {
+    flex-direction: column;
+    display: flex;
+}
+.bundle_whats_inside_outer.flex-column-reverse {
+    flex-direction: column-reverse;
+}
+.bundle_whats_inside_outer.flex-column-reverse .bundle_whats_inside{
+    margin-top: 15px;
+}
+
+.product-main p:last-of-type {
+    margin-bottom: 0;
 }
