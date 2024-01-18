@@ -271,10 +271,11 @@ export function PredictiveSearchResults() {
   if (!totalResults) {
     return <NoPredictiveSearchResults searchTerm={searchTerm} />;
   }
+  console.log("results: ", results)
   return (
     <div className="predictive-search-results">
       <div>
-        {results.map(({ type, items }) => (
+        {results.filter((x)=>x?.type == 'products' || x?.type == "queries").map(({ type, items }) => (
           <PredictiveSearchResult
             goToSearchResult={goToSearchResult}
             items={items}
@@ -361,7 +362,7 @@ function SearchResultItem({ goToSearchResult, item }) {
               }}
             />
           ) : (
-            <span>{item.title}</span>
+            <strong>{item.title}</strong>
           )}
           {item?.price && (
             <small>
