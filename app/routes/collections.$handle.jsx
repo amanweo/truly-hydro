@@ -126,7 +126,7 @@ export default function Collection() {
       StampedFn.reloadUGC();
     }, 1000);
   }, [])
-  
+
   useEffect(() => {
     setTimeout(() => {
       console.log("window.StampedFn: ", StampedFn)
@@ -171,20 +171,25 @@ export default function Collection() {
           <Pagination connection={collection.products}>
             {({ nodes, NextLink, hasNextPage, nextPageUrl, state, isLoading }) => (
               <>
-                <ProductsLoadedOnScroll
-                  nodes={nodes}
-                  inView={inView}
-                  hasNextPage={hasNextPage}
-                  nextPageUrl={nextPageUrl}
-                  state={state}
-                  showQuickView={showQuickView}
-                  location={location}
-                />
-                <div className='text-center'>
-                  <NextLink className='btn btn-primary' ref={ref}>
-                    {isLoading ? 'Loading...' : ""}
-                  </NextLink>
-                </div>
+                {nodes.length > 0 ?
+                  <>
+                    <ProductsLoadedOnScroll
+                      nodes={nodes}
+                      inView={inView}
+                      hasNextPage={hasNextPage}
+                      nextPageUrl={nextPageUrl}
+                      state={state}
+                      showQuickView={showQuickView}
+                      location={location}
+                    />
+                    <div className='text-center'>
+                      <NextLink className='btn btn-primary' ref={ref}>
+                        {isLoading ? 'Loading...' : ""}
+                      </NextLink>
+                    </div>
+                  </>
+                  : null
+                }
               </>
             )}
           </Pagination>
@@ -209,7 +214,7 @@ export default function Collection() {
   );
 }
 
-function ProductsLoadedOnScroll({ nodes, inView, hasNextPage, nextPageUrl, state, showQuickView, location }) {
+export function ProductsLoadedOnScroll({ nodes, inView, hasNextPage, nextPageUrl, state, showQuickView, location }) {
   const navigate = useNavigate();
 
   useEffect(() => {

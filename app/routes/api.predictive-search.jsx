@@ -146,6 +146,7 @@ export function normalizePredictiveSearchResults(predictiveSearch, locale) {
           title: product.title,
           url: `${localePrefix}/products/${product.handle}${trackingParams}`,
           price: product.variants.nodes[0].price,
+          variants: product.variants
         };
       }),
     });

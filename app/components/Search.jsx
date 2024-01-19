@@ -1,6 +1,9 @@
-import { Link, Form, useParams, useFetcher, useFetchers } from '@remix-run/react';
+import { Link, Form, useParams, useFetcher, useFetchers, useNavigate, useLocation } from '@remix-run/react';
 import { Image, Money, Pagination } from '@shopify/hydrogen';
 import React, { useRef, useEffect } from 'react';
+import { AddToCartButton, ProductRender } from '~/routes/_index';
+import { useInView } from "react-intersection-observer";
+import { ProductsLoadedOnScroll } from '~/routes/collections.$handle';
 
 export const NO_PREDICTIVE_SEARCH_RESULTS = [
   { type: 'queries', items: [] },
@@ -66,12 +69,12 @@ export function SearchResults({ results }) {
         keys.map((type) => {
           const resourceResults = results[type];
 
-          if (resourceResults.nodes[0]?.__typename === 'Page') {
-            const pageResults = resourceResults;
-            return resourceResults.nodes.length ? (
-              <SearchResultPageGrid key="pages" pages={pageResults} />
-            ) : null;
-          }
+          // if (resourceResults.nodes[0]?.__typename === 'Page') {
+          //   const pageResults = resourceResults;
+          //   return resourceResults.nodes.length ? (
+          //     <SearchResultPageGrid key="pages" pages={pageResults} />
+          //   ) : null;
+          // }
 
           if (resourceResults.nodes[0]?.__typename === 'Product') {
             const productResults = resourceResults;
@@ -83,16 +86,16 @@ export function SearchResults({ results }) {
             ) : null;
           }
 
-          if (resourceResults.nodes[0]?.__typename === 'Article') {
-            const articleResults = resourceResults;
-            console.log("articleResults: ", articleResults);
-            return resourceResults.nodes.length ? (
-              <SearchResultArticleGrid
-                key="articles"
-                articles={articleResults}
-              />
-            ) : null;
-          }
+          // if (resourceResults.nodes[0]?.__typename === 'Article') {
+          //   const articleResults = resourceResults;
+          //   console.log("articleResults: ", articleResults);
+          //   return resourceResults.nodes.length ? (
+          //     <SearchResultArticleGrid
+          //       key="articles"
+          //       articles={articleResults}
+          //     />
+          //   ) : null;
+          // }
 
           return null;
         })}
@@ -104,10 +107,12 @@ export function SearchResults({ results }) {
  * @param {Pick<SearchQuery, 'products'>}
  */
 function SearchResultsProductsGrid({ products }) {
+  const { ref, inView, entry } = useInView();
+  const location = useLocation()
   return (
     <div className="search-result">
       <h3>Products</h3>
-      <Pagination connection={products}>
+      {/* <Pagination connection={products}>
         {({ nodes, isLoading, NextLink, PreviousLink }) => {
           const itemsMarkup = nodes.map((product) => (
             <li className="search-results-item" key={product.id}>
@@ -127,11 +132,6 @@ function SearchResultsProductsGrid({ products }) {
           ));
           return (
             <div>
-              {/* <div>
-                <PreviousLink>
-                  {isLoading ? 'Loading...' : <span>↑ Load previous</span>}
-                </PreviousLink>
-              </div> */}
               <ul className='product_search_list'>
                 {itemsMarkup}
                 <br />
@@ -144,7 +144,35 @@ function SearchResultsProductsGrid({ products }) {
             </div>
           );
         }}
+      </Pagination> */}
+
+      <Pagination connection={products}>
+        {({ nodes, NextLink, hasNextPage, nextPageUrl, state, isLoading }) => (
+          <>
+            {nodes.length > 0 ?
+              <>
+                {console.log("nodes", nodes, "===", NextLink, "===", hasNextPage, "===", nextPageUrl, "===", state, "===", isLoading)}
+                <ProductsLoadedOnScroll
+                  nodes={nodes}
+                  inView={inView}
+                  hasNextPage={hasNextPage}
+                  nextPageUrl={nextPageUrl}
+                  state={state}
+                  // showQuickView={showQuickView}
+                  location={location}
+                />
+                <div className='text-center'>
+                  <NextLink className='btn btn-primary' ref={ref}>
+                    {isLoading ? 'Loading...' : ""}
+                  </NextLink>
+                </div>
+              </>
+              : null
+            }
+          </>
+        )}
       </Pagination>
+
       <br />
     </div>
   );
@@ -275,7 +303,7 @@ export function PredictiveSearchResults() {
   return (
     <div className="predictive-search-results">
       <div>
-        {results.filter((x)=>x?.type == 'products' || x?.type == "queries").map(({ type, items }) => (
+        {results.filter((x) => x?.type == 'products' || x?.type == "queries").map(({ type, items }) => (
           <PredictiveSearchResult
             goToSearchResult={goToSearchResult}
             items={items}
@@ -351,26 +379,44 @@ function SearchResultItem({ goToSearchResult, item }) {
           <Image
             alt={item.image.altText ?? ''}
             src={item.image.url}
-            width={50}
+            width={80}
           />
         )}
-        <div>
-          {item.styledTitle ? (
-            <div
-              dangerouslySetInnerHTML={{
-                __html: item.styledTitle,
-              }}
-            />
-          ) : (
-            <strong>{item.title}</strong>
-          )}
-          {item?.price && (
-            <small>
-              <Money data={item.price} />
-            </small>
-          )}
-        </div>
       </Link>
+      <div>
+        {item.styledTitle ? (
+          <Link onClick={goToSearchResult} to={item.url}
+            dangerouslySetInnerHTML={{
+              __html: item.styledTitle,
+            }}
+          />
+        ) : (
+          <Link onClick={goToSearchResult} to={item.url}><strong>{item.title}</strong></Link>
+        )}
+        {item?.price && (
+          <small>
+            <Money data={item.price} />
+          </small>
+        )}
+        {item?.__typename == "Product" ?
+          <AddToCartButton
+            size={"sm"}
+            lines={[
+              {
+                merchandiseId: item?.variants.nodes[0].id,
+                quantity: 1,
+              },
+            ]
+            }
+            onClick={() => {
+              window.location.href = window.location.href + '#cart-aside';
+            }}
+          >
+            Add to Bag
+          </AddToCartButton>
+          : null
+        }
+      </div>
     </li>
   );
 }

@@ -67,101 +67,97 @@ export default function Homepage() {
     }
   }
 
-  const [metaFields, setmetaFields] = useState({})
-  useEffect(() => {
-    let newObj = {}
-    quickViewData && quickViewData.metafields && quickViewData.metafields.length > 0 && quickViewData.metafields.map((opt) => {
-      if (opt) {
-        newObj[opt.key] = opt.value
-      }
-    })
-    console.log("newObj: ", newObj)
-    setmetaFields(newObj)
-  }, [quickViewData])
+  // const [metaFields, setmetaFields] = useState({})
+  // useEffect(() => {
+  //   let newObj = {}
+  //   quickViewData && quickViewData.metafields && quickViewData.metafields.length > 0 && quickViewData.metafields.map((opt) => {
+  //     if (opt) {
+  //       newObj[opt.key] = opt.value
+  //     }
+  //   })
+  //   console.log("newObj: ", newObj)
+  //   setmetaFields(newObj)
+  // }, [quickViewData])
 
-  useEffect(() => {
-    setTimeout(() => {
-      console.log("window.StampedFn: ", StampedFn)
-      if (StampedFn) {
-        StampedFn.init({ apiKey: "pubkey-y0bQR825X6K52BT67V84qf3OGso3o0", storeUrl: "trulyorganic.myshopify.com" })
-      }
-      StampedFn.reloadUGC();
-    }, 500);
-  }, [showView])
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     console.log("window.StampedFn: ", StampedFn)
+  //     if (StampedFn) {
+  //       StampedFn.init({ apiKey: "pubkey-y0bQR825X6K52BT67V84qf3OGso3o0", storeUrl: "trulyorganic.myshopify.com" })
+  //     }
+  //     StampedFn.reloadUGC();
+  //   }, 500);
+  // }, [showView])
 
-  function showQuickView(data) {
-    document.body.classList.add("modal_open");
-    setQuickViewData(data)
-    setshowView(true)
-    setActiveSlide(data?.images?.nodes[0])
+  // function showQuickView(data) {
+  //   document.body.classList.add("modal_open");
+  //   setQuickViewData(data)
+  //   setshowView(true)
+  //   setActiveSlide(data?.images?.nodes[0])
 
-    const customComponentRoot = document.createElement('div');
-    customComponentRoot.classList.add("quickview_modal_outer")
-    document.body.appendChild(customComponentRoot);
-    return () => {
-      document.body.removeChild(customComponentRoot);
-    };
-  }
-  function closeModal() {
-    document.body.classList.remove("modal_open");
-    const childElement = document.querySelector('.quickview_modal_outer');
-    if (childElement) {
-      document.body.removeChild(childElement);
-    }
-    setQuickViewData({})
-    setshowView(false)
-  }
+  //   const customComponentRoot = document.createElement('div');
+  //   customComponentRoot.classList.add("quickview_modal_outer")
+  //   document.body.appendChild(customComponentRoot);
+  //   return () => {
+  //     document.body.removeChild(customComponentRoot);
+  //   };
+  // }
 
-
-  const handleSlideChange = () => {
-    if (swiperRef.current) {
-      console.log('Active slide index:', swiperRef.current.swiper.realIndex);
-      let index = swiperRef.current.swiper.realIndex
-      if (index > -1) {
-        setActiveSlide(quickViewData?.images?.nodes[index])
-      }
-    }
-  };
-
-  const handleThumbnailClick = (index) => {
-    if (swiperRef.current) {
-      if (index > -1) {
-        console.log("swiperRef: ", swiperRef.current.swiper.slides[index])
-        // swiperRef.current.swiper.slideTo(index);
-        if (swiperRef.current.swiper.slides.length > 0) {
-          swiperRef.current.swiper.slides.forEach(element => {
-            element.classList.remove("swiper-slide-active")
-          });
-        }
-        swiperRef.current.swiper.slides[index].classList.add("swiper-slide-active")
-        setActiveSlide(quickViewData?.images?.nodes[index])
-      }
-    }
-  }
-
-  const handleDetail = () => {
-    closeModal()
-  }
-
-  // useEffect(()=>{
-  //   if(location.hash == '#cart-aside'){
-  //     closeModal()
+  // function closeModal() {
+  //   document.body.classList.remove("modal_open");
+  //   const childElement = document.querySelector('.quickview_modal_outer');
+  //   if (childElement) {
+  //     document.body.removeChild(childElement);
   //   }
-  // },[location.hash])
-  console.log("quickViewData", quickViewData)
+  //   setQuickViewData({})
+  //   setshowView(false)
+  // }
+
+
+  // const handleSlideChange = () => {
+  //   if (swiperRef.current) {
+  //     console.log('Active slide index:', swiperRef.current.swiper.realIndex);
+  //     let index = swiperRef.current.swiper.realIndex
+  //     if (index > -1) {
+  //       setActiveSlide(quickViewData?.images?.nodes[index])
+  //     }
+  //   }
+  // };
+
+  // const handleThumbnailClick = (index) => {
+  //   if (swiperRef.current) {
+  //     if (index > -1) {
+  //       console.log("swiperRef: ", swiperRef.current.swiper.slides[index])
+  //       // swiperRef.current.swiper.slideTo(index);
+  //       if (swiperRef.current.swiper.slides.length > 0) {
+  //         swiperRef.current.swiper.slides.forEach(element => {
+  //           element.classList.remove("swiper-slide-active")
+  //         });
+  //       }
+  //       swiperRef.current.swiper.slides[index].classList.add("swiper-slide-active")
+  //       setActiveSlide(quickViewData?.images?.nodes[index])
+  //     }
+  //   }
+  // }
+
+  // const handleDetail = () => {
+  //   closeModal()
+  // }
+
+  // console.log("quickViewData", quickViewData)
 
   return (
     <div className="home">
       <Banner />
       <RotationalBar data={data.rotational} />
-      <BestSellers products={data.collection.products} showQuickView={showQuickView} location={location} />
+      <BestSellers products={data.collection.products} location={location} />
       {/* <FeaturedCollection collection={data.featuredCollection} /> */}
       <ContentBlock />
       <CollectionBlock list={collectionList} />
-      <RecommendedProducts products={data.recommendedProducts} showQuickView={showQuickView} location={location} />
-      <CollectionProducts collection={data["collection1"]?.collection} showQuickView={showQuickView} location={location} />
+      <RecommendedProducts products={data.recommendedProducts} location={location} />
+      <CollectionProducts collection={data["collection1"]?.collection} location={location} />
 
-      {showView && ReactDOM.createPortal(
+      {/* {showView && ReactDOM.createPortal(
         <QuickView
           product={quickViewData}
           location={location}
@@ -174,13 +170,13 @@ export default function Homepage() {
           handleDetail={handleDetail}
         />,
         document.querySelector('.quickview_modal_outer')
-      )}
+      )} */}
     </div>
   );
 }
 
 
-function AddToCartButton({ analytics, children, disabled, lines, onClick }) {
+export function AddToCartButton({ analytics, children, disabled, lines, onClick, size }) {
   return (
     <CartForm route="/cart" inputs={{ lines }} action={CartForm.ACTIONS.LinesAdd}>
       {(fetcher) => (
@@ -194,7 +190,7 @@ function AddToCartButton({ analytics, children, disabled, lines, onClick }) {
             type="submit"
             onClick={onClick}
             disabled={disabled ?? fetcher.state !== 'idle'}
-            className='btn btn-primary mt-3'
+            className={`btn btn-primary mt-3 ${size == "sm" ? "btn-sm" : ""}`}
           >
             {children}
           </button>
@@ -222,21 +218,21 @@ function RotationalBar({ data, active }) {
     <div className="rotationalbar">
       <div className="container-fluid">
         {/* {window.innerWidth > 991 ? */}
-          <div className="row gx-0">
-            {data.map((opt, i) => {
-              return (
-                <div className={`col-lg-4 ${active == i ? "active" : ""}`} key={i}>
-                  <div className="InStyle__Box">
-                    <h3><span><span>{opt?.text}</span></span></h3>
-                    <div className='InStyle__Box_logo'>
-                      <img src={opt?.logo} alt="logo" height={34} />
-                    </div>
+        <div className="row gx-0">
+          {data.map((opt, i) => {
+            return (
+              <div className={`col-lg-4 ${active == i ? "active" : ""}`} key={i}>
+                <div className="InStyle__Box">
+                  <h3><span><span>{opt?.text}</span></span></h3>
+                  <div className='InStyle__Box_logo'>
+                    <img src={opt?.logo} alt="logo" height={34} />
                   </div>
                 </div>
-              )
-            })}
-          </div>
-          {/* :
+              </div>
+            )
+          })}
+        </div>
+        {/* :
           <Swiper
             spaceBetween={0}
             slidesPerView={1}
@@ -283,6 +279,81 @@ function FeaturedCollection({ collection }) {
 }
 
 export function ProductBlock({ product, showQuickView, location }) {
+  const swiperRef = useRef(null);
+  const [showView, setshowView] = useState(false)
+  const [activeSlide, setActiveSlide] = useState({})
+  const [quickViewData, setQuickViewData] = useState({})
+  useEffect(() => {
+    setTimeout(() => {
+      console.log("window.StampedFn: ", StampedFn)
+      if (StampedFn) {
+        StampedFn.init({ apiKey: "pubkey-y0bQR825X6K52BT67V84qf3OGso3o0", storeUrl: "trulyorganic.myshopify.com" })
+      }
+      StampedFn.reloadUGC();
+    }, 500);
+  }, [showView])
+
+  function showQuickView(data) {
+    document.body.classList.add("modal_open");
+    setQuickViewData(data)
+    setshowView(true)
+    setActiveSlide(data?.images?.nodes[0])
+
+    const customComponentRoot = document.createElement('div');
+    customComponentRoot.classList.add("quickview_modal_outer")
+    document.body.appendChild(customComponentRoot);
+    return () => {
+      document.body.removeChild(customComponentRoot);
+    };
+  }
+
+  function closeModal() {
+    document.body.classList.remove("modal_open");
+    const childElement = document.querySelector('.quickview_modal_outer');
+    if (childElement) {
+      document.body.removeChild(childElement);
+    }
+    setQuickViewData({})
+    setshowView(false)
+  }
+
+
+  const handleSlideChange = () => {
+    if (swiperRef.current) {
+      console.log('Active slide index:', swiperRef.current.swiper.realIndex);
+      let index = swiperRef.current.swiper.realIndex
+      if (index > -1) {
+        setActiveSlide(quickViewData?.images?.nodes[index])
+      }
+    }
+  };
+
+  const handleThumbnailClick = (index) => {
+    if (swiperRef.current) {
+      if (index > -1) {
+        console.log("swiperRef: ", swiperRef.current.swiper.slides[index])
+        // swiperRef.current.swiper.slideTo(index);
+        if (swiperRef.current.swiper.slides.length > 0) {
+          swiperRef.current.swiper.slides.forEach(element => {
+            element.classList.remove("swiper-slide-active")
+          });
+        }
+        swiperRef.current.swiper.slides[index].classList.add("swiper-slide-active")
+        setActiveSlide(quickViewData?.images?.nodes[index])
+      }
+    }
+  }
+  
+  const [metaFields, setmetaFields] = useState({})
+  useEffect(() => {
+    let newObj = {}
+    product && product?.metafields && product?.metafields.length > 0 && product?.metafields.map((opt) => {
+      if (opt) {
+        newObj[opt.key] = opt.value
+      }
+    })
+    setmetaFields(newObj)
+  }, [product])
   return (
     <div className="productBox__outer mb-4 mb-lg-5">
       <div className="productBox__img">
@@ -323,6 +394,19 @@ export function ProductBlock({ product, showQuickView, location }) {
           }
         </div>
       </Link>
+      {showView && ReactDOM.createPortal(
+        <QuickView
+          product={product}
+          location={location}
+          metaFields={metaFields}
+          closeModal={closeModal}
+          handleSlideChange={handleSlideChange}
+          swiperRef={swiperRef}
+          activeSlide={activeSlide}
+          handleThumbnailClick={handleThumbnailClick}
+        />,
+        document.querySelector('.quickview_modal_outer')
+      )}
     </div>
   )
 }
@@ -336,7 +420,7 @@ export function ProductRender({ products, showQuickView, location }) {
             key={product.id}
             className="col-6 col-sm-6 col-md-4 col-xl-20"
           >
-            <ProductBlock product={product} showQuickView={showQuickView} location={location} />
+            <ProductBlock product={product} location={location} />
           </div>
         </>
       ))}
@@ -361,7 +445,7 @@ function RecommendedProducts({ products, showQuickView, location }) {
         <Suspense fallback={<div>Loading...</div>}>
           <Await resolve={products}>
             {({ products }) => (
-              <ProductRender products={products.nodes} showQuickView={showQuickView} location={location} />
+              <ProductRender products={products.nodes} location={location} />
             )}
           </Await>
         </Suspense>
@@ -379,7 +463,7 @@ function BestSellers({ products, showQuickView, location }) {
           <p>Check our</p>
           <h2>Bestsellers</h2>
         </div>
-        <ProductRender products={products.nodes} showQuickView={showQuickView} location={location} />
+        <ProductRender products={products.nodes} location={location} />
         <br />
       </div>
     </div>
@@ -779,7 +863,7 @@ const PRODUCT_VARIANT_FRAGMENT = `#graphql
       currencyCode
     }
   }
-      `;
+`;
 
 
 const PRODUCT_VARIANTS_FRAGMENT = `#graphql

@@ -53,6 +53,7 @@ export async function loader({ request, context }) {
 export default function SearchPage() {
   /** @type {LoaderReturnData} */
   const { searchTerm, searchResults } = useLoaderData();
+  console.log("searchResults: ", searchResults)
   return (
     <div className="commonSection">
     <div className="search">
@@ -71,14 +72,15 @@ export default function SearchPage() {
 }
 
 const SEARCH_QUERY = `#graphql
+fragment MoneyProductItem on MoneyV2 {
+  amount
+  currencyCode
+}
   fragment SearchProduct on Product {
     __typename
-    handle
     id
-    publishedAt
+    handle
     title
-    trackingParameters
-    vendor    
     featuredImage {
       id
       altText
@@ -86,34 +88,47 @@ const SEARCH_QUERY = `#graphql
       width
       height
     }
-    variants(first: 1) {
+    priceRange {
+      minVariantPrice {
+        ...MoneyProductItem
+      }
+      maxVariantPrice {
+        ...MoneyProductItem
+      }
+    }
+    images(first: 100) {
       nodes {
         id
-        image {
-          url
-          altText
-          width
-          height
+        url
+        altText
+      }
+    }
+    sellingPlanGroups(first: 3) {
+      edges {
+      node {
+      name
+          appName
+    options {
+      name
+            values
+          }
+    sellingPlans(first: 3) {
+      edges {
+      node {
+      id
+              name
+    options{
+      value
+                name
+              }
+            }
+          }
         }
-        price {
-          amount
-          currencyCode
-        }
-        compareAtPrice {
-          amount
-          currencyCode
-        }
-        selectedOptions {
-          name
-          value
-        }
-        product {
-          handle
-          title
         }
       }
     }
   }
+  
   fragment SearchPage on Page {
      __typename
      handle

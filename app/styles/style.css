@@ -536,6 +536,7 @@ ul.product_search_list li {
     max-width: 20%;
     margin-bottom: 30px;
     padding-right: 10px;
+    display: flex;
 }
 
 .predictive-search {
