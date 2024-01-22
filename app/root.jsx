@@ -13,10 +13,11 @@ import {
   ScrollRestoration,
   isRouteErrorResponse,
 } from '@remix-run/react';
-import favicon from '../public/favicon.svg';
+import favicon from '../public/favicon.png';
 import slickStyle from "slick-carousel/slick/slick.css";
 import slickStyle2 from "slick-carousel/slick/slick-theme.css";
 import swiperStyle from 'swiper/css';
+import swiperFadeStyle from 'swiper/css/effect-fade';
 import bootstrapStyle from 'bootstrap/dist/css/bootstrap.min.css';
 import resetStyles from './styles/reset.css';
 import gridStyles from './styles/grid.css';
@@ -51,6 +52,7 @@ export function links() {
     { rel: 'stylesheet', href: slickStyle },
     { rel: 'stylesheet', href: slickStyle2 },
     { rel: 'stylesheet', href: swiperStyle },
+    { rel: 'stylesheet', href: swiperFadeStyle },
     { rel: 'stylesheet', href: lightgallery },
     { rel: 'stylesheet', href: lightgalleryZoom },
     { rel: 'stylesheet', href: bootstrapStyle },

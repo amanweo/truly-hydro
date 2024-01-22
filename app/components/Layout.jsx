@@ -2,7 +2,7 @@ import { Await } from '@remix-run/react';
 import { Suspense, useEffect, useRef } from 'react';
 import { Aside } from '~/components/Aside';
 import { Footer } from '~/components/Footer';
-import { Header, HeaderMenu } from '~/components/Header';
+import { Header, HeaderMenu, HeaderMobileMenu } from '~/components/Header';
 import { CartMain } from '~/components/Cart';
 import {
   PredictiveSearchForm,
@@ -278,8 +278,15 @@ function MobileMenuAside({ menu }) {
   // }
   return (
     <Aside id="mobile-menu-aside" heading="">
-      <div className='cart_overlay' onClick={() => history.go(-1)}></div>
-      <HeaderMenu menu={menu} viewport="mobile" />
+      {/* <div className='cart_overlay' onClick={() => history.go(-1)}></div> */}
+      <div className='text-end p-1 px-2'>
+        <button className='noStyle' onClick={() => history.go(-1)}>
+          <svg width="20" height="20" viewBox="0 0 20 20"><path d="M10 10l5.09-5.09L10 10l5.09 5.09L10 10zm0 0L4.91 4.91 10 10l-5.09 5.09L10 10z" stroke="currentColor" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        </button>
+      </div>
+      <div className='mobile_header_menu'>
+        <HeaderMobileMenu menu={menu} viewport="mobile" />
+      </div>
     </Aside>
   );
 }

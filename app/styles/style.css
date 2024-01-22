@@ -44,6 +44,7 @@
 .truly_navbar ul li {
     position: relative;
     padding: 0 15px;
+    white-space: nowrap;
 }
 
 .truly_navbar ul li a {
@@ -1243,4 +1244,27 @@ div.stamped-container[data-widget-style], div[data-widget-style] div.stamped-con
 
 .product-main p:last-of-type {
     margin-bottom: 0;
+}
+.noStyle.accordion-button:after{
+    display: none;
+}
+h2.menu_tab_header.accordion-header {
+    font-family: inherit;
+}
+.accordion-button{
+    box-shadow: none !important;
+    background-color: inherit !important;
+    color: inherit !important;
+}
+.header_mobile_menu.accordion .accordion-item{
+    border-width: 0 0 1px;
+}
+.header_mobile_menu.accordion .accordion-button{
+    padding: 10px 0;
+    font-weight: 600;
+}
+.accordion-button:after{
+    width: 15px;
+    height: 15px;
+    background-size: 15px;
 }

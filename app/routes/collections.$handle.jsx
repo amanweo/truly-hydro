@@ -119,7 +119,6 @@ export default function Collection() {
 
   useEffect(() => {
     setTimeout(() => {
-      console.log("window.StampedFn: ", StampedFn)
       if (StampedFn) {
         StampedFn.init({ apiKey: "pubkey-y0bQR825X6K52BT67V84qf3OGso3o0", storeUrl: "trulyorganic.myshopify.com" })
       }
@@ -129,7 +128,6 @@ export default function Collection() {
 
   useEffect(() => {
     setTimeout(() => {
-      console.log("window.StampedFn: ", StampedFn)
       if (StampedFn) {
         StampedFn.init({ apiKey: "pubkey-y0bQR825X6K52BT67V84qf3OGso3o0", storeUrl: "trulyorganic.myshopify.com" })
       }
@@ -197,7 +195,7 @@ export default function Collection() {
         </div>
       </div>
 
-      {showView && ReactDOM.createPortal(
+      {/* {showView && ReactDOM.createPortal(
         <QuickView
           product={quickViewData}
           location={location}
@@ -209,7 +207,7 @@ export default function Collection() {
           handleThumbnailClick={handleThumbnailClick}
         />,
         document.querySelector('.quickview_modal_outer')
-      )}
+      )} */}
     </div>
   );
 }

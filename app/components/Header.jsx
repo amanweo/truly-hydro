@@ -4,6 +4,7 @@ import Images from "./images";
 import { PredictiveSearchForm, PredictiveSearchResults } from './Search';
 import { CartMain } from './Cart';
 import { Image } from '@shopify/hydrogen';
+import { Accordion } from 'react-bootstrap';
 
 /**
  * @param {HeaderProps}
@@ -68,46 +69,55 @@ export function HeaderMenu({ menu, viewport }) {
 
   return (
     <ul className='header_mobile_menu'>
-      {viewport === 'mobile' && (
-        <NavLink
-          end
-          onClick={closeAside}
-          prefetch="intent"
-          style={activeLinkStyle}
-          to="/"
-        >
-          Home
-        </NavLink>
-      )}
+      {/* {viewport === 'mobile' && (
+        <li>
+          <NavLink
+            end
+            onClick={closeAside}
+            prefetch="intent"
+            style={activeLinkStyle}
+            to="/"
+          >
+            Home
+          </NavLink>
+        </li>
+      )} */}
       {(menu || FALLBACK_HEADER_MENU).items.map((item) => {
         if (!item.url) return null;
-
         // if the url is internal, we strip the domain
         const url =
           item.url.includes('myshopify.com') ||
             item.url.includes(publicStoreDomain)
             ? new URL(item.url).pathname
             : item.url;
+
+        console.log("item url: ", item)
         return (
           <li key={item.id} className={`${item.items.length > 0 ? "has-dropdown" : ""} ${active == item.id ? "active" : ""}`}>
-            <NavLink
-              className="header-menu-item"
-              end
-              onClick={closeAside}
-              prefetch="intent"
-              style={activeLinkStyle}
-              to={url}
-            >
-              {item.title}
-            </NavLink>
+            {url !== "/" && viewport === 'mobile' ?
+              <NavLink
+                className="header-menu-item"
+                end
+                onClick={closeAside}
+                prefetch="intent"
+                style={activeLinkStyle}
+                to={url}
+              >
+                {item.title}
+              </NavLink>
+              :
+              <button className='noStyle text-start header-menu-item' onClick={() => handleToggle(item.id)}>
+                {item.title}
+              </button>
+            }
             {item.items.length > 0 ?
               <>
                 {viewport === 'mobile' ?
-                  <button className='noStyle dropdown-caret' onClick={() => handleToggle(item.id)}>
+                  <span className=' dropdown-caret'>
                     <svg xmlns="http://www.w3.org/2000/svg" width="9.334" height="17.334" viewBox="0 0 9.334 17.334">
                       <path d="M4.695,1.695a.667.667,0,0,1,.944,0l8,8a.667.667,0,0,1,0,.944l-8,8a.668.668,0,1,1-.944-.944l7.529-7.528L4.695,2.639a.667.667,0,0,1,0-.944Z" transform="translate(-4.5 -1.5)" fill="currentColor" fillRule="evenodd"></path>
                     </svg>
-                  </button>
+                  </span>
                   : null
                 }
                 <ul>
@@ -140,6 +150,92 @@ export function HeaderMenu({ menu, viewport }) {
         );
       })}
     </ul>
+  );
+}
+export function HeaderMobileMenu({ menu, viewport }) {
+  const [root] = useMatches();
+  const publicStoreDomain = root?.data?.publicStoreDomain;
+  const className = `header-menu-${viewport}`;
+  const [active, setActive] = useState("")
+
+  function closeAside(event) {
+    if (viewport === 'mobile') {
+      event.preventDefault();
+      window.location.href = event.currentTarget.href;
+    }
+  }
+  function handleToggle(id) {
+    setActive(active == id ? "" : id)
+  }
+
+  return (
+    <Accordion className='header_mobile_menu'>
+      {(menu || FALLBACK_HEADER_MENU).items.map((item) => {
+        if (!item.url) return null;
+        // if the url is internal, we strip the domain
+        const url =
+          item.url.includes('myshopify.com') ||
+            item.url.includes(publicStoreDomain)
+            ? new URL(item.url).pathname
+            : item.url;
+
+        console.log("item url: ", item)
+        return (
+          <Accordion.Item eventKey={item.id} className='menu_tab_panel'>
+            {item.items.length > 0 ?
+              <>
+                <Accordion.Header className='menu_tab_header'>
+                  <NavLink
+                    className="header-menu-item"
+                    end
+                    onClick={closeAside}
+                    prefetch="intent"
+                    style={activeLinkStyle}
+                    to={url}
+                  >
+                    {item.title}
+                  </NavLink>
+                </Accordion.Header>
+                <Accordion.Body>
+                  {item.items.map((opt, i) => {
+                    const url2 =
+                      opt.url.includes('myshopify.com') ||
+                        opt.url.includes(publicStoreDomain)
+                        ? new URL(opt.url).pathname
+                        : opt.url;
+                    return (
+                      <div key={opt.id}>
+                        <NavLink
+                          className="header-menu-item"
+                          end
+                          onClick={closeAside}
+                          prefetch="intent"
+                          style={activeLinkStyle}
+                          to={url2}
+                        >
+                          {opt.title}
+                        </NavLink>
+                      </div>
+                    )
+                  })}
+                </Accordion.Body>
+              </>
+              :
+              <NavLink
+                className="accordion-button noStyle collapsed text-start header-menu-item"
+                end
+                onClick={closeAside}
+                prefetch="intent"
+                style={activeLinkStyle}
+                to={url}
+              >
+                {item.title}
+              </NavLink>
+            }
+          </Accordion.Item>
+        );
+      })}
+    </Accordion>
   );
 }
 

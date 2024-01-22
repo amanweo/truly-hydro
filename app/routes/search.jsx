@@ -56,22 +56,92 @@ export default function SearchPage() {
   console.log("searchResults: ", searchResults)
   return (
     <div className="commonSection">
-    <div className="search">
-      <div className='container-fluid'>
-        <h2>Search</h2>
-        <SearchForm searchTerm={searchTerm} />
-        {!searchTerm || !searchResults.totalResults ? (
-          <NoSearchResults />
-        ) : (
-          <SearchResults results={searchResults.results} />
-        )}
-      </div>
+      <div className="search">
+        <div className='container-fluid'>
+          {searchResults.results?.products?.totalCount ?
+            <h3>Search results: {searchResults.results?.products?.totalCount} results For "{searchTerm}"</h3>
+            :
+            <h3>Search results For "smooth"</h3>
+          }
+          {/* <SearchForm searchTerm={searchTerm} /> */}
+          {!searchTerm || !searchResults.totalResults ? (
+            <NoSearchResults />
+          ) : (
+            <SearchResults results={searchResults.results} />
+          )}
+        </div>
       </div>
     </div>
   );
 }
 
+
+const PRODUCT_VARIANT_FRAGMENT = `#graphql
+      fragment ProductVariant on ProductVariant {
+        availableForSale
+    compareAtPrice {
+        amount
+      currencyCode
+    }
+      id
+      image {
+        __typename
+      id
+      url
+      altText
+      width
+      height
+    }
+      price {
+        amount
+      currencyCode
+    }
+      product {
+        title
+      handle
+    }
+      selectedOptions {
+        name
+      value
+    }
+      sellingPlanAllocations(first:1){
+        edges{
+        node{
+        sellingPlan{
+        id
+      }
+      priceAdjustments{
+        price{
+        amount
+              currencyCode
+            }
+          }
+        }
+      }
+    }
+      sku
+      title
+      unitPrice {
+        amount
+      currencyCode
+    }
+  }
+`;
+
+
+const PRODUCT_VARIANTS_FRAGMENT = `#graphql
+      fragment ProductVariants on Product {
+        variants(first: 250) {
+        nodes {
+        ...ProductVariant
+      }
+    }
+  }
+${PRODUCT_VARIANT_FRAGMENT}
+`;
+
 const SEARCH_QUERY = `#graphql
+${PRODUCT_VARIANTS_FRAGMENT}
 fragment MoneyProductItem on MoneyV2 {
   amount
   currencyCode
@@ -88,6 +158,13 @@ fragment MoneyProductItem on MoneyV2 {
       width
       height
     }
+    ...ProductVariants
+    metafields(
+    identifiers: [{namespace: "accentuate", key: "bundle_product_short_title"}, {namespace: "accentuate", key: "sub_title_one"}, {namespace: "accentuate", key: "sub_title_two"}, {namespace: "accentuate", key: "sub_title_one"}, {namespace: "accentuate", key: "bundle_good_to_know"}, {namespace: "accentuate", key: "good_to_know_title"}, {namespace: "accentuate", key: "good_to_know"}, {namespace: "accentuate", key: "bundle_product_short_descripti"}, {namespace: "accentuate", key: "description"}, {namespace: "accentuate", key: "bundle_whats_inside"}, {namespace: "accentuate", key: "whats_inside_title"}, {namespace: "accentuate", key: "bundle_why_it_special_description"}, {namespace: "accentuate", key: "bundle_why_it_special"}, {namespace: "accentuate", key: "why_its_special"}, {namespace: "accentuate", key: "bundle_what_makes_good_title"}, {namespace: "accentuate", key: "bundle_what_makes_good_descrip"}, {namespace: "accentuate", key: "title"}, {namespace: "accentuate", key: "essential_ingradient_main_titl"}, {namespace: "accentuate", key: "description_essen"}, {namespace: "accentuate", key: "key_ingredients"}, {namespace: "accentuate", key: "full_ingradient_main_titl"}, {namespace: "accentuate", key: "full_ingredient_text"}, {namespace: "accentuate", key: "full_ingredient_title"}, {namespace: "product", key: "key_ingredients_text"}]
+    ) {
+      key
+    value
+  }
     priceRange {
       minVariantPrice {
         ...MoneyProductItem
@@ -179,6 +256,7 @@ fragment MoneyProductItem on MoneyV2 {
         startCursor
         endCursor
       }
+      totalCount
     }
     pages: search(
       query: $query,

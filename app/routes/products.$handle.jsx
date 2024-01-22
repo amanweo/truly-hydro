@@ -281,7 +281,6 @@ export default function Product() {
 
   useEffect(() => {
     setTimeout(() => {
-      console.log("window.StampedFn: ", StampedFn)
       if (StampedFn) {
         StampedFn.init({ apiKey: "pubkey-y0bQR825X6K52BT67V84qf3OGso3o0", storeUrl: "trulyorganic.myshopify.com" })
       }
@@ -897,13 +896,13 @@ export function ProductMain({ selectedVariant, product, variants, metaFields, sh
                     : null
                   }
                   {metaFields?.key_ingredients_text ?
-                    <Accordion.Item eventKey={_.findLastIndex(JSON.parse(metaFields?.title)) + 1} className='ingrediant_tab_panel'>
+                    <Accordion.Item eventKey={_.findLastIndex(isJsonString(metaFields?.key_ingredients_text) ? JSON.parse(metaFields?.title) : metaFields?.title) + 1} className='ingrediant_tab_panel'>
                       <Accordion.Header className='ingrediant_tab_header'>
                         Full ingredients:
                       </Accordion.Header>
                       <Accordion.Body>
                         {metaFields?.key_ingredients_text ?
-                          <div className='ingrediant_tab_body' dangerouslySetInnerHTML={{ __html: metaFields?.key_ingredients_text }}>
+                          <div className='ingrediant_tab_body' dangerouslySetInnerHTML={{ __html: isJsonString(metaFields?.key_ingredients_text) ? JSON.parse(metaFields?.key_ingredients_text) : metaFields?.key_ingredients_text }}>
                           </div>
                           : null
                         }

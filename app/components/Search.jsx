@@ -109,9 +109,10 @@ export function SearchResults({ results }) {
 function SearchResultsProductsGrid({ products }) {
   const { ref, inView, entry } = useInView();
   const location = useLocation()
+  console.log("search products", products)
   return (
     <div className="search-result">
-      <h3>Products</h3>
+      {/* <h3>Products</h3> */}
       {/* <Pagination connection={products}>
         {({ nodes, isLoading, NextLink, PreviousLink }) => {
           const itemsMarkup = nodes.map((product) => (

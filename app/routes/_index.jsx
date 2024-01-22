@@ -4,7 +4,7 @@ import { Suspense, useEffect, useState } from 'react';
 import { CartForm, Image, Money } from '@shopify/hydrogen';
 import ReactDOM from 'react-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Mousewheel, Navigation } from 'swiper/modules';
+import { Autoplay, EffectFade, Mousewheel, Navigation } from 'swiper/modules';
 import { useRef } from 'react';
 import Images from '~/components/images';
 import { ProductMain, Stamped } from './products.$handle';
@@ -217,39 +217,52 @@ function RotationalBar({ data, active }) {
   return (
     <div className="rotationalbar">
       <div className="container-fluid">
-        {/* {window.innerWidth > 991 ? */}
-        <div className="row gx-0">
+        {/* {window.innerWidth > 991 ?
+          <div className="row gx-0">
+            {data.map((opt, i) => {
+              return (
+                <div className={`col-lg-4 ${active == i ? "active" : ""}`} key={i}>
+                  <div className="InStyle__Box">
+                    <h3><span><span>{opt?.text}</span></span></h3>
+                    <div className='InStyle__Box_logo'>
+                      <img src={opt?.logo} alt="logo" height={34} />
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+          : */}
+        <Swiper
+          spaceBetween={0}
+          slidesPerView={1}
+          loop={true}
+          autoplay={true}
+          modules={[EffectFade, Autoplay]}
+          breakpoints={{
+            992: {
+              slidesPerView: 3,
+              spaceBetween: 0,
+              loop: false,
+              autoplay: true,
+              effect: "fade"
+            }
+          }}
+        >
           {data.map((opt, i) => {
             return (
-              <div className={`col-lg-4 ${active == i ? "active" : ""}`} key={i}>
+              <SwiperSlide key={i}>
                 <div className="InStyle__Box">
                   <h3><span><span>{opt?.text}</span></span></h3>
                   <div className='InStyle__Box_logo'>
                     <img src={opt?.logo} alt="logo" height={34} />
                   </div>
                 </div>
-              </div>
+              </SwiperSlide>
             )
           })}
-        </div>
-        {/* :
-          <Swiper
-            spaceBetween={0}
-            slidesPerView={1}
-            loop={true}
-          >
-            {data.map((opt, i) => {
-              return (
-                <div className="InStyle__Box" key={i}>
-                  <h3><span><span>{opt?.text}</span></span></h3>
-                  <div className='InStyle__Box_logo'>
-                    <img src={opt?.logo} alt="logo" height={34} />
-                  </div>
-                </div>
-              )
-            })}
-          </Swiper>
-        } */}
+        </Swiper>
+        {/* } */}
       </div>
     </div>
   )
@@ -285,7 +298,6 @@ export function ProductBlock({ product, showQuickView, location }) {
   const [quickViewData, setQuickViewData] = useState({})
   useEffect(() => {
     setTimeout(() => {
-      console.log("window.StampedFn: ", StampedFn)
       if (StampedFn) {
         StampedFn.init({ apiKey: "pubkey-y0bQR825X6K52BT67V84qf3OGso3o0", storeUrl: "trulyorganic.myshopify.com" })
       }
@@ -343,7 +355,7 @@ export function ProductBlock({ product, showQuickView, location }) {
       }
     }
   }
-  
+
   const [metaFields, setmetaFields] = useState({})
   useEffect(() => {
     let newObj = {}
@@ -410,7 +422,7 @@ export function ProductBlock({ product, showQuickView, location }) {
     </div>
   )
 }
-export function ProductRender({ products, showQuickView, location }) {
+export function ProductRender({ products, location }) {
   return (
     <div className="row">
       {console.log("products: ", products)}
@@ -475,8 +487,8 @@ function ContentBlock() {
     <div className='text_over_image primary-bg'>
       {/* <div className='container-fluid'> */}
       <div className='row g-0 justify-content-between align-items-center'>
-        <div className='col-sm-7 d-none d-md-block'>
-          <div className='bg_image_block'>
+        <div className='col-lg-7 col-sm-6 d-none d-md-block'>
+          <div className='bg_image_block pe-lg-1 pe-1'>
             <Image
               alt={""}
               aspectRatio="0"
@@ -495,7 +507,7 @@ function ContentBlock() {
               </div> */}
           </div>
         </div>
-        <div className='col-sm-5'>
+        <div className='col-lg-5 col-sm-6'>
           <div className='bg_image_text text-center'>
             <h2>The smoothest shave of all time</h2>
             <p>Tik tok famous shave routines proven to smooth, brighten & hydrate your skin.</p>
@@ -583,7 +595,7 @@ function CollectionProducts(props) {
               >
                 {props.collection.products.nodes && props.collection.products.nodes.map((product, i) => (
                   <SwiperSlide key={i}>
-                    <ProductBlock product={product} showQuickView={props.showQuickView} location={props.location} />
+                    <ProductBlock product={product} location={props.location} />
                   </SwiperSlide>
                 )
                 )}
@@ -774,7 +786,7 @@ export function QuickView(props) {
                   </Accordion.Header>
                   <Accordion.Body>
                     {props.metaFields?.key_ingredients_text ?
-                      <div className='ingrediant_tab_body' dangerouslySetInnerHTML={{ __html: props.metaFields?.key_ingredients_text }}>
+                      <div className='ingrediant_tab_body' dangerouslySetInnerHTML={{ __html: isJsonString(props.metaFields?.key_ingredients_text) ? JSON.parse(props.metaFields?.key_ingredients_text) : props.metaFields?.key_ingredients_text }}>
                       </div>
                       : null
                     }
@@ -810,7 +822,7 @@ const FEATURED_COLLECTION_QUERY = `#graphql
       }
     }
   }
-      `;
+`;
 
 
 const PRODUCT_VARIANT_FRAGMENT = `#graphql
@@ -865,20 +877,70 @@ const PRODUCT_VARIANT_FRAGMENT = `#graphql
   }
 `;
 
-
-const PRODUCT_VARIANTS_FRAGMENT = `#graphql
-      fragment ProductVariants on Product {
-        variants(first: 250) {
+const PRODUCT_FRAGMENT = `#graphql
+  fragment ProductFragment on Product {
+      id
+      title
+      handle
+      description
+      sellingPlanGroups(first: 3) {
+        edges {
+          node {
+            name
+            appName
+            options {
+              name
+              values
+            }
+            sellingPlans(first: 3) {
+              edges {
+                node {
+                  id
+                  name
+                  options{
+                    value
+                      name
+                    }
+                }
+              }
+            }
+          }
+        }
+      }
+      metafields(
+      identifiers: [{namespace: "accentuate", key: "bundle_product_short_title"}, {namespace: "accentuate", key: "sub_title_one"}, {namespace: "accentuate", key: "sub_title_two"}, {namespace: "accentuate", key: "sub_title_one"}, {namespace: "accentuate", key: "bundle_good_to_know"}, {namespace: "accentuate", key: "good_to_know_title"}, {namespace: "accentuate", key: "good_to_know"}, {namespace: "accentuate", key: "bundle_product_short_descripti"}, {namespace: "accentuate", key: "description"}, {namespace: "accentuate", key: "bundle_whats_inside"}, {namespace: "accentuate", key: "whats_inside_title"}, {namespace: "accentuate", key: "bundle_why_it_special_description"}, {namespace: "accentuate", key: "bundle_why_it_special"}, {namespace: "accentuate", key: "why_its_special"}, {namespace: "accentuate", key: "bundle_what_makes_good_title"}, {namespace: "accentuate", key: "bundle_what_makes_good_descrip"}, {namespace: "accentuate", key: "title"}, {namespace: "accentuate", key: "essential_ingradient_main_titl"}, {namespace: "accentuate", key: "description_essen"}, {namespace: "accentuate", key: "key_ingredients"}, {namespace: "accentuate", key: "full_ingradient_main_titl"}, {namespace: "accentuate", key: "full_ingredient_text"}, {namespace: "accentuate", key: "full_ingredient_title"}, {namespace: "product", key: "key_ingredients_text"}]
+      ) {
+        key
+        value
+      }
+      variants(first: 250) {
         nodes {
-        ...ProductVariant
+          ...ProductVariant
+        }
+      }
+      priceRange {
+        minVariantPrice {
+        amount
+          currencyCode
+        }
+        maxVariantPrice {
+          amount
+            currencyCode
+          }
+      }
+      images(first: 100) {
+        nodes {
+          id
+          url
+          altText
+        }
       }
     }
-  }
 ${PRODUCT_VARIANT_FRAGMENT}
 `;
 
 const COLLECTION_QUERY = `#graphql
-      ${PRODUCT_VARIANTS_FRAGMENT}
+      ${PRODUCT_FRAGMENT}
       query Collection(
       $handle: String!
       $country: CountryCode
@@ -893,99 +955,23 @@ const COLLECTION_QUERY = `#graphql
       first: 5
       ) {
         nodes {
-        id
-          title
-      handle
-      description
-      sellingPlanGroups(first: 3) {
-        edges {
-        node {
-        name
-            appName
-      options {
-        name
-              values
-            }
-      sellingPlans(first: 3) {
-        edges {
-        node {
-        id
-                name
-      options{
-        value
-                  name
-                }
-              }
-            }
-          }
-          }
-        }
-      }
-      metafields(
-      identifiers: [{namespace: "accentuate", key: "bundle_product_short_title"}, {namespace: "accentuate", key: "sub_title_one"}, {namespace: "accentuate", key: "sub_title_two"}, {namespace: "accentuate", key: "sub_title_one"}, {namespace: "accentuate", key: "bundle_good_to_know"}, {namespace: "accentuate", key: "good_to_know_title"}, {namespace: "accentuate", key: "good_to_know"}, {namespace: "accentuate", key: "bundle_product_short_descripti"}, {namespace: "accentuate", key: "description"}, {namespace: "accentuate", key: "bundle_whats_inside"}, {namespace: "accentuate", key: "whats_inside_title"}, {namespace: "accentuate", key: "bundle_why_it_special_description"}, {namespace: "accentuate", key: "bundle_why_it_special"}, {namespace: "accentuate", key: "why_its_special"}, {namespace: "accentuate", key: "bundle_what_makes_good_title"}, {namespace: "accentuate", key: "bundle_what_makes_good_descrip"}, {namespace: "accentuate", key: "title"}, {namespace: "accentuate", key: "essential_ingradient_main_titl"}, {namespace: "accentuate", key: "description_essen"}, {namespace: "accentuate", key: "key_ingredients"}, {namespace: "accentuate", key: "full_ingradient_main_titl"}, {namespace: "accentuate", key: "full_ingredient_text"}, {namespace: "accentuate", key: "full_ingredient_title"}, {namespace: "product", key: "key_ingredients_text"}]
-      ) {
-        key
-      value
-    }
-
-      ...ProductVariants
-      priceRange {
-        minVariantPrice {
-        amount
-              currencyCode
-            }
-      maxVariantPrice {
-        amount
-              currencyCode
-            }
-          }
-      images(first: 100) {
-        nodes {
-        id
-            url
-      altText
-            }
-          }
+          ...ProductFragment
         }
       }
     }
   }
-      `;
-
+`;
 const RECOMMENDED_PRODUCTS_QUERY = `#graphql
-      ${PRODUCT_VARIANTS_FRAGMENT}
-      fragment RecommendedProduct on Product {
-        id
-          title
-      handle
-      ...ProductVariants
-      priceRange {
-        minVariantPrice {
-        amount
-            currencyCode
-          }
-      maxVariantPrice {
-        amount
-            currencyCode
-          }
-        }
-      images(first: 100) {
-        nodes {
-        id
-          url
-      altText
-        }
-      }
-    }
+      ${PRODUCT_FRAGMENT}
       query RecommendedProducts ($country: CountryCode, $language: LanguageCode)
       @inContext(country: $country, language: $language) {
         products(first: 5, sortKey: UPDATED_AT, reverse: true) {
         nodes {
-        ...RecommendedProduct
+        ...ProductFragment
       }
     }
   }
-      `;
+`;
 
 /** @typedef {import('@shopify/remix-oxygen').LoaderArgs} LoaderArgs */
 /** @template T @typedef {import('@remix-run/react').V2_MetaFunction<T>} V2_MetaFunction */
