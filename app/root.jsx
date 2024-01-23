@@ -111,6 +111,12 @@ export async function loader({ context }) {
       headerMenuHandle: 'desktop-menu', // Adjust to your header menu handle
     },
   });
+  const mobileHeaderPromise = storefront.query(HEADER_QUERY, {
+    cache: storefront.CacheLong(),
+    variables: {
+      headerMenuHandle: 'mobile-menu', // Adjust to your header menu handle
+    },
+  });
 
   return defer(
     {
@@ -118,6 +124,7 @@ export async function loader({ context }) {
       footer: await footerPromise,
       footer2: await footerPromise2,
       header: await headerPromise,
+      mobileHeader: await mobileHeaderPromise,
       isLoggedIn,
       publicStoreDomain,
     },

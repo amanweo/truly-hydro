@@ -91,25 +91,18 @@ export function HeaderMenu({ menu, viewport }) {
             ? new URL(item.url).pathname
             : item.url;
 
-        console.log("item url: ", item)
         return (
           <li key={item.id} className={`${item.items.length > 0 ? "has-dropdown" : ""} ${active == item.id ? "active" : ""}`}>
-            {url !== "/" && viewport === 'mobile' ?
-              <NavLink
-                className="header-menu-item"
-                end
-                onClick={closeAside}
-                prefetch="intent"
-                style={activeLinkStyle}
-                to={url}
-              >
-                {item.title}
-              </NavLink>
-              :
-              <button className='noStyle text-start header-menu-item' onClick={() => handleToggle(item.id)}>
-                {item.title}
-              </button>
-            }
+            <NavLink
+              className="header-menu-item"
+              end
+              onClick={closeAside}
+              prefetch="intent"
+              style={activeLinkStyle}
+              to={url}
+            >
+              {item.title}
+            </NavLink>
             {item.items.length > 0 ?
               <>
                 {viewport === 'mobile' ?
@@ -164,9 +157,6 @@ export function HeaderMobileMenu({ menu, viewport }) {
       window.location.href = event.currentTarget.href;
     }
   }
-  function handleToggle(id) {
-    setActive(active == id ? "" : id)
-  }
 
   return (
     <Accordion className='header_mobile_menu'>
@@ -179,22 +169,25 @@ export function HeaderMobileMenu({ menu, viewport }) {
             ? new URL(item.url).pathname
             : item.url;
 
-        console.log("item url: ", item)
         return (
           <Accordion.Item eventKey={item.id} className='menu_tab_panel'>
             {item.items.length > 0 ?
               <>
                 <Accordion.Header className='menu_tab_header'>
-                  <NavLink
-                    className="header-menu-item"
-                    end
-                    onClick={closeAside}
-                    prefetch="intent"
-                    style={activeLinkStyle}
-                    to={url}
-                  >
-                    {item.title}
-                  </NavLink>
+                  {url && url !== "/" ?
+                    <NavLink
+                      className="header-menu-item"
+                      end
+                      onClick={closeAside}
+                      prefetch="intent"
+                      style={activeLinkStyle}
+                      to={url}
+                    >
+                      {item.title}
+                    </NavLink>
+                    :
+                    item.title
+                  }
                 </Accordion.Header>
                 <Accordion.Body>
                   {item.items.map((opt, i) => {

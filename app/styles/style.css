@@ -1260,11 +1260,18 @@ h2.menu_tab_header.accordion-header {
     border-width: 0 0 1px;
 }
 .header_mobile_menu.accordion .accordion-button{
-    padding: 10px 0;
-    font-weight: 600;
+    padding: 14px 0;
+    font-family: var(--primary-font-bold);
+    font-size: 15px;
+    text-transform: uppercase;
 }
 .accordion-button:after{
     width: 15px;
     height: 15px;
     background-size: 15px;
+}
+.header_mobile_menu.accordion .accordion-body a {
+    padding: 10px 0;
+    display: block;
+    border-top: rgba(0,0,0,0.1) 1px solid;
 }

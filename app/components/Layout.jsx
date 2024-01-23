@@ -13,12 +13,12 @@ import { Image } from '@shopify/hydrogen';
 /**
  * @param {LayoutProps}
  */
-export function Layout({ cart, children = null, footer, footer2, header, isLoggedIn }) {
+export function Layout({ cart, children = null, footer, footer2, header, isLoggedIn, mobileHeader }) {
   return (
     <>
       <CartAside cart={cart} />
       {/* <SearchAside /> */}
-      <MobileMenuAside menu={header.menu} />
+      <MobileMenuAside menu={mobileHeader.menu} />
       <Header header={header} cart={cart} isLoggedIn={isLoggedIn} />
       <main>
         {/* <HeaderCounter /> */}
