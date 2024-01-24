@@ -82,12 +82,16 @@
         width: 100%;
         display: block;
     }
-    
+
     ul.header_mobile_menu>li {
         border-bottom: #eee 1px solid;
     }
+
     .mobile_header_menu {
         padding: 0 30px;
+        max-height: calc(100vh - 30px);
+        overflow: hidden;
+        overflow-y: auto;
     }
 
     li.has-dropdown {
@@ -148,6 +152,7 @@
     h5 {
         font-size: 18px;
     }
+
     h6 {
         font-size: 14px;
     }
@@ -155,13 +160,17 @@
     .headingholder h2 {
         font-size: 40px;
     }
+
     .InStyle__Box h3 {
         font-size: 40px;
     }
-    .rotationalbar, .commonSection {
+
+    .rotationalbar,
+    .commonSection {
         padding: 30px 0;
     }
-    .InStyle__Box{
+
+    .InStyle__Box {
         max-width: 700px;
         margin: auto;
     }

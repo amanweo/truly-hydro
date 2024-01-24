@@ -1015,7 +1015,7 @@ function ProductPrice({ selectedVariant, quantity, handleQtyChange, handleQty, s
                 <>
                   <div className="product-price-on-sale">
                     {selectedVariant ? <>
-                      <Money data={selectedVariant?.sellingPlanAllocations?.edges[0].node?.priceAdjustments[0]?.price} />
+                      <Money data={selectedVariant?.sellingPlanAllocations?.edges.length > 0 && selectedVariant?.sellingPlanAllocations?.edges[0].node?.priceAdjustments[0]?.price} />
                       <s>
                         <Money data={selectedVariant && selectedVariant?.compareAtPrice} />
                       </s>
@@ -1025,7 +1025,7 @@ function ProductPrice({ selectedVariant, quantity, handleQtyChange, handleQty, s
                   </div>
                 </>
               ) : (
-                selectedVariant && selectedVariant?.sellingPlanAllocations?.edges[0].node?.priceAdjustments[0]?.price && <Money data={selectedVariant?.sellingPlanAllocations?.edges[0].node?.priceAdjustments[0]?.price} />
+                selectedVariant && selectedVariant?.sellingPlanAllocations?.edges && selectedVariant?.sellingPlanAllocations?.edges.length > 0 && selectedVariant?.sellingPlanAllocations?.edges[0].node?.priceAdjustments[0]?.price && <Money data={selectedVariant?.sellingPlanAllocations?.edges[0].node?.priceAdjustments[0]?.price} />
               )}
             </div>
           </div>

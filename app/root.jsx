@@ -114,7 +114,14 @@ export async function loader({ context }) {
   const mobileHeaderPromise = storefront.query(HEADER_QUERY, {
     cache: storefront.CacheLong(),
     variables: {
-      headerMenuHandle: 'mobile-menu', // Adjust to your header menu handle
+      headerMenuHandle: 'mobile-menu', // Adjust to your header mobile menu handle
+    },
+  });
+  const mobileCollectionPromise = storefront.query(COLLECTION_QUERY, {
+    cache: storefront.CacheLong(),
+    variables: {
+      handle: 'mobile-menu-best-sellers',
+      // handle: 'best-sellers',
     },
   });
 
@@ -125,6 +132,7 @@ export async function loader({ context }) {
       footer2: await footerPromise2,
       header: await headerPromise,
       mobileHeader: await mobileHeaderPromise,
+      bestSeller: await mobileCollectionPromise,
       isLoggedIn,
       publicStoreDomain,
     },
@@ -347,6 +355,112 @@ const FOOTER_QUERY = `#graphql
     }
   }
   ${MENU_FRAGMENT}
+`;
+
+
+const PRODUCT_VARIANT_FRAGMENT = `#graphql
+      fragment ProductVariant on ProductVariant {
+        availableForSale
+    compareAtPrice {
+        amount
+      currencyCode
+    }
+      id
+      image {
+        __typename
+      id
+      url
+      altText
+      width
+      height
+    }
+      price {
+        amount
+      currencyCode
+    }
+      product {
+        title
+      handle
+    }
+      selectedOptions {
+        name
+      value
+    }
+      sellingPlanAllocations(first:1){
+        edges{
+        node{
+        sellingPlan{
+        id
+      }
+      priceAdjustments{
+        price{
+        amount
+              currencyCode
+            }
+          }
+        }
+      }
+    }
+      sku
+      title
+      unitPrice {
+        amount
+      currencyCode
+    }
+  }
+`;
+const PRODUCT_FRAGMENT = `#graphql
+  fragment ProductFragment on Product {
+    id
+    title
+    handle
+    variants(first: 250) {
+      nodes {
+        ...ProductVariant
+      }
+    }
+    priceRange {
+      minVariantPrice {
+      amount
+        currencyCode
+      }
+      maxVariantPrice {
+        amount
+          currencyCode
+        }
+    }
+    images(first: 100) {
+      nodes {
+        id
+        url
+        altText
+      }
+    }
+  }
+  ${PRODUCT_VARIANT_FRAGMENT}
+`;
+
+const COLLECTION_QUERY = `#graphql
+      ${PRODUCT_FRAGMENT}
+      query Collection(
+      $handle: String!
+      $country: CountryCode
+      $language: LanguageCode
+      ) @inContext(country: $country, language: $language) {
+        collection(handle: $handle) {
+        id
+      handle
+      title
+      description
+      products(
+      first: 5
+      ) {
+        nodes {
+          ...ProductFragment
+        }
+      }
+    }
+  }
 `;
 
 /** @typedef {import('@shopify/remix-oxygen').LoaderArgs} LoaderArgs */

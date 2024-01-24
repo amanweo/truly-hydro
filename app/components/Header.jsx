@@ -1,10 +1,13 @@
-import { Await, NavLink, useMatches } from '@remix-run/react';
+import { Await, Link, NavLink, useMatches } from '@remix-run/react';
 import { Suspense, useState } from 'react';
 import Images from "./images";
 import { PredictiveSearchForm, PredictiveSearchResults } from './Search';
 import { CartMain } from './Cart';
 import { Image } from '@shopify/hydrogen';
 import { Accordion } from 'react-bootstrap';
+import { Money } from '@shopify/hydrogen';
+import images from './images';
+import { AddToCartFunction } from '~/routes/_index';
 
 /**
  * @param {HeaderProps}
@@ -145,7 +148,7 @@ export function HeaderMenu({ menu, viewport }) {
     </ul>
   );
 }
-export function HeaderMobileMenu({ menu, viewport }) {
+export function HeaderMobileMenu({ menu, viewport, collection }) {
   const [root] = useMatches();
   const publicStoreDomain = root?.data?.publicStoreDomain;
   const className = `header-menu-${viewport}`;
@@ -157,10 +160,12 @@ export function HeaderMobileMenu({ menu, viewport }) {
       window.location.href = event.currentTarget.href;
     }
   }
+  // console.log("header collection", collection)
 
   return (
     <Accordion className='header_mobile_menu'>
       {(menu || FALLBACK_HEADER_MENU).items.map((item) => {
+        console.log("header item", item)
         if (!item.url) return null;
         // if the url is internal, we strip the domain
         const url =
@@ -214,22 +219,84 @@ export function HeaderMobileMenu({ menu, viewport }) {
                 </Accordion.Body>
               </>
               :
-              <NavLink
-                className="accordion-button noStyle collapsed text-start header-menu-item"
-                end
-                onClick={closeAside}
-                prefetch="intent"
-                style={activeLinkStyle}
-                to={url}
-              >
-                {item.title}
-              </NavLink>
+              <>
+                <NavLink
+                  className={`accordion-button noStyle collapsed text-start header-menu-item ${item?.title == "Build Your own Bundle" ? "highlight" : ""}`}
+                  end
+                  onClick={closeAside}
+                  prefetch="intent"
+                  style={activeLinkStyle}
+                  to={url}
+                >
+                  {item.title}
+                </NavLink>
+                {item?.title == "Best Sellers" ?
+                  <MenuProducts list={collection?.products && collection?.products?.nodes} />
+                  :
+                  null
+                }
+              </>
             }
           </Accordion.Item>
         );
       })}
     </Accordion>
   );
+}
+
+function MenuProducts(props) {
+  return (
+    <div className='menu_products'>
+      {props.list.length > 0 && props.list.map((data, i) => {
+        return (
+          <div className='menu_products_list' key={i}>
+            <AddToCartFunction
+              onClick={() => {
+                setTimeout(() => {
+                  if(window.location.href.includes(window.location.hash)){
+                    window.location.href = window.location.href.split(window.location.hash)[0] + '#cart-aside'
+                  }else{
+                    window.location.href = window.location.href + '#cart-aside';
+                  }
+                }, 500);
+              }}
+              lines={
+                data?.variants?.nodes[0]
+                  ? [
+                      {
+                        merchandiseId: data?.variants?.nodes[0].id,
+                        quantity: 1
+                      }
+                  ]
+                  : []
+              }
+            >
+              <span className='scrollProductBtn'>
+                <img src={images?.plus_circle} alt="" />
+              </span>
+              <div className="productBox__img">
+                <Image
+                  data={data.images.nodes[0]}
+                  aspectRatio="0"
+                  size={"100vw"}
+                  width={184}
+                />
+              </div>
+              <Money data={data?.priceRange?.minVariantPrice} style={{ color: "var(--primary2)" }} />
+              <p className='menu_products_title'>{data?.title}</p>
+            </AddToCartFunction>
+          </div>
+        )
+      })}
+      <div class="menu_products_list ViewMoreCol">
+        <a href="/collections/best-sellers">
+          <button className='noStyle'>
+            <span class="product__ViewMore">View <br /> More</span>
+          </button>
+        </a>
+      </div>
+    </div>
+  )
 }
 
 function HeaderSearch(props) {

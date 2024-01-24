@@ -13,12 +13,13 @@ import { Image } from '@shopify/hydrogen';
 /**
  * @param {LayoutProps}
  */
-export function Layout({ cart, children = null, footer, footer2, header, isLoggedIn, mobileHeader }) {
+export function Layout({ cart, children = null, footer, footer2, header, isLoggedIn, mobileHeader, bestSeller }) {
+  console.log("mobileHeader: ", mobileHeader)
   return (
     <>
       <CartAside cart={cart} />
       {/* <SearchAside /> */}
-      <MobileMenuAside menu={mobileHeader.menu} />
+      <MobileMenuAside menu={mobileHeader.menu} collection={bestSeller} />
       <Header header={header} cart={cart} isLoggedIn={isLoggedIn} />
       <main>
         {/* <HeaderCounter /> */}
@@ -272,7 +273,7 @@ function SearchAside() {
 /**
  * @param {{menu: HeaderQuery['menu']}}
  */
-function MobileMenuAside({ menu }) {
+function MobileMenuAside({ menu, collection }) {
   // const closeAside = () => {
   //   window.location.href = '';
   // }
@@ -285,7 +286,7 @@ function MobileMenuAside({ menu }) {
         </button>
       </div>
       <div className='mobile_header_menu'>
-        <HeaderMobileMenu menu={menu} viewport="mobile" />
+        <HeaderMobileMenu menu={menu} viewport="mobile" collection={collection?.collection || {}} />
       </div>
     </Aside>
   );

@@ -176,6 +176,28 @@ export default function Homepage() {
 }
 
 
+export function AddToCartFunction({ analytics, children, lines, onClick }) {
+  return (
+    <CartForm route="/cart" inputs={{ lines }} action={CartForm.ACTIONS.LinesAdd}>
+      {(fetcher) => (
+        <>
+          <input
+            name="analytics"
+            type="hidden"
+            value={JSON.stringify(analytics)}
+          />
+          <button
+            type="submit"
+            onClick={onClick}
+            className='noStyle'
+          >
+            {children}
+          </button>
+        </>
+      )}
+    </CartForm>
+  );
+}
 export function AddToCartButton({ analytics, children, disabled, lines, onClick, size }) {
   return (
     <CartForm route="/cart" inputs={{ lines }} action={CartForm.ACTIONS.LinesAdd}>
