@@ -9,24 +9,29 @@ export function Footer({ menu, menu2 }) {
     <footer className="footer">
       <div className="container-fluid">
         <div className='row justify-content-between'>
-          <div className='col-xl-3 col-lg-4'>
+          <div className='col-xl-4 col-lg-5 col-md-6 order-1'>
             <FooterInformation />
-            <SocialLinks />
+            <div className='d-md-block d-none'>
+              <SocialLinks />
+            </div>
           </div>
-          <div className='col-xl-4 col-md-6'>
+          <div className='col-xl-4 col-md-6 order-xl-2 order-3'>
             <div className='row'>
-              <div className='col-md-6'>
-                <h4>Brand</h4>
+              <div className='col-6'>
+                <h5>Brand</h5>
                 <FooterMenu menu={menu} />
               </div>
-              <div className='col-md-6'>
-                <h4>Help</h4>
+              <div className='col-6'>
+                <h5>Help</h5>
                 <FooterMenu menu={menu2} />
               </div>
             </div>
+            <div className='d-md-none'>
+              <SocialLinks />
+            </div>
           </div>
-          <div className='col-xl-4 col-md-6'>
-            <h4>Subscribe to Updates</h4>
+          <div className='col-xl-4 col-md-6 mb-xl-0 mt-md-0 mb-4 mt-3 order-xl-3 order-2'>
+            <h5>Subscribe to Updates</h5>
             <NewsLetter />
           </div>
         </div>
@@ -65,9 +70,10 @@ function NewsLetter() {
         </div>
         <div className='form-group'>
           <button className='btn btn-secondary btn-sm'>Subscribe</button>
+          <span className='d-xl-none ms-3'><small>By subscribing, you accept the <NavLink to="/" className={"link"}>Privacy Policy</NavLink></small></span>
         </div>
       </div>
-      <p><small>By subscribing, you accept the <NavLink to="/" className={"link"}>Privacy Policy</NavLink></small></p>
+      <p className='d-xl-block d-none'><small>By subscribing, you accept the <NavLink to="/" className={"link"}>Privacy Policy</NavLink></small></p>
     </div>
   )
 }
@@ -75,6 +81,9 @@ function NewsLetter() {
 function SocialLinks() {
   return (
     <div className="mainFooter_information">
+      <h5 className='d-md-none mt-4'>
+        Stay Connected
+      </h5>
       <div className="mainFooter-socialIcon">
         <a target="_blank" href="https://www.facebook.com/trulybeautyofficial">
           <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="328px" height="616px" viewBox="232 -20 328 616" enableBackground="new 232 -20 328 616" xmlSpace="preserve">
@@ -157,7 +166,7 @@ function SocialLinks() {
         </a>
       </div>
       <p>*These statements have not been evaluated by the Food and Drug Administration. This product is not intended to diagnose, treat, cure, or prevent any disease.</p>
-      <p>© 2023 All rights reserved.</p>
+      <p className='mb-0'>© {new Date().getFullYear()} All rights reserved.</p>
     </div>
   )
 }

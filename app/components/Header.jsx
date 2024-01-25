@@ -22,11 +22,16 @@ export function Header({ header, isLoggedIn, cart }) {
     <header className='truly_header'>
       <div className='container-fluid'>
         <div className='main_header'>
-          <a className='noStyle truly_toggle' href="#mobile-menu-aside">
-            <span></span>
-            <span></span>
-            <span></span>
-          </a>
+          <div className='truly_toggle'>
+            <a className='noStyle' href="#mobile-menu-aside">
+              <span></span>
+              <span></span>
+              <span></span>
+            </a>
+            <span className='d-lg-none ms-3'>
+              <SearchToggle toggleSearch={toggleSearch} />
+            </span>
+          </div>
           <div className='truly_logo'>
             <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
               <strong>
@@ -165,7 +170,6 @@ export function HeaderMobileMenu({ menu, viewport, collection }) {
   return (
     <Accordion className='header_mobile_menu'>
       {(menu || FALLBACK_HEADER_MENU).items.map((item) => {
-        console.log("header item", item)
         if (!item.url) return null;
         // if the url is internal, we strip the domain
         const url =
@@ -253,9 +257,9 @@ function MenuProducts(props) {
             <AddToCartFunction
               onClick={() => {
                 setTimeout(() => {
-                  if(window.location.href.includes(window.location.hash)){
+                  if (window.location.href.includes(window.location.hash)) {
                     window.location.href = window.location.href.split(window.location.hash)[0] + '#cart-aside'
-                  }else{
+                  } else {
                     window.location.href = window.location.href + '#cart-aside';
                   }
                 }, 500);
@@ -263,10 +267,10 @@ function MenuProducts(props) {
               lines={
                 data?.variants?.nodes[0]
                   ? [
-                      {
-                        merchandiseId: data?.variants?.nodes[0].id,
-                        quantity: 1
-                      }
+                    {
+                      merchandiseId: data?.variants?.nodes[0].id,
+                      quantity: 1
+                    }
                   ]
                   : []
               }
@@ -348,7 +352,7 @@ function HeaderCart(props) {
 function HeaderCtas({ isLoggedIn, cart, toggleSearch, toggleCart }) {
   return (
     <div className="truly_header_links">
-      <div className="navAccount search--icon">
+      <div className="navAccount search--icon d-lg-block d-none">
         <SearchToggle toggleSearch={toggleSearch} />
       </div>
       <div className="navAccount user--icon">

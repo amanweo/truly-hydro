@@ -189,7 +189,7 @@ export function AddToCartFunction({ analytics, children, lines, onClick }) {
           <button
             type="submit"
             onClick={onClick}
-            className='noStyle'
+            className='noStyle w-100'
           >
             {children}
           </button>
@@ -223,12 +223,19 @@ export function AddToCartButton({ analytics, children, disabled, lines, onClick,
 }
 
 function Banner() {
-  let image = "https://www.trulybeauty.com/cdn/shop/files/Desktop_1900x670_withcopy_26565d46-86c5-4f07-b24a-74fbcd1033cf.jpg"
+  const bannerData = {
+    image: "https://www.trulybeauty.com/cdn/shop/files/2023_12_smoothest_shave_HP_banner_Desktop_1900x670_withtext.jpg",
+    mobileImage: "https://www.trulybeauty.com/cdn/shop/files/2023_12_smoothest_shave_HP_banner_mobile_1080x1620_withtext.jpg",
+    link: "/products/elsa-hosk-glazed-donut-shave-set"
+  }
   return (
     <div className="home_slideshow_section">
-      <Link to="/products/signature-body-mist-trio" className="d-block">
-        {image && (
-          <Image src={image} alt="" sizes="200vw" />
+      <Link to={bannerData?.link} className="d-block">
+        {bannerData.image && (
+          <Image src={bannerData.image} alt="" sizes="200vw" className='d-none d-md-block full_img' />
+        )}
+        {bannerData.mobileImage && (
+          <Image src={bannerData.mobileImage} alt="" sizes="200vw" className='d-md-none full_img' />
         )}
       </Link>
     </div>
@@ -407,7 +414,7 @@ export function ProductBlock({ product, showQuickView, location }) {
             />
           </div>
         </Link>
-        <div className='quick_view_product'>
+        <div className='quick_view_product d-md-block d-none'>
           <button className='btn btn-primary w-100 btn-sm noHover' onClick={() => showQuickView(product)}>Quick View</button>
         </div>
       </div>
@@ -421,7 +428,7 @@ export function ProductBlock({ product, showQuickView, location }) {
         <div className='productBox__price'>
           <Money data={product.priceRange.minVariantPrice} />
           {product.priceRange.minVariantPrice?.amount !== product.priceRange.maxVariantPrice?.amount ?
-            <del className="price__sale ms-3">
+            <del className="price__sale ms-sm-2 ms-1">
               <Money data={product.priceRange.maxVariantPrice} />
             </del>
             : null
@@ -446,7 +453,7 @@ export function ProductBlock({ product, showQuickView, location }) {
 }
 export function ProductRender({ products, location }) {
   return (
-    <div className="row">
+    <div className="row g-lg-3 g-2">
       {console.log("products: ", products)}
       {products && products.map((product) => (
         <>
@@ -509,15 +516,24 @@ function ContentBlock() {
     <div className='text_over_image primary-bg'>
       {/* <div className='container-fluid'> */}
       <div className='row g-0 justify-content-between align-items-center'>
-        <div className='col-lg-7 col-sm-6 d-none d-md-block'>
-          <div className='bg_image_block pe-lg-1 pe-1'>
+        <div className='col-lg-7 '>
+          <div className='collection_block_image bg_image_block'>
             <Image
               alt={""}
               aspectRatio="0"
               data={{ url: Images?.banner_shave }}
               sizes="200vw"
+              className='d-lg-block d-none'
             />
-            {/* <div className='col-sm-6'>
+            <div className='img-zoom d-lg-none'>
+              <Image
+                alt={""}
+                aspectRatio="0"
+                data={{ url: Images?.banner_shave_mobile }}
+                sizes="200vw"
+              />
+            </div>
+            {/* <div className=''>
                 <div className='bg_image_block'>
                   <Image
                     alt={""}
@@ -527,9 +543,13 @@ function ContentBlock() {
                   />
                 </div>
               </div> */}
+
+            <div className='collection_block_content text-center d-lg-none'>
+              <Link to="/collections/shaving" className='btn btn-secondary btn-sm'>Shop Shave</Link>
+            </div>
           </div>
         </div>
-        <div className='col-lg-5 col-sm-6'>
+        <div className='col-lg-5 d-lg-block d-none'>
           <div className='bg_image_text text-center'>
             <h2>The smoothest shave of all time</h2>
             <p>Tik tok famous shave routines proven to smooth, brighten & hydrate your skin.</p>
@@ -549,7 +569,7 @@ function CollectionBlock(props) {
     <div className='row g-0 mt-2'>
       {props.list.length > 0 && props.list.map((opt, i) => {
         return (
-          <Link to={`/collections/${opt?.handle}`} className="col-sm-6" key={i}>
+          <Link to={`/collections/${opt?.handle}`} className="col-6" key={i}>
             <div className={`collection_block_outer ${i % 2 == 0 ? "pe-1" : "ps-1"}`}>
               <div className="collection_block">
                 <div className='collection_block_image mb-2 img-zoom'>
@@ -558,10 +578,21 @@ function CollectionBlock(props) {
                     aspectRatio="0"
                     data={{ url: Images?.[`banner_${opt?.handle}`] }}
                     sizes="200vw"
+                    className='d-lg-block d-none'
                   />
+                  <Image
+                    alt={opt?.title}
+                    aspectRatio="0"
+                    data={{ url: Images?.[`banner_${opt?.handle}_mobile`] }}
+                    sizes="200vw"
+                    className='d-lg-none'
+                  />
+                  <div className='collection_block_content text-center d-lg-none'>
+                    <span className='btn btn-secondary btn-sm'>Shop {opt?.title == "Bath & Body" ? "Body" : opt?.title}</span>
+                  </div>
                 </div>
               </div>
-              <div className='collection_block_content text-center'>
+              <div className='collection_block_content text-center d-lg-block d-none'>
                 <h2>{opt?.title}</h2>
               </div>
             </div>
@@ -574,10 +605,10 @@ function CollectionBlock(props) {
 
 function CollectionProducts(props) {
   return (
-    <div className='commonSection'>
+    <div className='commonSection primary-bg-sm'>
       <div className='container-fluid'>
         <div className='row justify-content-between align-items-center'>
-          <div className='col-xl-5 col-md-6'>
+          <div className='col-xl-5 col-md-6 d-none d-md-block'>
             <div className='bg_image_block'>
               <Image
                 alt={""}
@@ -588,9 +619,9 @@ function CollectionProducts(props) {
             </div>
           </div>
           <div className='col-md-6'>
-            <div className="headingholder text-center mb-5">
-              <h2>{props.collection?.title}</h2>
-              <Link to={`/collections/${props.collection?.handle}`} className='btn btn-primary'>View All Products</Link>
+            <div className="d-md-block d-flex headingholder text-center mb-md-5 mb-4 align-items-center justify-content-between">
+              <h2 className='mb-md-2 mb-0'>{props.collection?.title}</h2>
+              <Link to={`/collections/${props.collection?.handle}`} className='btn btn-primary btn-sm'>View All Products</Link>
             </div>
             <div className='collection_product_slider'>
               <div className="custom_arrows horizontal custom-prev-arrow">

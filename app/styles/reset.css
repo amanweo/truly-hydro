@@ -1,36 +1,37 @@
-@font-face{
-  font-family:'Futura PT Med';
-  src:url("../fonts/FuturaPT-Medium.eot");
-  src:url("../fonts/FuturaPT-Medium.eot#iefix") format("embedded-opentype"),
-  url("../fonts/FuturaPT-Medium.woff2") format("woff2"),
-  url("../fonts/FuturaPT-Medium.woff") format("woff"),
-  url("../fonts/FuturaPT-Medium.ttf") format("truetype");
-  font-weight:500;
-  font-style:normal;
-  font-display:swap
-}
-@font-face{
-  font-family:'Futura PT Heavy';
-  src:url("../fonts/FuturaPT-Heavy.eot");
-  src:url("../fonts/FuturaPT-Heavy.eot#iefix") format("embedded-opentype"),
-  url("../fonts/FuturaPT-Heavy.woff2") format("woff2"),
-  url("../fonts/FuturaPT-Medium.woff") format("woff"),
-  url("../fonts/FuturaPT-Heavy.ttf") format("truetype");
-  font-weight:900;
-  font-style:normal;
-  font-display:swap
+@font-face {
+  font-family: 'Futura PT Med';
+  src: url("../fonts/FuturaPT-Medium.eot");
+  src: url("../fonts/FuturaPT-Medium.eot#iefix") format("embedded-opentype"),
+    url("../fonts/FuturaPT-Medium.woff2") format("woff2"),
+    url("../fonts/FuturaPT-Medium.woff") format("woff"),
+    url("../fonts/FuturaPT-Medium.ttf") format("truetype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap
 }
 
-@font-face{
-  font-family:'Futura PT Book';
-  src:url("../fonts/FuturaPT-Book.eot");
-  src:url("../fonts/FuturaPT-Book.eot?#iefix") format("embedded-opentype"),
-  url("../fonts/FuturaPT-Book.woff2") format("woff2"),
-  url("../fonts/FuturaPT-Medium.woff") format("woff"),
-  url("../fonts/FuturaPT-Book.ttf") format("truetype");
-  font-weight:400;
-  font-style:normal;
-  font-display:swap
+@font-face {
+  font-family: 'Futura PT Heavy';
+  src: url("../fonts/FuturaPT-Heavy.eot");
+  src: url("../fonts/FuturaPT-Heavy.eot#iefix") format("embedded-opentype"),
+    url("../fonts/FuturaPT-Heavy.woff2") format("woff2"),
+    url("../fonts/FuturaPT-Medium.woff") format("woff"),
+    url("../fonts/FuturaPT-Heavy.ttf") format("truetype");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap
+}
+
+@font-face {
+  font-family: 'Futura PT Book';
+  src: url("../fonts/FuturaPT-Book.eot");
+  src: url("../fonts/FuturaPT-Book.eot?#iefix") format("embedded-opentype"),
+    url("../fonts/FuturaPT-Book.woff2") format("woff2"),
+    url("../fonts/FuturaPT-Medium.woff") format("woff"),
+    url("../fonts/FuturaPT-Book.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap
 }
 
 
@@ -208,7 +209,8 @@ h5 {
 h6 {
   font-size: 16px;
 }
-p strong{
+
+p strong {
   font-family: var(--primary-font-bold);
 }
 
@@ -293,9 +295,11 @@ a {
 .btn.btn-secondary:not(.noHover):after {
   border-color: var(--primary);
 }
+
 .btn.btn-danger:not(.noHover):after {
   border-color: var(--primary2);
 }
+
 .btn:not(.noHover):hover:after {
   width: 100%;
 }
@@ -309,6 +313,7 @@ a {
   border-color: var(--primary);
   color: var(--color-dark);
 }
+
 .btn.btn-danger {
   background: var(--primary2);
   border-color: var(--primary2);
@@ -321,8 +326,7 @@ a {
 .btn.btn-secondary:not(.noHover):active:after,
 .btn.btn-danger:not(.noHover):hover:after,
 .btn.btn-danger:not(.noHover):focus:after,
-.btn.btn-danger:not(.noHover):active:after
-{
+.btn.btn-danger:not(.noHover):active:after {
   background: var(--color-dark) !important;
   border-color: var(--color-dark) !important;
 }
@@ -349,12 +353,12 @@ a {
 input.form-control {
   border: 1px #ddd solid;
   background: #fff;
-  padding: 15px;
+  padding: 12px;
   border-radius: 0;
 }
 
 input.form-control.sm {
-  padding: 10px 15px;
+  padding: 8px 15px;
   font-size: 14px;
 }
 
@@ -395,14 +399,17 @@ img {
 .primary-bg {
   background-color: var(--primary) !important;
 }
+
 .modal-backdrop {
   --bs-backdrop-bg: #fff;
   --bs-backdrop-opacity: .9;
 }
+
 .modal-content {
   border: 0;
-  box-shadow: rgba(0,0,0,0.1) 0 0 20px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0 0 20px;
 }
+
 .modal-body {
   padding: 40px;
 }
@@ -411,5 +418,15 @@ img {
   .col-xl-20 {
     flex: 0 0 auto;
     width: 20%;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .predictive-search-form input.form-control {
+    padding: 6px 15px;
+  }
+
+  .predictive-search-form svg {
+    vertical-align: inherit;
   }
 }

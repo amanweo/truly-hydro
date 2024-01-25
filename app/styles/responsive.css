@@ -23,9 +23,20 @@
 
     .truly_toggle {
         width: 110px;
+        display: flex;
+        align-items: center;
+    }
+    
+    .truly_toggle img {
+        display: block;
+    }
+    
+    .truly_toggle > span {
+        display: flex;
+        align-items: center;
     }
 
-    .truly_toggle span {
+    .truly_toggle a >span {
         background: #000;
         position: relative;
         display: block;
@@ -129,6 +140,10 @@
     .newsletter_form {
         flex-direction: column;
     }
+
+    .footer-menu a {
+        margin-bottom: 6px;
+    }
 }
 
 
@@ -173,5 +188,113 @@
     .InStyle__Box {
         max-width: 700px;
         margin: auto;
+    }
+
+    .stamped-fa-star:before,
+    span.stamped-badge-caption {
+        font-size: 14px;
+    }
+
+    .text_over_image .bg_image_text {
+        padding: 30px;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    h1 {
+        font-size: 36px;
+    }
+
+    h2 {
+        font-size: 28px;
+    }
+
+    h3 {
+        font-size: 22px;
+    }
+
+    h4 {
+        font-size: 18px;
+    }
+
+    h5 {
+        font-size: 16px;
+    }
+
+    h6 {
+        font-size: 14px;
+    }
+
+    .headingholder h2,
+    .InStyle__Box h3 {
+        font-size: 34px;
+    }
+
+    h6.productBox__title {
+        font-size: 16px;
+    }
+
+    .container-fluid {
+        padding: 0 15px;
+    }
+
+    .primary-bg-sm {
+        background-color: var(--primary) !important;
+    }
+
+    .text_over_image .bg_image_text {
+        padding: 30px 15px;
+    }
+}
+
+@media screen and (max-width: 575px) {
+    .InStyle__Box {
+        padding: 0;
+    }
+
+    .mobile_header_menu {
+        padding: 0 15px;
+    }
+
+    .InStyle__Box h3 {
+        font-size: 6vw;
+    }
+
+    .headingholder h2 {
+        font-size: 28px;
+    }
+
+    p {
+        margin-bottom: 10px;
+    }
+
+    .headingholder p {
+        font-size: 16px;
+        margin-bottom: 5px;
+    }
+
+    footer.footer {
+        padding: 40px 0 20px;
+    }
+
+    .mainFooter-socialIcon {
+        margin: 10px 0 20px;
+    }
+
+    footer.footer h5 {
+        margin-bottom: 10px;
+    }
+    h6.productBox__title {
+        font-size: 14px;
+        margin-bottom: 5px;
+    }
+    .truly_header_links > div img {
+        max-width: 16px;
+    }
+}
+
+@media screen and (max-width: 375px) {
+    .newsletter_form small {
+        font-size: 3vw;
     }
 }

@@ -1243,7 +1243,7 @@ div.stamped-container[data-widget-style], div[data-widget-style] div.stamped-con
 }
 
 .product-main p:last-of-type {
-    margin-bottom: 0;
+    /* margin-bottom: 0; */
 }
 .noStyle.accordion-button:after{
     display: none;
@@ -1279,7 +1279,7 @@ h2.menu_tab_header.accordion-header {
 .menu_products {
     display: flex;
     padding-bottom: 20px;
-    margin: 0 -10px;
+    margin: 0 -5px;
     overflow: hidden;
     overflow-x: auto;
 }
@@ -1359,4 +1359,23 @@ h2.menu_tab_header.accordion-header {
     background-color: #d6315c !important;
     color: #fff !important;
     padding: 14px;
+}
+.mobile_header_menu .accordion-body{
+    padding-right: 0;
+}
+
+.collection_block_image .collection_block_content {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 45px;
+}
+
+.collection_block_image {
+    position: relative;
+}
+footer.footer h5{
+    font-family: var(--primary-font-bold);
 }
