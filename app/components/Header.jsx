@@ -292,10 +292,10 @@ function MenuProducts(props) {
           </div>
         )
       })}
-      <div class="menu_products_list ViewMoreCol">
+      <div className="menu_products_list ViewMoreCol">
         <a href="/collections/best-sellers">
           <button className='noStyle'>
-            <span class="product__ViewMore">View <br /> More</span>
+            <span className="product__ViewMore">View <br /> More</span>
           </button>
         </a>
       </div>

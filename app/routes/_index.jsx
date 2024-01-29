@@ -708,7 +708,7 @@ export function QuickView(props) {
       <div className='quickview_modal_backdrop' onClick={props.closeModal}></div>
       <div className='quickview_modal_body_outer'>
         <div className='quickview_modal_body'>
-          <div className='row gx-5'>
+          <div className='row gx-lg-5'>
             <div className='col-md-6'>
               <div className='product_detail_images'>
                 <div className='product_detail_single_image'>

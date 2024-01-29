@@ -208,12 +208,6 @@ export default function Product() {
     }
   };
 
-  const handleSlideChange2 = () => {
-    if (swiperRef2.current) {
-      console.log("swiperRef2.current: ", swiperRef2.current)
-    }
-  };
-
   const handleThumbnailClick = (index) => {
     if (swiperRef.current) {
       if (index > -1) {
@@ -234,7 +228,7 @@ export default function Product() {
 
   const onBeforeSlide = (detail) => {
     const { index, prevIndex } = detail;
-    console.log(index, prevIndex);
+    console.log("prevIndex", index, prevIndex);
   };
   const onAfterClose = () => {
     document.body.classList.remove("modal_open");
@@ -292,91 +286,141 @@ export default function Product() {
   return (
     <div className="commonSection product-page">
       <div className="container-fluid">
-        <div className="row gx-5">
-          <div className="col-lg-6 col-md-6">
-            <div className='product_detail_images'>
-              <div className='product_detail_single_image'>
-                <LightGallery
-                  elementClassNames="custom-wrapper-class"
-                  onBeforeSlide={onBeforeSlide}
-                  onAfterClose={onAfterClose}
-                  onAfterOpen={onAfterOpen}
-                  // onSlideItemLoad={onSlideItemLoad}
-                  plugins={[lgZoom]}
-                  download={false}
-                  infiniteZoom={false}
-                  hideScrollbar={true}
-                >
-
-                  <a data-src={activeSlide?.url} className='product_slides activeSlide' style={{ cursor: "crosshair" }}>
-                    <Image
-                      alt={activeSlide.altText || ''}
-                      aspectRatio="0"
-                      data={activeSlide}
-                      sizes="200vw"
-                    />
-                  </a>
-                  {product?.images?.nodes.filter((x) => x?.id !== activeSlide?.id).map((img, i) => {
-                    return (
-                      <a data-src={img?.url} key={i + 1} className='product_slides'>
-                        <Image
-                          alt={img.altText || ''}
-                          aspectRatio="0"
-                          data={img}
-                          sizes="200vw"
-                        />
-                      </a>
-                    )
-                  })}
-                </LightGallery>
-              </div>
-              <div className='product_image_thumb'>
-                <Swiper
-                  spaceBetween={0}
-                  slidesPerView={4}
-                  mousewheel={true}
-                  direction={'vertical'}
-                  onSlideChange={handleSlideChange}
-                  autoHeight={true}
-                  navigation={true, {
-                    nextEl: '.custom-next-arrow',
-                    prevEl: '.custom-prev-arrow',
-                  }}
-                  modules={[Mousewheel, Navigation]}
-                  ref={swiperRef}
-                  onSwiper={(swiper) => console.log("swiper", swiper)}
-                >
-                  <div className="custom_arrows custom-prev-arrow">
-                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M5.29289 9.29289C4.90237 9.68342 4.90237 10.3166 5.29289 10.7071C5.68342 11.0976 6.31658 11.0976 6.70711 10.7071L5.29289 9.29289ZM12 4L12.7071 3.29289C12.3166 2.90237 11.6834 2.90237 11.2929 3.29289L12 4ZM17.2929 10.7071C17.6834 11.0976 18.3166 11.0976 18.7071 10.7071C19.0976 10.3166 19.0976 9.68342 18.7071 9.29289L17.2929 10.7071ZM6.70711 10.7071L12.7071 4.70711L11.2929 3.29289L5.29289 9.29289L6.70711 10.7071ZM11.2929 4.70711L17.2929 10.7071L18.7071 9.29289L12.7071 3.29289L11.2929 4.70711Z" fill="#fff"></path>
-                      <path d="M12 4L12 20" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
-                    </svg>
-                  </div>
-                  <div className="custom_arrows custom-next-arrow">
-                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M18.7071 14.7071C19.0976 14.3166 19.0976 13.6834 18.7071 13.2929C18.3166 12.9024 17.6834 12.9024 17.2929 13.2929L18.7071 14.7071ZM12 20L11.2929 20.7071C11.6834 21.0976 12.3166 21.0976 12.7071 20.7071L12 20ZM6.70711 13.2929C6.31658 12.9024 5.68342 12.9024 5.29289 13.2929C4.90237 13.6834 4.90237 14.3166 5.29289 14.7071L6.70711 13.2929ZM17.2929 13.2929L11.2929 19.2929L12.7071 20.7071L18.7071 14.7071L17.2929 13.2929ZM12.7071 19.2929L6.70711 13.2929L5.29289 14.7071L11.2929 20.7071L12.7071 19.2929Z" fill="#fff"></path>
-                      <path d="M12 20L12 4" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
-                    </svg>
-                  </div>
-                  {product?.images?.nodes.map((img, i) => {
-                    return (
-                      <SwiperSlide key={i} onClick={() => handleThumbnailClick(i)}>
-                        <button className='noStyle d-block'>
+        <div className="row gx-lg-5">
+          <div className="col-lg-6 product_detail_images_outer">
+            <div className='product_detail_single_image d-md-none'>
+              <Swiper
+                spaceBetween={2}
+                slidesPerView={1.3}
+                onSlideChange={handleSlideChange}
+                autoHeight={false}
+                onSwiper={(swiper) => console.log("swiper", swiper)}
+              >
+                {product?.images?.nodes.map((img, i) => {
+                  return (
+                    <SwiperSlide key={i + 1}>
+                      <LightGallery
+                        elementClassNames="custom-wrapper-class"
+                        onBeforeSlide={onBeforeSlide}
+                        onAfterClose={onAfterClose}
+                        onAfterOpen={onAfterOpen}
+                        // onSlideItemLoad={onSlideItemLoad}
+                        plugins={[lgZoom]}
+                        download={false}
+                        infiniteZoom={false}
+                        hideScrollbar={true}
+                      >
+                        <a data-src={img?.url} className='product_slides activeSlide'>
                           <Image
-                            alt={img.altText || 'Product Image'}
+                            alt={img.altText || ''}
                             aspectRatio="0"
                             data={img}
                             sizes="200vw"
                           />
-                        </button>
-                      </SwiperSlide>
-                    )
-                  })}
-                </Swiper>
+                        </a>
+                        {product?.images?.nodes.filter((x) => x?.id !== img?.id).map((imgs, ind) => {
+                          return (
+                            <a data-src={imgs?.url} key={ind + 1} className='product_slides'>
+                              <Image
+                                alt={imgs.altText || ''}
+                                aspectRatio="0"
+                                data={imgs}
+                                sizes="200vw"
+                              />
+                            </a>
+                          )
+                        })}
+                      </LightGallery>
+                    </SwiperSlide>
+                  )
+                })}
+              </Swiper>
+            </div>
+            <div className='d-none d-md-block'>
+              <div className='product_detail_images'>
+                <div className='product_detail_single_image'>
+                  <LightGallery
+                    elementClassNames="custom-wrapper-class"
+                    onBeforeSlide={onBeforeSlide}
+                    onAfterClose={onAfterClose}
+                    onAfterOpen={onAfterOpen}
+                    // onSlideItemLoad={onSlideItemLoad}
+                    plugins={[lgZoom]}
+                    download={false}
+                    infiniteZoom={false}
+                    hideScrollbar={true}
+                  >
+
+                    <a data-src={activeSlide?.url} className='product_slides activeSlide' style={{ cursor: "crosshair" }}>
+                      <Image
+                        alt={activeSlide.altText || ''}
+                        aspectRatio="0"
+                        data={activeSlide}
+                        sizes="200vw"
+                      />
+                    </a>
+                    {product?.images?.nodes.filter((x) => x?.id !== activeSlide?.id).map((img, i) => {
+                      return (
+                        <a data-src={img?.url} key={i + 1} className='product_slides'>
+                          <Image
+                            alt={img.altText || ''}
+                            aspectRatio="0"
+                            data={img}
+                            sizes="200vw"
+                          />
+                        </a>
+                      )
+                    })}
+                  </LightGallery>
+                </div>
+                <div className='product_image_thumb'>
+                  <Swiper
+                    spaceBetween={0}
+                    slidesPerView={3}
+                    mousewheel={true}
+                    direction={'vertical'}
+                    onSlideChange={handleSlideChange}
+                    autoHeight={true}
+                    navigation={true, {
+                      nextEl: '.custom-next-arrow',
+                      prevEl: '.custom-prev-arrow',
+                    }}
+                    modules={[Mousewheel, Navigation]}
+                    ref={swiperRef}
+                    onSwiper={(swiper) => console.log("swiper", swiper)}
+                  >
+                    <div className="custom_arrows custom-prev-arrow">
+                      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M5.29289 9.29289C4.90237 9.68342 4.90237 10.3166 5.29289 10.7071C5.68342 11.0976 6.31658 11.0976 6.70711 10.7071L5.29289 9.29289ZM12 4L12.7071 3.29289C12.3166 2.90237 11.6834 2.90237 11.2929 3.29289L12 4ZM17.2929 10.7071C17.6834 11.0976 18.3166 11.0976 18.7071 10.7071C19.0976 10.3166 19.0976 9.68342 18.7071 9.29289L17.2929 10.7071ZM6.70711 10.7071L12.7071 4.70711L11.2929 3.29289L5.29289 9.29289L6.70711 10.7071ZM11.2929 4.70711L17.2929 10.7071L18.7071 9.29289L12.7071 3.29289L11.2929 4.70711Z" fill="#fff"></path>
+                        <path d="M12 4L12 20" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
+                      </svg>
+                    </div>
+                    <div className="custom_arrows custom-next-arrow">
+                      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M18.7071 14.7071C19.0976 14.3166 19.0976 13.6834 18.7071 13.2929C18.3166 12.9024 17.6834 12.9024 17.2929 13.2929L18.7071 14.7071ZM12 20L11.2929 20.7071C11.6834 21.0976 12.3166 21.0976 12.7071 20.7071L12 20ZM6.70711 13.2929C6.31658 12.9024 5.68342 12.9024 5.29289 13.2929C4.90237 13.6834 4.90237 14.3166 5.29289 14.7071L6.70711 13.2929ZM17.2929 13.2929L11.2929 19.2929L12.7071 20.7071L18.7071 14.7071L17.2929 13.2929ZM12.7071 19.2929L6.70711 13.2929L5.29289 14.7071L11.2929 20.7071L12.7071 19.2929Z" fill="#fff"></path>
+                        <path d="M12 20L12 4" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path>
+                      </svg>
+                    </div>
+                    {product?.images?.nodes.map((img, i) => {
+                      return (
+                        <SwiperSlide key={i} onClick={() => handleThumbnailClick(i)}>
+                          <button className='noStyle d-block'>
+                            <Image
+                              alt={img.altText || 'Product Image'}
+                              aspectRatio="0"
+                              data={img}
+                              sizes="200vw"
+                            />
+                          </button>
+                        </SwiperSlide>
+                      )
+                    })}
+                  </Swiper>
+                </div>
               </div>
             </div>
           </div>
-          <div className='col-lg-5 col-md-6'>
+          <div className='col-xl-5 col-lg-6'>
             <ProductMain
               selectedVariant={selectedVariant}
               product={product}
@@ -395,10 +439,10 @@ export default function Product() {
 
       {metaFields ?
         <div className='how_to_use_block primary-bg mt-5 py-5'>
-          <div className='container'>
+          <div className='container-xl'>
             <div className='row align-items-center'>
-              <div className='col-sm-7'>
-                <div className='p-4 px-5'>
+              <div className='col-md-7 order-md-1 order-2'>
+                <div className='pe-0 py-3 pe-lg-5 pe-md-3 py-md-0'>
                   <h2>{isJsonString(metaFields?.how_to_use_title) ? JSON.parse(metaFields?.how_to_use_title) : metaFields?.how_to_use_title}</h2>
                   {metaFields?.how_to_use_text ?
                     <div className='how_to_use_list'>
@@ -448,7 +492,7 @@ export default function Product() {
                   }
                 </div>
               </div>
-              <div className='col-sm-5'>
+              <div className='col-md-5 order-md-2 order-1'>
                 {metaFields?.bundle_howtouse_video_link ?
                   <div className='how_to_use_video img-shadow'>
                     <video id="mydVideo" playsInline="" className="PlayTargetVideo d-block posterCover w_how" ref={videoRef} onEnded={handleVideoEnded}
@@ -479,7 +523,7 @@ export default function Product() {
             {metaFields?.bundle_whatistarget_image && metaFields?.what_it_targets_text ?
               <div className='how_to_use_block mt-5'>
                 <div className='row align-items-center'>
-                  <div className='col-sm-5'>
+                  <div className='col-md-5'>
                     <div className='what_it_target_slider'>
                       {(metaFields?.bundle_whatistarget_image && isJsonString(metaFields?.bundle_whatistarget_image) && JSON.parse(metaFields?.bundle_whatistarget_image).length > 1) || (typeof metaFields?.bundle_whatistarget_image == "object" && metaFields?.bundle_whatistarget_image.length > 1) ?
                         <div>
@@ -488,7 +532,6 @@ export default function Product() {
                               spaceBetween={0}
                               slidesPerView={1}
                               loop={true}
-                              onSlideChange={handleSlideChange2}
                               autoHeight={true}
                               navigation={true}
                               modules={[Navigation]}
@@ -541,8 +584,8 @@ export default function Product() {
 
                     </div>
                   </div>
-                  <div className='col-sm-7'>
-                    <div className='p-4 px-5'>
+                  <div className='col-md-7'>
+                    <div className='px-0 px-md-5 mt-md-0 mt-3'>
                       <h2>{isJsonString(metaFields?.target_title) ? JSON.parse(metaFields?.target_title) : metaFields?.target_title}</h2>
                       {metaFields?.what_it_targets_text ?
                         <div className='how_to_use_list'>
@@ -595,7 +638,7 @@ export default function Product() {
             {metaFields?.bundle_subscribe_save_image && metaFields?.["subscribe-title"] ?
               <div className='how_to_use_block mt-5'>
                 <div className='row flex-row-reverse align-items-center'>
-                  <div className='col-sm-5'>
+                  <div className='col-md-5'>
                     {metaFields?.bundle_subscribe_save_image ?
                       <div className='what_it_target_slider img-shadow'>
                         <Image
@@ -608,8 +651,9 @@ export default function Product() {
                       : null
                     }
                   </div>
-                  <div className='col-sm-7'>
-                    <div className='p-4 px-5'>
+
+                  <div className='col-md-7 order-md-1 order-2'>
+                    <div className='pe-0 py-3 pe-lg-5 pe-md-3 py-md-0'>
                       <h2>{isJsonString(metaFields?.["subscribe-title"]) ? JSON.parse(metaFields?.["subscribe-title"]) : metaFields?.["subscribe-title"]}</h2>
                       <div dangerouslySetInnerHTML={{ __html: isJsonString(metaFields?.subscribe_and_save_desc) ? JSON.parse(metaFields?.subscribe_and_save_desc) : metaFields?.subscribe_and_save_desc }}></div>
 
@@ -795,21 +839,23 @@ export function ProductMain({ selectedVariant, product, variants, metaFields, sh
               :
               null
           }
-          {metaFields?.bundle_product_short_descripti ?
-            <div dangerouslySetInnerHTML={{ __html: isJsonString(metaFields?.bundle_product_short_descripti) ? JSON.parse(metaFields?.bundle_product_short_descripti) : metaFields?.bundle_product_short_descripti }}></div>
-            :
-            <p>{description}</p>
-          }
-          <div className={`bundle_whats_inside_outer ${type == "quickView" ? "flex-column-reverse":""}`}>
-            {metaFields?.bundle_whats_inside ?
-              <div className='bundle_whats_inside'>
-                <h5>{isJsonString(metaFields?.whats_inside_title) ? JSON.parse(metaFields?.whats_inside_title) : metaFields?.whats_inside_title}</h5>
-                <div dangerouslySetInnerHTML={{ __html: isJsonString(metaFields?.bundle_whats_inside) ? JSON.parse(metaFields?.bundle_whats_inside) : metaFields?.bundle_whats_inside }}>
-                </div>
-              </div>
-              : null
-            }
+          <div className={`bundle_whats_inside_outer ${type == "quickView" ? "flex-column-reverse" : ""}`}>
             <div>
+              {metaFields?.bundle_product_short_descripti ?
+                <div dangerouslySetInnerHTML={{ __html: isJsonString(metaFields?.bundle_product_short_descripti) ? JSON.parse(metaFields?.bundle_product_short_descripti) : metaFields?.bundle_product_short_descripti }}></div>
+                :
+                <p>{description}</p>
+              }
+              {metaFields?.bundle_whats_inside ?
+                <div className='bundle_whats_inside'>
+                  <h5>{isJsonString(metaFields?.whats_inside_title) ? JSON.parse(metaFields?.whats_inside_title) : metaFields?.whats_inside_title}</h5>
+                  <div dangerouslySetInnerHTML={{ __html: isJsonString(metaFields?.bundle_whats_inside) ? JSON.parse(metaFields?.bundle_whats_inside) : metaFields?.bundle_whats_inside }}>
+                  </div>
+                </div>
+                : null
+              }
+            </div>
+            <div className='mb-md-0 mb-3'>
               <ProductPrice
                 selectedVariant={selectedVariant}
                 quantity={quantity}

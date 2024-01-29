@@ -14,7 +14,10 @@
     .truly_navbar ul li {
         padding: 0 8px;
     }
-}
+    .how_to_use_block .container-xl {
+      padding: 0 30px;
+    }
+  }
 
 @media screen and (max-width: 1199px) {
     .truly_navbar {
@@ -198,6 +201,12 @@
     .text_over_image .bg_image_text {
         padding: 30px;
     }
+    .product-main h1 {
+        font-size: 30px;
+    }
+    .quickview_modal_body_outer {
+        max-width: calc(100% - 30px);
+    }
 }
 
 @media screen and (max-width: 767px) {
@@ -217,14 +226,6 @@
         font-size: 18px;
     }
 
-    h5 {
-        font-size: 16px;
-    }
-
-    h6 {
-        font-size: 14px;
-    }
-
     .headingholder h2,
     .InStyle__Box h3 {
         font-size: 34px;
@@ -234,8 +235,8 @@
         font-size: 16px;
     }
 
-    .container-fluid {
-        padding: 0 15px;
+    .container-fluid, .how_to_use_block .container-xl {
+        padding: 0 12px;
     }
 
     .primary-bg-sm {
@@ -244,6 +245,28 @@
 
     .text_over_image .bg_image_text {
         padding: 30px 15px;
+    }
+    .product-main {
+        margin-top: 15px;
+    }
+    .product_detail_images .product_image_thumb{
+        display: none;
+    }
+    .product_detail_images .product_detail_single_image {
+        max-width: 100%;
+    }
+    .commonSection.product-page {
+        padding-top: 0;
+    }
+    .product_detail_images_outer {
+        padding: 0;
+    }
+    .product_detail_single_image {
+        max-width: 100%;
+    }
+    .bundle_whats_inside_outer {
+        flex-direction: column-reverse;
+        display: flex;
     }
 }
 
@@ -290,6 +313,31 @@
     }
     .truly_header_links > div img {
         max-width: 16px;
+    }
+    .product-main h1 {
+        font-size: 28px;
+    }
+    .good_to_know ul li {
+        padding: 6px 12px;
+        font-size: 12px;
+        margin: 0 3px 3px 0;
+        border-radius: 8px;
+    }
+    .how_to_use_block .col-md-5.order-md-2.order-1 {
+        padding: 0;
+    }
+    .subscribe_save_block {
+        padding-top: 10px;
+        border-radius: 10px;
+        flex-direction: column;
+    }
+    .modal-body {
+        padding: 15px;
+    }
+    .subscribe_save_text_block img {
+        max-width: 17px;
+        height: auto;
+        vertical-align: sub;
     }
 }
 
