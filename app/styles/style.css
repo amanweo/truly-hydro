@@ -1454,3 +1454,10 @@ h2.menu_tab_header.accordion-header {
 footer.footer h5 {
     font-family: var(--primary-font-bold);
 }
+
+@keyframes pulse {
+    100% {
+        -webkit-transform: scale(1.075);
+        transform: scale(1.075);
+    }
+}

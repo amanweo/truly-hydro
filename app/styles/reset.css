@@ -283,6 +283,7 @@ a {
   top: 0;
   left: 50%;
   width: 0;
+  opacity: 0;
   height: 100%;
   z-index: -1;
   transition: ease .3s;
@@ -302,6 +303,7 @@ a {
 
 .btn:not(.noHover):hover:after {
   width: 100%;
+  opacity: 1;
 }
 
 .btn-sm {

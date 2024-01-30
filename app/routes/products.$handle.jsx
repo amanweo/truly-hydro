@@ -162,12 +162,14 @@ export default function Product() {
   console.log("selected product: ", product);
   const { selectedVariant } = product;
   const videoRef = useRef()
+  const btnRef = useRef()
   const swiperRef = useRef(null);
   const swiperRef2 = useRef(null);
   const location = useLocation()
   const [activeSlide, setActiveSlide] = useState(product?.images?.nodes[0] || {})
   const [metaFields, setmetaFields] = useState({})
   const [videoPlay, setvideoPlay] = useState("")
+  const [isVisible, setIsVisible] = useState(false);
 
   const [show, setShow] = useState(false);
 
@@ -187,6 +189,22 @@ export default function Product() {
   const handleQtyChange = (e) => {
     setQuantity(parseInt(e.target.value))
   }
+
+  const handleScroll = () => {
+    if (btnRef.current) {
+      const targetDiv = btnRef.current.querySelector(".product-form");
+      const rect = targetDiv.getBoundingClientRect();
+      if (rect.top >= 0 && rect.bottom <= window.innerHeight) {
+        setIsVisible(true);
+      } else {
+        setIsVisible(false);
+      }
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+  }, [])
 
   useEffect(() => {
     let newObj = {}
@@ -432,6 +450,8 @@ export default function Product() {
               quantity={quantity}
               location={location}
               saveOption={saveOption}
+              btnRef={btnRef}
+              isVisible={isVisible}
             />
           </div>
         </div>
@@ -785,7 +805,7 @@ function ProductImage({ image }) {
  *   variants: Promise<ProductVariantsQuery>;
  * }}
  */
-export function ProductMain({ selectedVariant, product, variants, metaFields, showPopup, quantity, handleQty, handleQtyChange, location, type, saveOption }) {
+export function ProductMain({ selectedVariant, product, variants, metaFields, showPopup, quantity, handleQty, handleQtyChange, location, type, saveOption, btnRef, isVisible }) {
   console.log("metaFields: ", metaFields)
   console.log("selectedVariant: ", selectedVariant)
   const { title, descriptionHtml, description } = product;
@@ -806,7 +826,7 @@ export function ProductMain({ selectedVariant, product, variants, metaFields, sh
   }
   console.log("activeOption;", activeOption)
   return (
-    <div className="product-main">
+    <div className="product-main" ref={btnRef}>
       {metaFields ?
         <>
           <h1 className='mb-2'>
@@ -875,6 +895,7 @@ export function ProductMain({ selectedVariant, product, variants, metaFields, sh
                     activeOption={activeOption}
                     type={type}
                     saveOption={saveOption}
+                    isVisible={isVisible}
                   />
                 }
               >
@@ -891,6 +912,7 @@ export function ProductMain({ selectedVariant, product, variants, metaFields, sh
                       activeOption={activeOption}
                       type={type}
                       saveOption={saveOption}
+                      isVisible={isVisible}
                     />
                   )}
                 </Await>
@@ -1096,7 +1118,7 @@ function ProductPrice({ selectedVariant, quantity, handleQtyChange, handleQty, s
  *   variants: Array<ProductVariantFragment>;
  * }}
  */
-function ProductForm({ product, selectedVariant, variants, quantity, activeOption, saveOption, type }) {
+function ProductForm({ product, selectedVariant, variants, quantity, activeOption, saveOption, type, isVisible }) {
   console.log("selectedVariant: ", selectedVariant)
   console.log("saveOption 1: ", saveOption)
   return (
@@ -1109,33 +1131,35 @@ function ProductForm({ product, selectedVariant, variants, quantity, activeOptio
         {({ option }) => <ProductOptions key={option.name} option={option} />}
       </VariantSelector>
       <br />
-      <AddToCartButton
-        fullBtn
-        disabled={!selectedVariant || !selectedVariant.availableForSale}
-        onClick={() => {
-          setTimeout(() => {
-            window.location.href = window.location.href + '#cart-aside';
-          }, 500);
-        }}
-        lines={
-          selectedVariant
-            ? [
-              activeOption !== "oneTime" ? {
-                merchandiseId: selectedVariant.id,
-                quantity: 1,
-                sellingPlanId: type == "quickView" ? product?.sellingPlanGroups?.edges[0]?.node?.sellingPlans?.edges[0]?.node?.id || "" : saveOption
-              }
-                :
-                {
+      <div className={!isVisible ? "isVisible" : ""}>
+        <AddToCartButton
+          fullBtn
+          disabled={!selectedVariant || !selectedVariant.availableForSale}
+          onClick={() => {
+            setTimeout(() => {
+              window.location.href = window.location.href + '#cart-aside';
+            }, 500);
+          }}
+          lines={
+            selectedVariant
+              ? [
+                activeOption !== "oneTime" ? {
                   merchandiseId: selectedVariant.id,
-                  quantity: quantity || 1
+                  quantity: 1,
+                  sellingPlanId: type == "quickView" ? product?.sellingPlanGroups?.edges[0]?.node?.sellingPlans?.edges[0]?.node?.id || "" : saveOption
                 }
-            ]
-            : []
-        }
-      >
-        {activeOption !== "oneTime" ? "Subscribe Now" : selectedVariant?.availableForSale ? 'Add to Bag' : 'Sold out'}
-      </AddToCartButton>
+                  :
+                  {
+                    merchandiseId: selectedVariant.id,
+                    quantity: quantity || 1
+                  }
+              ]
+              : []
+          }
+        >
+          {activeOption !== "oneTime" ? "Subscribe Now" : selectedVariant?.availableForSale ? 'Add to Bag' : 'Sold out'}
+        </AddToCartButton>
+      </div>
     </div>
   );
 }
