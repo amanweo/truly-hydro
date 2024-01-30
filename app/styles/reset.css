@@ -183,7 +183,7 @@ h5,
 h6 {
   font-family: var(--fontReg);
   margin-bottom: 20px;
-  letter-spacing: 0.8px;
+  /* letter-spacing: 0.8px; */
 }
 
 h1 {
@@ -434,5 +434,12 @@ img {
   .btn {
     padding: 8px 30px;
     font-size: 18px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .btn {
+    padding: 8px 20px;
+    font-size: 16px;
   }
 }

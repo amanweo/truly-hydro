@@ -59,9 +59,9 @@ export default function SearchPage() {
       <div className="search">
         <div className='container-fluid'>
           {searchResults.results?.products?.totalCount ?
-            <h3>Search results: {searchResults.results?.products?.totalCount} results For "{searchTerm}"</h3>
+            <h4 className='primary-font-med mb-3'>Search results: {searchResults.results?.products?.totalCount} results For "{searchTerm}"</h4>
             :
-            <h3>Search results For "smooth"</h3>
+            <h4 className='primary-font-med mb-3'>Search results For "{searchTerm}"</h4>
           }
           {/* <SearchForm searchTerm={searchTerm} /> */}
           {!searchTerm || !searchResults.totalResults ? (

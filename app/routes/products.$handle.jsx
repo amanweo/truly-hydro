@@ -288,7 +288,7 @@ export default function Product() {
       <div className="container-fluid">
         <div className="row gx-lg-5">
           <div className="col-lg-6 product_detail_images_outer">
-            <div className='product_detail_single_image d-md-none'>
+            <div className='product_detail_single_image d-lg-none'>
               <Swiper
                 spaceBetween={2}
                 slidesPerView={1.3}
@@ -336,7 +336,7 @@ export default function Product() {
                 })}
               </Swiper>
             </div>
-            <div className='d-none d-md-block'>
+            <div className='d-none d-lg-block'>
               <div className='product_detail_images'>
                 <div className='product_detail_single_image'>
                   <LightGallery

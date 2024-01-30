@@ -11,6 +11,7 @@
   --fontRegI: 'AwesomeSerifItalic-Regular';
   --mdEx: 'AwesomeSerif-MediumExtraTall';
   --lightI: 'AwesomeSerifItalicVAR-Light';
+  --header-height: 45px;
 }
 html, body {
     min-height: 100vh;
@@ -25,6 +26,15 @@ body > main{
 }
 img {
   border-radius: 4px;
+}
+.primary-font{
+  font-family: var(--primary-font) !important;
+}
+.primary-font-med{
+  font-family: var(--primary-font-med) !important;
+}
+.primary-font-bold{
+  font-family: var(--primary-font-bold) !important;
 }
 
 /*
@@ -272,7 +282,7 @@ aside li {
 * --------------------------------------------------
 */
 .predictive-search {
-  height: calc(100vh - var(--header-height) - 40px);
+  height: calc(100vh - var(--header-height));
   overflow-y: auto;
 }
 

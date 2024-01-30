@@ -4,9 +4,21 @@
     }
 }
 
+@media screen and (max-width: 1499px) {
+    .product_detail_images .swiper-wrapper {
+        height: 80vh !important;
+        max-height: 540px;
+        min-height: 45vw;
+    }
+}
+
 @media screen and (max-width: 1399px) {
     .truly_navbar ul li a {
         font-size: 14px;
+    }
+
+    ul.product_search_list li {
+        max-width: 33.333%;
     }
 }
 
@@ -14,10 +26,11 @@
     .truly_navbar ul li {
         padding: 0 8px;
     }
+
     .how_to_use_block .container-xl {
-      padding: 0 30px;
+        padding: 0 30px;
     }
-  }
+}
 
 @media screen and (max-width: 1199px) {
     .truly_navbar {
@@ -29,17 +42,17 @@
         display: flex;
         align-items: center;
     }
-    
+
     .truly_toggle img {
         display: block;
     }
-    
-    .truly_toggle > span {
+
+    .truly_toggle>span {
         display: flex;
         align-items: center;
     }
 
-    .truly_toggle a >span {
+    .truly_toggle a>span {
         background: #000;
         position: relative;
         display: block;
@@ -147,6 +160,17 @@
     .footer-menu a {
         margin-bottom: 6px;
     }
+
+    .truly_header_links {
+        width: 110px;
+        text-align: end;
+        justify-content: flex-end;
+    }
+
+    .product_detail_images .swiper-wrapper {
+        max-height: 450px;
+        min-height: 35vw;
+    }
 }
 
 
@@ -201,11 +225,42 @@
     .text_over_image .bg_image_text {
         padding: 30px;
     }
+
     .product-main h1 {
         font-size: 30px;
     }
+
     .quickview_modal_body_outer {
         max-width: calc(100% - 30px);
+    }
+
+    ul.product_search_list li {
+        max-width: 50%;
+    }
+
+    .product_detail_images .swiper-wrapper {
+        max-height: 90vh;
+        min-height: 75vw;
+        height: 90vh !important;
+    }
+    .product_detail_single_image {
+        max-width: 100%;
+    }
+    
+    .product-main {
+        margin-top: 15px;
+    }
+
+    .product_detail_images .product_detail_single_image {
+        max-width: 100%;
+    }
+
+    .commonSection.product-page {
+        padding-top: 0;
+    }
+
+    .product_detail_images_outer {
+        padding: 0;
     }
 }
 
@@ -235,7 +290,8 @@
         font-size: 16px;
     }
 
-    .container-fluid, .how_to_use_block .container-xl {
+    .container-fluid,
+    .how_to_use_block .container-xl {
         padding: 0 12px;
     }
 
@@ -246,28 +302,12 @@
     .text_over_image .bg_image_text {
         padding: 30px 15px;
     }
-    .product-main {
-        margin-top: 15px;
-    }
-    .product_detail_images .product_image_thumb{
-        display: none;
-    }
-    .product_detail_images .product_detail_single_image {
-        max-width: 100%;
-    }
-    .commonSection.product-page {
-        padding-top: 0;
-    }
-    .product_detail_images_outer {
-        padding: 0;
-    }
-    .product_detail_single_image {
-        max-width: 100%;
-    }
+
     .bundle_whats_inside_outer {
         flex-direction: column-reverse;
         display: flex;
     }
+
 }
 
 @media screen and (max-width: 575px) {
@@ -307,37 +347,67 @@
     footer.footer h5 {
         margin-bottom: 10px;
     }
+
     h6.productBox__title {
         font-size: 14px;
         margin-bottom: 5px;
     }
-    .truly_header_links > div img {
+
+    .truly_header_links>div img {
         max-width: 16px;
     }
+
     .product-main h1 {
         font-size: 28px;
     }
+
     .good_to_know ul li {
         padding: 6px 12px;
         font-size: 12px;
         margin: 0 3px 3px 0;
         border-radius: 8px;
     }
+
     .how_to_use_block .col-md-5.order-md-2.order-1 {
         padding: 0;
     }
+
     .subscribe_save_block {
         padding-top: 10px;
         border-radius: 10px;
         flex-direction: column;
     }
+
     .modal-body {
         padding: 15px;
     }
+
     .subscribe_save_text_block img {
         max-width: 17px;
         height: auto;
         vertical-align: sub;
+    }
+
+    ul.suggestions_list li {
+        font-size: 14px;
+    }
+
+    ul.product_search_list li {
+        flex-direction: column;
+    }
+
+    ul.product_search_list li a,
+    .predictive-search-result-item a img {
+        width: 100%;
+    }
+
+    ul.suggestions_list li {
+        margin: 0 5px 5px 0;
+    }
+
+    .ingrediant_tab_header {
+        padding: 10px 0;
+        font-size: 15px;
     }
 }
 

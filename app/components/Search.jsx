@@ -354,7 +354,7 @@ function PredictiveSearchResult({ goToSearchResult, items, searchTerm, type }) {
   return (
     <div className="predictive-search-result" key={type}>
       <Link prefetch="intent" to={categoryUrl} onClick={goToSearchResult}>
-        <h5>{isSuggestions ? 'Suggestions' : type}</h5>
+        <h5 className='primary-font-bold mb-2'>{isSuggestions ? 'Suggestions' : type}</h5>
       </Link>
       <ul className={isSuggestions || type == "pages" ? 'suggestions_list' : 'product_search_list'}>
         {items.map((item) => (
@@ -380,7 +380,8 @@ function SearchResultItem({ goToSearchResult, item }) {
           <Image
             alt={item.image.altText ?? ''}
             src={item.image.url}
-            width={80}
+            width="(min-width: 575px) 80, 100vw"
+
           />
         )}
       </Link>
