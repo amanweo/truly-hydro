@@ -1,5 +1,8 @@
 import { useMatches, NavLink } from '@remix-run/react';
 import Images from "./images";
+import { useState } from 'react';
+import images from './images';
+import axios, { Axios } from "axios"
 
 /**
  * @param {FooterQuery}
@@ -58,18 +61,74 @@ function FooterInformation() {
 }
 
 function NewsLetter() {
+  const [value, setValue] = useState({})
+  const [errors, setErrors] = useState(false)
+  const handleSubmit = (e, type) => {
+    e.preventDefault();
+    let data = {
+      ajaxaction: type,
+    }
+    let error = false
+    if (type == "subscribelist") {
+      if (!value.subemailaddress || (value.subemailaddress && value.subemailaddress == "")) {
+        setErrors(type)
+        error = true
+      } else {
+        setErrors("")
+        error = false
+        data = {
+          ...data,
+          subemailaddress: value.subemailaddress
+        }
+      }
+    } else {
+      if (!value.subphonenumber || (value.subphonenumber && value.subphonenumber == "")) {
+        setErrors(type)
+        error = true
+      } else {
+        error = false
+        setErrors("")
+        data = {
+          ...data,
+          subphonenumber: value.subphonenumber
+        }
+      }
+    }
+    if (!error) {
+      console.log("data", data)
+      fetch("https://mytrulydeals.com/trulybeauty/test-subscribe.php", {
+        method: 'post',
+        headers: { 'Content-Type': 'application/json' },
+        body: {
+          data
+        }
+      }).then(response => {
+        console.log("response.json()", response.json())
+      });
+
+    }
+  }
+  const handleChange = (e) => {
+    setValue({ ...value, [e.target.name]: e.target.value })
+  }
   return (
     <div className='newsletter_block'>
       <p>Be the first to get the latest news, updates and amazing offers delivered directly in your inbox.</p>
       <div className='newsletter_form'>
-        <div className='form-group w-100 me-3 mb-3'>
-          <input type='email' className='form-control sm' placeholder='Your email' />
-        </div>
-        <div className='form-group w-100 me-3 mb-3'>
-          <input type='text' className='form-control sm' placeholder='Phone number' />
-        </div>
+        <form className='form-group w-100 me-3 mb-3' onSubmit={(e) => handleSubmit(e, "subscribelist")}>
+          <input type='email' className={`form-control sm ${errors == "subemailaddress" ? "error" : ""}`} placeholder='Your email' name="subemailaddress" value={value?.subemailaddress || ""} onChange={handleChange} />
+          <button className='noStyle'>
+            <img src={images?.arrow_right} alt="" width={18} />
+          </button>
+        </form>
+        <form className='form-group w-100 me-3 mb-3' onSubmit={(e) => handleSubmit(e, "subscribephonelist")}>
+          <input type='text' className={`form-control sm ${errors == "subphonenumber" ? "error" : ""}`} placeholder='Phone number' name="subphonenumber" value={value?.subphonenumber || ""} onChange={handleChange} />
+          <button className='noStyle'>
+            <img src={images?.arrow_right} alt="" width={18} />
+          </button>
+        </form>
         <div className='form-group'>
-          <button className='btn btn-secondary btn-sm'>Subscribe</button>
+          {/* <button className='btn btn-secondary btn-sm'>Subscribe</button> */}
           <span className='d-xl-none ms-3'><small>By subscribing, you accept the <NavLink to="/" className={"link"}>Privacy Policy</NavLink></small></span>
         </div>
       </div>

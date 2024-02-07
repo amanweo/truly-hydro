@@ -194,6 +194,9 @@ export default function Product() {
     if (btnRef.current) {
       const targetDiv = btnRef.current.querySelector(".product-form");
       const rect = targetDiv.getBoundingClientRect();
+      console.log("rect: ", rect.top)
+      console.log("rect bottom: ", rect.bottom)
+      console.log("rect window.innerHeight: ", window.innerHeight)
       if (rect.top >= 0 && rect.bottom <= window.innerHeight) {
         setIsVisible(true);
       } else {

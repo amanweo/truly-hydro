@@ -13,4 +13,5 @@ export default {
     banner_face: "https://www.trulybeauty.com/cdn/shop/files/Face_copy.jpg?v=1690355109",
     banner_face_mobile: "https://www.trulybeauty.com/cdn/shop/files/face-m.jpg?v=1690272075",
     plus_circle: require("../images/plus_circle.svg"),
+    arrow_right: require("../images/arrow_right.svg"),
 }

@@ -457,7 +457,20 @@ footer.footer a {
     margin-top: 20px;
     display: flex;
 }
-
+.newsletter_form .form-group{
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+}
+.newsletter_form .form-group .form-control{
+    padding-right: 40px;
+}
+.newsletter_form button{
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 7px 10px;
+}
 .footer-menu a:hover {
     text-decoration: underline;
 }
