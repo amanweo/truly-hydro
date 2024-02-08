@@ -153,9 +153,6 @@
         padding: 10px 0;
     }
 
-    .newsletter_form {
-        flex-direction: column;
-    }
 
     .footer-menu a {
         margin-bottom: 6px;
@@ -424,6 +421,11 @@
     }
 }
 
+@media screen and (max-width: 450px) {
+    .newsletter_form{
+        flex-direction: column;
+    }
+}
 @media screen and (max-width: 375px) {
     .newsletter_form small {
         font-size: 3vw;

@@ -2,7 +2,7 @@ import { useMatches, NavLink } from '@remix-run/react';
 import Images from "./images";
 import { useState } from 'react';
 import images from './images';
-import axios, { Axios } from "axios"
+import _ from "underscore"
 
 /**
  * @param {FooterQuery}
@@ -62,7 +62,8 @@ function FooterInformation() {
 
 function NewsLetter() {
   const [value, setValue] = useState({})
-  const [errors, setErrors] = useState(false)
+  const [errors, setErrors] = useState("")
+  const [showsucess, setShowsucess] = useState(false)
   const handleSubmit = (e, type) => {
     e.preventDefault();
     let data = {
@@ -98,41 +99,79 @@ function NewsLetter() {
       console.log("data", data)
       fetch("https://mytrulydeals.com/trulybeauty/test-subscribe.php", {
         method: 'post',
-        headers: { 'Content-Type': 'application/json' },
-        body: {
-          data
-        }
+        body: JSON.stringify({...data})
       }).then(response => {
-        console.log("response.json()", response.json())
+        console.log("response.json()", response)
+        if (response.status == 200) {
+          setValue({})
+          setShowsucess(true)
+          setTimeout(() => {
+            setShowsucess(false)
+          }, 2000);
+        }
+      }).catch(error => {
+        console.error('There was an error!', error);
       });
 
     }
   }
   const handleChange = (e) => {
-    setValue({ ...value, [e.target.name]: e.target.value })
+    setErrors("")
+    if (e.target.name == "subphonenumber") {
+      if (e.target.value.length < 11) {
+        setValue({ ...value, [e.target.name]: e.target.value })
+      }
+    } else {
+      setValue({ ...value, [e.target.name]: e.target.value })
+    }
   }
+
   return (
     <div className='newsletter_block'>
       <p>Be the first to get the latest news, updates and amazing offers delivered directly in your inbox.</p>
-      <div className='newsletter_form'>
-        <form className='form-group w-100 me-3 mb-3' onSubmit={(e) => handleSubmit(e, "subscribelist")}>
-          <input type='email' className={`form-control sm ${errors == "subemailaddress" ? "error" : ""}`} placeholder='Your email' name="subemailaddress" value={value?.subemailaddress || ""} onChange={handleChange} />
-          <button className='noStyle'>
-            <img src={images?.arrow_right} alt="" width={18} />
-          </button>
-        </form>
-        <form className='form-group w-100 me-3 mb-3' onSubmit={(e) => handleSubmit(e, "subscribephonelist")}>
-          <input type='text' className={`form-control sm ${errors == "subphonenumber" ? "error" : ""}`} placeholder='Phone number' name="subphonenumber" value={value?.subphonenumber || ""} onChange={handleChange} />
-          <button className='noStyle'>
-            <img src={images?.arrow_right} alt="" width={18} />
-          </button>
-        </form>
+      <div className='newsletter_form_outer'>
+        <div className='newsletter_form'>
+          <form className='form-group w-100 me-3 mb-3' onSubmit={(e) => handleSubmit(e, "subscribelist")}>
+            <input type='email' className={`form-control sm ${errors == "subscribelist" ? "error" : ""}`} placeholder='Your email' name="subemailaddress" value={value?.subemailaddress || ""} onChange={handleChange} />
+            <button className='noStyle'>
+              <img src={images?.arrow_right} alt="" width={18} />
+            </button>
+            {errors == "subscribelist" ?
+              <p className='input_feedback error'>Enter valid email</p>
+              : null
+            }
+          </form>
+          <form className='form-group w-100 me-3 mb-3' onSubmit={(e) => handleSubmit(e, "subscribephonelist")}>
+            <input
+              type='number'
+              className={`form-control sm ${errors == "subscribephonelist" ? "error" : ""}`}
+              placeholder='Phone number'
+              name="subphonenumber"
+              value={value?.subphonenumber || ""}
+              onChange={handleChange}
+              onWheel={() => document.activeElement.blur()}
+              onKeyDown={(e) => (e.keyCode === 38 || e.keyCode === 40 || e.keyCode === 189 || e.code === "NumpadSubtract" || e.code === "NumpadAdd" || !(/[^0-9 .]/gi).test(e) || ["e", "E", "+", "-"].includes(e.key) || _.includes(alphabets, e.key)) && e.preventDefault()}
+            />
+            <button className='noStyle'>
+              <img src={images?.arrow_right} alt="" width={18} />
+            </button>
+            {errors == "subscribephonelist" ?
+              <p className='input_feedback error'>Enter valid phone number</p>
+              : null
+            }
+          </form>
+        </div>
         <div className='form-group'>
+          {showsucess ?
+            <p className='input_feedback success'>Thank you for subscribing.</p>
+            : null
+          }
+
           {/* <button className='btn btn-secondary btn-sm'>Subscribe</button> */}
-          <span className='d-xl-none ms-3'><small>By subscribing, you accept the <NavLink to="/" className={"link"}>Privacy Policy</NavLink></small></span>
+          <span className=''><small>By subscribing, you accept the <NavLink to="/" className={"link"}>Privacy Policy</NavLink></small></span>
         </div>
       </div>
-      <p className='d-xl-block d-none'><small>By subscribing, you accept the <NavLink to="/" className={"link"}>Privacy Policy</NavLink></small></p>
+      {/* <p className='d-xl-block d-none'><small>By subscribing, you accept the <NavLink to="/" className={"link"}>Privacy Policy</NavLink></small></p> */}
     </div>
   )
 }
@@ -234,7 +273,7 @@ function FooterMenu({ menu }) {
   const [root] = useMatches();
   const publicStoreDomain = root?.data?.publicStoreDomain;
   return (
-    <nav className="footer-menu" role="navigation">
+    <ul className="footer-menu" role="navigation">
       {(menu || FALLBACK_FOOTER_MENU).items.map((item) => {
         if (!item.url) return null;
         // if the url is internal, we strip the domain
@@ -245,22 +284,25 @@ function FooterMenu({ menu }) {
             : item.url;
         const isExternal = !url.startsWith('/');
         return isExternal ? (
-          <a href={url} key={item.id} rel="noopener noreferrer" target="_blank">
-            {item.title}
-          </a>
+          <li key={item.id}>
+            <a href={url} rel="noopener noreferrer" target="_blank">
+              {item.title}
+            </a>
+          </li>
         ) : (
-          <NavLink
-            end
-            key={item.id}
-            prefetch="intent"
+          <li key={item.id}>
+            <NavLink
+              end
+              prefetch="intent"
 
-            to={url}
-          >
-            {item.title}
-          </NavLink>
+              to={url}
+            >
+              {item.title}
+            </NavLink>
+          </li>
         );
       })}
-    </nav>
+    </ul>
   );
 }
 

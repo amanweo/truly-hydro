@@ -437,12 +437,15 @@ footer.footer a {
 .footer-menu {
     display: block;
     padding: 0;
+    list-style: none;
 }
 
+.footer-menu li {
+    display: block;
+    margin-bottom: 10px;
+}
 .footer-menu a {
     color: var(--color-dark);
-    display: block;
-    margin-bottom: 12px;
 }
 
 .footer-menu a:last-of-type {
@@ -1466,6 +1469,19 @@ h2.menu_tab_header.accordion-header {
 
 footer.footer h5 {
     font-family: var(--primary-font-bold);
+}
+.input_feedback {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    font-size: 12px !important;
+    font-family: var(--primary-font);
+}
+.input_feedback.error {
+    color: red;
+}
+.form-control.error{
+    border-color: red !important;
 }
 
 @keyframes pulse {
